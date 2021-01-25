@@ -38,22 +38,22 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
             title: new Text('Home'),
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.lightBlue,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.cleaning_services),
             title: new Text('Chores'),
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.lightBlue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             title: Text('Calendar'),
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.lightBlue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             title: Text('Notifcations'),
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.lightBlue,
           )
         ],
       ),
