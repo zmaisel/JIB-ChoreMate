@@ -13,7 +13,7 @@ final routes = {
   '/login': (BuildContext context) => new LoginPage(),
   '/home': (context) => Home(),
   '/register': (BuildContext context) => new RegisterPage(),
-  '/chores': (context) => Chores(),
+  '/Chores': (context) => Chores(),
   '/': (BuildContext context) => new LoginPage(),
 };
 
