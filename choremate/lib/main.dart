@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'home_widget.dart';
 import 'package:choremate/chores.dart';
+import 'package:choremate/addchore.dart';
+
 //import 'AppFooter.dart';
 
 void main() {
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/Chores': (context) => Chores(),
         '/Home': (context) => Home(),
+        '/AddChore': (context) => AddChore(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         //add next route here
       },
