@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'home_widget.dart';
-import 'package:choremate/chores.dart';
-import 'package:choremate/addchore.dart';
-
+import 'package:choremate/screens/chores.dart';
+import 'package:choremate/screens/home_widget.dart';
+import 'package:choremate/screens/login/login_page.dart';
+import 'package:choremate/screens/login/register.dart';
 //import 'AppFooter.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-/// This is the main application widget.
+final routes = {
+  '/login': (BuildContext context) => new LoginPage(),
+  '/home': (context) => Home(),
+  '/register': (BuildContext context) => new RegisterPage(),
+  '/Chores': (context) => Chores(),
+  '/': (BuildContext context) => new LoginPage(),
+};
+
 class MyApp extends StatelessWidget {
   static const String _title = 'ChoreMate';
 
@@ -18,15 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme: new ThemeData(primarySwatch: Colors.lightBlue),
-      home: Home(),
-      routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
-        '/Chores': (context) => Chores(),
-        '/Home': (context) => Home(),
-        '/AddChore': (context) => AddChore(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
-        //add next route here
-      },
+      routes: routes,
     );
   }
 }

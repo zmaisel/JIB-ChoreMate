@@ -1,5 +1,14 @@
-import 'package:choremate/chores.dart';
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:choremate/screens/chores.dart';
+import 'package:flutter/material.dart';
+
+
+void main() => runApp(Home());
+
 
 class Home extends StatefulWidget {
   @override
