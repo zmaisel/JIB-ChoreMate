@@ -36,7 +36,7 @@ class Utils {
         initialDate: date.isEmpty
             ? DateTime.now()
             : new DateFormat("d MMM, y").parse(date),
-        lastDate: DateTime(2021));
+        lastDate: DateTime(2025));
     if (picked != null) return formatDate(picked);
 
     return "";

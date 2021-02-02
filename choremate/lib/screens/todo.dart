@@ -25,6 +25,7 @@ class todo_state extends State<todo> {
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
+  int index = 1;
   String _themeType;
   final homeScaffold = GlobalKey<ScaffoldState>();
 
@@ -55,10 +56,10 @@ class todo_state extends State<todo> {
         child: Scaffold(
           key: homeScaffold,
           appBar: AppBar(
-            title: Text(
-              AppLocalizations.of(context).title(),
-              style: TextStyle(fontSize: 25),
-            ),
+            title: Text('ChoreMate'
+                //AppLocalizations.of(context).title(),
+                //style: TextStyle(fontSize: 25),
+                ),
             actions: <Widget>[
               PopupMenuButton<bool>(
                 onSelected: (res) {
@@ -90,6 +91,48 @@ class todo_state extends State<todo> {
                 icon: Icon(Icons.playlist_add_check),
               )
             ]),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: index, // this will be set when a new tab is tapped
+            onTap: (int index) {
+              setState(() {
+                this.index = index;
+              });
+              switch (index) {
+                case 0:
+                  Navigator.of(context).pushNamed('/home');
+                  break;
+                case 1:
+                  Navigator.of(context).pushNamed('/todo');
+                  break;
+                case 2:
+                  Navigator.of(context).pushNamed('/Calendar');
+                  break;
+              }
+            },
+            fixedColor: Colors.lightGreen,
+            items: [
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.home),
+                title: new Text('Home'),
+                backgroundColor: Colors.lightBlue,
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.cleaning_services),
+                title: new Text('Chores'),
+                backgroundColor: Colors.lightBlue,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today),
+                title: Text('Calendar'),
+                backgroundColor: Colors.lightBlue,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                title: Text('Notifcations'),
+                backgroundColor: Colors.lightBlue,
+              )
+            ],
           ), //AppBar
           body: TabBarView(children: [
             new Container(

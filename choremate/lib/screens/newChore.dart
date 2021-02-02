@@ -41,6 +41,7 @@ class task_state extends State<new_task> {
   DatabaseHelper helper = DatabaseHelper();
   Utils utility = new Utils();
   TextEditingController taskController = new TextEditingController();
+  TextEditingController assignmentController = new TextEditingController();
 
   var formattedDate = "Pick Date";
   var formattedTime = "Select Time";
@@ -84,8 +85,8 @@ class task_state extends State<new_task> {
             child: TextField(
               controller: taskController,
               decoration: InputDecoration(
-                  labelText: "Task",
-                  hintText: "E.g.  Pick Julie from School",
+                  labelText: "Chore",
+                  hintText: "E.g.  Vacuum",
                   labelStyle: TextStyle(
                     fontSize: 20,
                     fontFamily: "Lato",
@@ -101,7 +102,27 @@ class task_state extends State<new_task> {
               },
             ), //TextField
           ), //Padding
-
+          Padding(
+              padding: EdgeInsets.all(_minPadding),
+              child: TextField(
+                controller: assignmentController,
+                decoration: InputDecoration(
+                    labelText: "Assign to",
+                    hintText: "name",
+                    labelStyle: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "Lato",
+                      fontWeight: FontWeight.bold,
+                    ),
+                    hintStyle: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "Lato",
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey)), //Input Decoration
+                onChanged: (value) {
+                  updateTask();
+                },
+              )),
           ListTile(
             title: task.date.isEmpty
                 ? Text(
@@ -113,7 +134,7 @@ class task_state extends State<new_task> {
             trailing: Icon(Icons.calendar_today),
             onTap: () async {
               var pickedDate = await utility.selectDate(context, task.date);
-              if (pickedDate != null && !pickedDate.isEmpty)
+              if (pickedDate != null && pickedDate.isNotEmpty)
                 setState(() {
                   this.formattedDate = pickedDate.toString();
                   task.date = formattedDate;
@@ -132,7 +153,7 @@ class task_state extends State<new_task> {
             trailing: Icon(Icons.access_time),
             onTap: () async {
               var pickedTime = await utility.selectTime(context);
-              if (pickedTime != null && !pickedTime.isEmpty)
+              if (pickedTime != null && pickedTime.isNotEmpty)
                 setState(() {
                   formattedTime = pickedTime;
                   task.time = formattedTime;
