@@ -3,12 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/screens/chores.dart';
-import 'package:flutter/material.dart';
-
+//import 'package:choremate/screens/chores.dart';
+//import 'package:choremate/screens/todo.dart';
 
 void main() => runApp(Home());
-
 
 class Home extends StatefulWidget {
   @override
@@ -33,10 +31,10 @@ class _HomeState extends State<Home> {
           });
           switch (index) {
             case 0:
-              Navigator.of(context).pushNamed('/Home');
+              Navigator.of(context).pushNamed('/home');
               break;
             case 1:
-              Navigator.of(context).pushNamed('/Chores');
+              Navigator.of(context).pushNamed('/todo');
               break;
             case 2:
               Navigator.of(context).pushNamed('/Calendar');

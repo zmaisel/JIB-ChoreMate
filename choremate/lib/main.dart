@@ -1,8 +1,11 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
-import 'package:choremate/screens/chores.dart';
+//import 'package:choremate/screens/chores.dart';
 import 'package:choremate/screens/home_widget.dart';
 import 'package:choremate/screens/login/login_page.dart';
 import 'package:choremate/screens/login/register.dart';
+import 'package:choremate/screens/todo.dart';
 //import 'AppFooter.dart';
 
 void main() {
@@ -13,7 +16,7 @@ final routes = {
   '/login': (BuildContext context) => new LoginPage(),
   '/home': (context) => Home(),
   '/register': (BuildContext context) => new RegisterPage(),
-  '/Chores': (context) => Chores(),
+  '/todo': (context) => todo(),
   '/': (BuildContext context) => new LoginPage(),
 };
 
