@@ -6,8 +6,6 @@ import 'package:choremate/utilities/utils.dart';
 
 var globalDate = "Pick Date";
 
-enum Repeating { daily, weekly, monthly }
-
 class new_task extends StatefulWidget {
   final String appBarTitle;
   final Task task;
@@ -54,7 +52,7 @@ class task_state extends State<new_task> {
   @override
   Widget build(BuildContext context) {
     taskController.text = task.task;
-    Repeating _time = Repeating.daily;
+    //Repeating _rpt = Repeating.daily;
 
     return Scaffold(
         key: scaffoldkey,
@@ -164,37 +162,42 @@ class task_state extends State<new_task> {
                 });
             },
           ),
-          RadioListTile<Repeating>(
+          ListTile(
             title: const Text('Daily'),
-            value: Repeating.monthly,
-            groupValue: _time,
-            onChanged: (Repeating value) {
-              setState(() {
-                _time = value;
-              });
-            },
+            leading: Radio(
+              value: Repeating.daily,
+              groupValue: task.rpt,
+              onChanged: (Repeating value) {
+                setState(() {
+                  task.rpt = value;
+                });
+              },
+            ),
           ),
-          RadioListTile<Repeating>(
+          ListTile(
             title: const Text('Weekly'),
-            value: Repeating.weekly,
-            groupValue: _time,
-            onChanged: (Repeating value) {
-              setState(() {
-                _time = value;
-              });
-            },
+            leading: Radio(
+              value: Repeating.weekly,
+              groupValue: task.rpt,
+              onChanged: (Repeating value) {
+                setState(() {
+                  task.rpt = value;
+                });
+              },
+            ),
           ),
-          RadioListTile<Repeating>(
+          ListTile(
             title: const Text('Monthly'),
-            value: Repeating.monthly,
-            groupValue: _time,
-            onChanged: (Repeating value) {
-              setState(() {
-                _time = value;
-              });
-            },
+            leading: Radio(
+              value: Repeating.monthly,
+              groupValue: task.rpt,
+              onChanged: (Repeating value) {
+                setState(() {
+                  task.rpt = value;
+                });
+              },
+            ),
           ), //TimeListTile
-
           Padding(
             padding: EdgeInsets.all(_minPadding),
             child: RaisedButton(

@@ -274,7 +274,8 @@ class todo_state extends State<todo> {
               tooltip: "Add Chore",
               child: Icon(Icons.add),
               onPressed: () {
-                navigateToTask(Task('', '', '', ''), "Add Chore", this);
+                navigateToTask(
+                    Task('', '', '', '', Repeating.daily), "Add Chore", this);
               }), //FloatingActionButton
         ));
   } //build()
