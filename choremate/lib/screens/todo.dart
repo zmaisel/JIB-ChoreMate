@@ -162,9 +162,9 @@ class todo_state extends State<todo> {
                                 return new GestureDetector(
                                     onTap: () {
                                       if (snapshot.data[position].status !=
-                                          "Task Completed")
+                                          "Chore Completed")
                                         navigateToTask(snapshot.data[position],
-                                            "Edit Task", this);
+                                            "Edit Chore", this);
                                     },
                                     child: Card(
                                       margin: EdgeInsets.all(1.0),
@@ -176,7 +176,7 @@ class todo_state extends State<todo> {
                                         status: snapshot.data[position].status,
                                         delete:
                                             snapshot.data[position].status ==
-                                                    "Task Completed"
+                                                    "Chore Completed"
                                                 ? IconButton(
                                                     icon: Icon(Icons.delete),
                                                     onPressed: null,
@@ -225,9 +225,9 @@ class todo_state extends State<todo> {
                                 return new GestureDetector(
                                     onTap: () {
                                       if (snapshot.data[position].status !=
-                                          "Task Completed")
+                                          "Chore Completed")
                                         navigateToTask(snapshot.data[position],
-                                            "Edit Task", this);
+                                            "Edit Chore", this);
                                     },
                                     child: Card(
                                       margin: EdgeInsets.all(1.0),
@@ -240,7 +240,7 @@ class todo_state extends State<todo> {
                                               snapshot.data[position].status,
                                           delete: snapshot
                                                       .data[position].status ==
-                                                  "Task Completed"
+                                                  "Chore Completed"
                                               ? IconButton(
                                                   icon: Icon(Icons.delete,
                                                       color: Theme.of(context)
@@ -271,10 +271,10 @@ class todo_state extends State<todo> {
             ), //Container
           ]),
           floatingActionButton: FloatingActionButton(
-              tooltip: "Add Task",
+              tooltip: "Add Chore",
               child: Icon(Icons.add),
               onPressed: () {
-                navigateToTask(Task('', '', '', ''), "Add Task", this);
+                navigateToTask(Task('', '', '', ''), "Add Chore", this);
               }), //FloatingActionButton
         ));
   } //build()

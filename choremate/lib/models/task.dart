@@ -10,6 +10,7 @@ class Task {
   String get date => _date;
   String get time => _time;
   String get status => _status;
+  //String get assignment => _assignment;
 
   set task(String newTask) {
     if (newTask.length <= 255) {
@@ -23,6 +24,8 @@ class Task {
 
   set status(String newStatus) => this._status = newStatus;
 
+  //set assignment(String newAssignment) => this._assignment = newAssignment;
+
   //Convert Task object into MAP object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -31,6 +34,7 @@ class Task {
     map['date'] = _date;
     map['time'] = _time;
     map['status'] = _status;
+    //map['assignment'] = _assignment;
     return map;
   }
 
@@ -41,5 +45,6 @@ class Task {
     this._date = map['date'];
     this._time = map['time'];
     this._status = map['status'];
+    //this._assignment = map['assignment'];
   }
 }

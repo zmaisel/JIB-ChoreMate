@@ -6,6 +6,8 @@ import 'package:choremate/utilities/utils.dart';
 
 var globalDate = "Pick Date";
 
+enum Repeating { daily, weekly, monthly }
+
 class new_task extends StatefulWidget {
   final String appBarTitle;
   final Task task;
@@ -52,6 +54,8 @@ class task_state extends State<new_task> {
   @override
   Widget build(BuildContext context) {
     taskController.text = task.task;
+    Repeating _time = Repeating.daily;
+
     return Scaffold(
         key: scaffoldkey,
         appBar: AppBar(
@@ -159,6 +163,36 @@ class task_state extends State<new_task> {
                   task.time = formattedTime;
                 });
             },
+          ),
+          RadioListTile<Repeating>(
+            title: const Text('Daily'),
+            value: Repeating.monthly,
+            groupValue: _time,
+            onChanged: (Repeating value) {
+              setState(() {
+                _time = value;
+              });
+            },
+          ),
+          RadioListTile<Repeating>(
+            title: const Text('Weekly'),
+            value: Repeating.weekly,
+            groupValue: _time,
+            onChanged: (Repeating value) {
+              setState(() {
+                _time = value;
+              });
+            },
+          ),
+          RadioListTile<Repeating>(
+            title: const Text('Monthly'),
+            value: Repeating.monthly,
+            groupValue: _time,
+            onChanged: (Repeating value) {
+              setState(() {
+                _time = value;
+              });
+            },
           ), //TimeListTile
 
           Padding(
@@ -216,7 +250,7 @@ class task_state extends State<new_task> {
   void markedDone() {}
 
   bool _isEditable() {
-    if (this.appBarTitle == "Add Task")
+    if (this.appBarTitle == "Add Chore")
       return false;
     else {
       return true;
@@ -225,6 +259,7 @@ class task_state extends State<new_task> {
 
   void updateTask() {
     task.task = taskController.text;
+    //task.assignment = assignmentController.text;
   }
 
   //InputConstraints
@@ -271,7 +306,7 @@ class task_state extends State<new_task> {
       Navigator.pop(context);
 
       if (result != 0) {
-        utility.showAlertDialog(context, 'Status', 'Task saved successfully.');
+        utility.showAlertDialog(context, 'Status', 'Chore saved successfully.');
       } else {
         utility.showAlertDialog(context, 'Status', 'Problem saving task.');
       }

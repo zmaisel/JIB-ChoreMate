@@ -14,6 +14,7 @@ class DatabaseHelper {
   String colDate = "date";
   String colTime = "time";
   String colStatus = "status";
+  //String colAssignment = "assignment";
 
   DatabaseHelper._createInstance();
 
