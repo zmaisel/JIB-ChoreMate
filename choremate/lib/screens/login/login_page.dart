@@ -46,23 +46,25 @@ class _LoginPageState extends State<LoginPage> implements LoginPageContract {
 
   @override
   Widget build(BuildContext context) {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     _ctx = context;
     var loginBtn = new RaisedButton(
       onPressed: _submit,
       child: new Text("Login"),
-      color: Colors.green,
+      color: green,
     );
     var registerBtn = new RaisedButton(
       padding: const EdgeInsets.all(10.0),
       onPressed: _register,
       child: new Text("Register"),
-      color: Colors.green,
+      color: green,
     );
     var loginForm = new Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         new Text(
-          "Sqflite App Login",
+          "ChoreMate",
           textScaleFactor: 2.0,
         ),
         new Form(
@@ -86,10 +88,7 @@ class _LoginPageState extends State<LoginPage> implements LoginPageContract {
             ],
           ),
         ),
-        new Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: loginBtn),
-
+        new Padding(padding: const EdgeInsets.all(10.0), child: loginBtn),
         registerBtn
       ],
     );
@@ -97,6 +96,7 @@ class _LoginPageState extends State<LoginPage> implements LoginPageContract {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Login Page"),
+        backgroundColor: blue,
       ),
       key: scaffoldKey,
       body: new Container(
@@ -119,18 +119,18 @@ class _LoginPageState extends State<LoginPage> implements LoginPageContract {
   @override
   void onLoginSuccess(User user) async {
     // TODO: implement onLoginSuccess
-    if(user.username == ""){
+    if (user.username == "") {
       _showSnackBar("Login not successful");
-    }else{
-    _showSnackBar(user.toString());
+    } else {
+      _showSnackBar(user.toString());
     }
     setState(() {
       _isLoading = false;
     });
-    if(user.flaglogged == "logged"){
+    if (user.flaglogged == "logged") {
       print("Logged");
       Navigator.of(context).pushNamed("/home");
-    }else{
+    } else {
       print("Not Logged");
     }
   }
