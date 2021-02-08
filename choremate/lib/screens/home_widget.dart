@@ -19,9 +19,13 @@ class _HomeState extends State<Home> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('ChoreMate'),
+        backgroundColor: blue,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index, // this will be set when a new tab is tapped
@@ -41,27 +45,27 @@ class _HomeState extends State<Home> {
               break;
           }
         },
-        fixedColor: Colors.lightGreen,
+        fixedColor: green,
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
             title: new Text('Home'),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.cleaning_services),
             title: new Text('Chores'),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             title: Text('Calendar'),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             title: Text('Notifcations'),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: blue,
           )
         ],
       ),

@@ -7,24 +7,23 @@ class RegisterPage extends StatefulWidget {
   _RegisterPageState createState() => new _RegisterPageState();
 }
 
-class _RegisterPageState  extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> {
   BuildContext _ctx;
   bool _isLoading = false;
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   String _name, _username, _password;
 
-
-
   @override
   Widget build(BuildContext context) {
     _ctx = context;
+    Color green = const Color(0xFFa8e1a6);
+    //Color blue = const Color(0xFF5ac9fc);
     var loginBtn = new RaisedButton(
       onPressed: _submit,
       child: new Text("Register"),
-      color: Colors.green,
+      color: green,
     );
-
 
     var loginForm = new Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,7 +83,7 @@ class _RegisterPageState  extends State<RegisterPage> {
     ));
   }
 
-  void _submit(){
+  void _submit() {
     final form = formKey.currentState;
 
     if (form.validate()) {
