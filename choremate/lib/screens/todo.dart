@@ -153,7 +153,7 @@ class todo_state extends State<todo> {
                           if (snapshot.data.length < 1) {
                             return Center(
                               child: Text(
-                                'No Tasks Added',
+                                'No Chores Added',
                                 style: TextStyle(fontSize: 20),
                               ),
                             );
@@ -216,7 +216,7 @@ class todo_state extends State<todo> {
                           if (snapshot.data.length < 1) {
                             return Center(
                               child: Text(
-                                'No Tasks Completed',
+                                'No Chores Completed',
                                 style: TextStyle(fontSize: 20),
                               ),
                             );
@@ -276,6 +276,7 @@ class todo_state extends State<todo> {
           floatingActionButton: FloatingActionButton(
               tooltip: "Add Chore",
               child: Icon(Icons.add),
+              backgroundColor: green,
               onPressed: () {
                 navigateToTask(
                     Task('', '', '', '', Repeating.daily), "Add Chore", this);
@@ -311,6 +312,6 @@ class todo_state extends State<todo> {
     await databaseHelper.deleteTask(id);
     updateListView();
     //Navigator.pop(context);
-    utility.showSnackBar(homeScaffold, 'Task Deleted Successfully');
+    utility.showSnackBar(homeScaffold, 'Chore Deleted Successfully');
   }
 }
