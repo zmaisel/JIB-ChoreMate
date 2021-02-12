@@ -28,8 +28,15 @@ class _RegisterPageState extends State<RegisterPage> {
     var loginForm = new Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
+        SizedBox(
+                  height: 250.0,
+                  child: Image.asset(
+                    "images/logo.png",
+                    fit: BoxFit.contain,
+                  ),
+                ),
         new Text(
-          "Sqflite App Login",
+          "Register an Account",
           textScaleFactor: 2.0,
         ),
         new Form(
@@ -40,21 +47,28 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.all(10.0),
                 child: new TextFormField(
                   onSaved: (val) => _name = val,
-                  decoration: new InputDecoration(labelText: "Name"),
+                  decoration: new InputDecoration(
+                  hintText: "Name",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
                 ),
               ),
               new Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: new TextFormField(
                   onSaved: (val) => _username = val,
-                  decoration: new InputDecoration(labelText: "Email"),
+                  decoration: new InputDecoration(
+                  hintText: "Email Address",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
                 ),
               ),
               new Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: new TextFormField(
+                  obscureText: true,
                   onSaved: (val) => _password = val,
-                  decoration: new InputDecoration(labelText: "Password"),
+                  decoration: new InputDecoration(
+                  hintText: "Password",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
                 ),
               )
             ],

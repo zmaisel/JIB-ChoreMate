@@ -90,8 +90,7 @@ class _LoginPageState extends State<LoginPage> implements LoginPageContract {
                   onSaved: (val) => _email = val,
                   decoration: new InputDecoration(
                   hintText: "Email Address",
-                  border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
                 ),
               ),
               new Padding(
