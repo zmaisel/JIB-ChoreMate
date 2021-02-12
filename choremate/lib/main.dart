@@ -1,241 +1,34 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
+//import 'package:choremate/screens/chores.dart';
+import 'package:choremate/screens/home_widget.dart';
+import 'package:choremate/screens/login/login_page.dart';
+import 'package:choremate/screens/login/register.dart';
+import 'package:choremate/screens/todo.dart';
+//import 'AppFooter.dart';
 
-void main() => runApp(LoginScreen());
+void main() {
+  runApp(MyApp());
+}
 
-class LoginScreen extends StatelessWidget {
+final routes = {
+  '/login': (BuildContext context) => new LoginPage(),
+  '/home': (context) => Home(),
+  '/register': (BuildContext context) => new RegisterPage(),
+  '/todo': (context) => todo(),
+  '/': (BuildContext context) => new LoginPage(),
+};
+
+class MyApp extends StatelessWidget {
+  static const String _title = 'ChoreMate';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter login UI',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Login'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-
-  @override
-  Widget build(BuildContext context) {
-    final emailField = TextField(
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Email Address",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final passwordField = TextField(
-      obscureText: true,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final loginButon = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
-        child: Text("Login",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
-
-    final createAccountButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateAccountPage()),
-          );
-        },
-        child: Text("Create an Account",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
-
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 155.0,
-                  child: Image.asset(
-                    "images/logo.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(height: 45.0),
-                emailField,
-                SizedBox(height: 25.0),
-                passwordField,
-                SizedBox(
-                  height: 35.0,
-                ),
-                loginButon,
-                SizedBox(
-                  height: 15.0,
-                ),
-                createAccountButton,
-                SizedBox(
-                  height: 15.0,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CreateAccountPage extends StatelessWidget {
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  @override
-  Widget build(BuildContext context) {
-    final emailField = TextField(
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Email Address",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final usernameField = TextField(
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Username",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final passwordField = TextField(
-      obscureText: true,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final confirmPasswordField = TextField(
-      obscureText: true,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Confirm Password",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final goBack = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text("Go Back",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
-
-    final createNewAccountButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
-        child: Text("Create New Account",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
-
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 155.0,
-                  child: Image.asset(
-                    "images/logo.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(height: 45.0),
-                emailField,
-                SizedBox(height: 25.0),
-                usernameField,
-                SizedBox(height: 25.0),
-                passwordField,
-                SizedBox(
-                  height: 25.0,
-                ),
-                confirmPasswordField,
-                SizedBox(
-                  height: 35.0,
-                ),
-                createNewAccountButton,
-                SizedBox(
-                  height: 15.0,
-                ),
-                goBack,
-                SizedBox(
-                  height: 15.0,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      title: _title,
+      theme: new ThemeData(primarySwatch: Colors.lightBlue),
+      routes: routes,
     );
   }
 }
