@@ -52,7 +52,7 @@ class task_state extends State<new_task> {
   @override
   Widget build(BuildContext context) {
     taskController.text = task.task;
-    //Repeating _rpt = Repeating.daily;
+    assignmentController.text = task.assignment;
 
     return Scaffold(
         key: scaffoldkey,
@@ -103,7 +103,8 @@ class task_state extends State<new_task> {
                 updateTask();
               },
             ), //TextField
-          ), //Padding
+          ),
+          // text field to assign chore to a user //Padding
           Padding(
               padding: EdgeInsets.all(_minPadding),
               child: TextField(
@@ -162,14 +163,26 @@ class task_state extends State<new_task> {
                 });
             },
           ),
+          // radio buttons for repeating feature of chore
+          Padding(
+              padding: EdgeInsets.only(right: 50.0),
+              child: _isEditable()
+                  ? Text(
+                      "Current Repetition: " + task.rpt,
+                      style: titleStyle,
+                    )
+                  : Container(
+                      height: 2,
+                    )),
           ListTile(
             title: const Text('Daily'),
             leading: Radio(
               value: Repeating.daily,
-              groupValue: task.rpt,
+              groupValue: task.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = value;
+                  task.rpt = "Daily";
+                  task.value = value;
                 });
               },
             ),
@@ -178,10 +191,11 @@ class task_state extends State<new_task> {
             title: const Text('Weekly'),
             leading: Radio(
               value: Repeating.weekly,
-              groupValue: task.rpt,
+              groupValue: task.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = value;
+                  task.rpt = "Weekly";
+                  task.value = value;
                 });
               },
             ),
@@ -190,10 +204,24 @@ class task_state extends State<new_task> {
             title: const Text('Monthly'),
             leading: Radio(
               value: Repeating.monthly,
-              groupValue: task.rpt,
+              groupValue: task.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = value;
+                  task.rpt = "Monthly";
+                  task.value = value;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            title: const Text('None'),
+            leading: Radio(
+              value: Repeating.none,
+              groupValue: task.value,
+              onChanged: (Repeating value) {
+                setState(() {
+                  task.rpt = "None";
+                  task.value = value;
                 });
               },
             ),
@@ -262,10 +290,10 @@ class task_state extends State<new_task> {
 
   void updateTask() {
     task.task = taskController.text;
-    //task.assignment = assignmentController.text;
+    task.assignment = assignmentController.text;
   }
 
-  //InputConstraints
+  //check to make sure all of the fields are selected
   bool _checkNotNull() {
     bool res;
     if (taskController.text.isEmpty) {
@@ -277,6 +305,10 @@ class task_state extends State<new_task> {
     } else if (task.time.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select the Time');
       res = false;
+    } else if (task.assignment.isEmpty) {
+      utility.showSnackBar(scaffoldkey, 'Please assign the chore to a user');
+    } else if (task.rpt.isEmpty) {
+      utility.showSnackBar(scaffoldkey, 'Please select a repeating option');
     } else {
       res = true;
     }
@@ -316,13 +348,14 @@ class task_state extends State<new_task> {
     }
   } //_save()
 
+  //method to delete a chore
   void _delete() {
     int result;
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Are you sure, you want to delete this task?"),
+            title: Text("Are you sure, you want to delete this chore?"),
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
@@ -331,7 +364,7 @@ class task_state extends State<new_task> {
                   Navigator.pop(context);
                   Navigator.pop(context);
                   utility.showSnackBar(
-                      scaffoldkey, 'Task Deleted Successfully.');
+                      scaffoldkey, 'Chore Deleted Successfully.');
                 },
                 child: Text("Yes"),
               ),

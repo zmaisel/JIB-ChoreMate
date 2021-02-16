@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:choremate/data/database-helper.dart';
+import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:choremate/models/user.dart';
 import 'package:choremate/screens/login/login_presenter.dart';
 
