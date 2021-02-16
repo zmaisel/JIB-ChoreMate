@@ -54,7 +54,8 @@ class DatabaseHelper {
     int res = await dbClient.delete("User");
     return res;
   }
-  Future<User> selectUser(User user) async{
+
+  Future<User> selectUser(User user) async {
     print("Select User");
     print(user.username);
     print(user.password);
@@ -62,12 +63,12 @@ class DatabaseHelper {
     List<Map> maps = await dbClient.query(tableUser,
         columns: [columnUserName, columnPassword],
         where: "$columnUserName = ? and $columnPassword = ?",
-        whereArgs: [user.username,user.password]);
+        whereArgs: [user.username, user.password]);
     print(maps);
     if (maps.length > 0) {
       print("User Exist !!!");
       return user;
-    }else {
+    } else {
       return null;
     }
   }
