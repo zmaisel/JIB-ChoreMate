@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:choremate/localizations.dart';
+//import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 
 class todo extends StatefulWidget {
@@ -278,8 +278,8 @@ class todo_state extends State<todo> {
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
-                navigateToTask(
-                    Task('', '', '', '', Repeating.daily), "Add Chore", this);
+                navigateToTask(Task('', '', '', '', '', Repeating.start, ''),
+                    "Add Chore", this);
               }), //FloatingActionButton
         ));
   } //build()
@@ -294,6 +294,7 @@ class todo_state extends State<todo> {
     }
   }
 
+  //update the screen with the lastest chore list
   void updateListView() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
 
@@ -308,6 +309,7 @@ class todo_state extends State<todo> {
     });
   } //updateListView()
 
+  //delete a chore from the database
   void delete(int id) async {
     await databaseHelper.deleteTask(id);
     updateListView();
