@@ -1,10 +1,9 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:choremate/screens/chores.dart';
 //import 'package:choremate/screens/todo.dart';
+import 'package:choremate/states/currentUser.dart';
+import 'package:provider/provider.dart';
+import 'package:choremate/screens/root/root.dart';
 
 void main() => runApp(Home());
 
@@ -27,6 +26,23 @@ class _HomeState extends State<Home> {
         title: Text('ChoreMate'),
         backgroundColor: blue,
       ),
+      body: Center(
+          child: RaisedButton(
+        child: Text("Sign Out"),
+        onPressed: () async {
+          CurrentUser _currentUser =
+              Provider.of<CurrentUser>(context, listen: false);
+          String _returnString = await _currentUser.signOut();
+          if (_returnString == "success") {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OurRoot(),
+                ),
+                (route) => false);
+          }
+        },
+      )),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index, // this will be set when a new tab is tapped
         onTap: (int index) {
