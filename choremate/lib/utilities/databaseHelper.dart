@@ -11,6 +11,7 @@ class DatabaseHelper {
   static Database _database; //Singleton Database
   String path;
 
+  //variables for chore table
   String taskTable = "task_table";
   String colId = "id";
   String colTask = "task";
@@ -19,6 +20,8 @@ class DatabaseHelper {
   String colStatus = "status";
   String colAssignment = "assignment";
   String colRpt = "rpt";
+
+  //variables for user table
   String userTable = "user_table";
   final String tableUser = "User";
   final String columnName = "name";
@@ -43,6 +46,7 @@ class DatabaseHelper {
 
   DatabaseHelper.internal();
 
+  //initialize the database
   Future<Database> initializeDatabase() async {
     //Get the directory path for both Android and iOS to store Database.
     Directory directory = await getApplicationDocumentsDirectory();
