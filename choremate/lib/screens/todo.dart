@@ -1,3 +1,4 @@
+import 'package:choremate/screens/root/root.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
@@ -108,7 +109,7 @@ class todo_state extends State<todo> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Home(),
+                      builder: (context) => OurRoot(),
                     ),
                   );
                   break;

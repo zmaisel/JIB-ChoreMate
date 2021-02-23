@@ -113,13 +113,15 @@ class LoggedIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserModel _userStream = Provider.of<UserModel>(context);
-    print("got here");
+    print("user not null" + _userStream.fullName);
     Widget retVal;
     if (_userStream != null) {
       if (_userStream.groupId != null) {
         retVal = StreamProvider<GroupModel>.value(
           value: DBStream().getCurrentGroup(_userStream.groupId),
-          child: InGroup(userModel: _userStream),
+          child: InGroup(
+            userModel: _userStream,
+          ),
         );
       } else {
         retVal = NoGroup();

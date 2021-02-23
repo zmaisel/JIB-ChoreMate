@@ -6,6 +6,7 @@ class UserModel {
   Timestamp accountCreated;
   String fullName;
   String groupId;
+  String groupName;
   String notifToken;
   //List<String> currentChores;
   //String nextChore;
@@ -16,6 +17,7 @@ class UserModel {
     this.accountCreated,
     this.fullName,
     this.groupId,
+    this.groupName,
     this.notifToken,
     //this.currentChores,
     //this.nextChore
@@ -27,6 +29,7 @@ class UserModel {
     accountCreated = doc.data['accountCreated'];
     fullName = doc.data['fullName'];
     groupId = doc.data['groupId'];
+    groupName = doc.data['groupName'];
     notifToken = doc.data['notifToken'];
     //nextChore = doc.data['nextChore'];
     //currentChores = List<String>.from(doc.data["currentChores"]);
