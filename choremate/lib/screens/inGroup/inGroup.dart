@@ -8,7 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../home_widget.dart';
+import '../todo.dart';
+
 class InGroup extends StatefulWidget {
+  final UserModel userModel;
+  final GroupModel groupModel;
+
+  InGroup({this.userModel, this.groupModel});
+
   @override
   InGroupState createState() => InGroupState();
 }
@@ -35,8 +43,10 @@ class InGroupState extends State<InGroup> {
 
   void _leaveGroup(BuildContext context) async {
     GroupModel group = Provider.of<GroupModel>(context, listen: false);
-    UserModel user = Provider.of<UserModel>(context, listen: false);
-    String _returnString = await DBFuture().leaveGroup(group.id, user);
+    //UserModel user = Provider.of<UserModel>(context, listen: false);
+    //print(group);
+    String _returnString =
+        await DBFuture().leaveGroup(group.id, widget.userModel);
     if (_returnString == "success") {
       Navigator.pushAndRemoveUntil(
         context,
@@ -67,9 +77,12 @@ class InGroupState extends State<InGroup> {
   //     ),
   //   );
   // }
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     return Scaffold(
       key: key,
       body: ListView(
@@ -128,6 +141,58 @@ class InGroupState extends State<InGroup> {
               color: Theme.of(context).canvasColor,
             ),
           ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index, // this will be set when a new tab is tapped
+        onTap: (int index) {
+          setState(() {
+            this.index = index;
+          });
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Home(),
+                ),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => todo(),
+                ),
+              );
+              break;
+            case 2:
+              Navigator.of(context).pushNamed('/Calendar');
+              break;
+          }
+        },
+        fixedColor: green,
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.cleaning_services),
+            title: new Text('Chores'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            title: Text('Calendar'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            title: Text('Notifcations'),
+            backgroundColor: blue,
+          )
         ],
       ),
     );
