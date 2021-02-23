@@ -13,9 +13,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:choremate/screens/home_widget.dart';
-import 'package:choremate/screens/home/home.dart';
 
-enum AuthStatus { notLoggedIn, loggedIn }
+enum AuthStatus { notLoggedIn, loggedIn, unknown, notInGroup, inGroup }
 
 class OurRoot extends StatefulWidget {
   @override
@@ -23,7 +22,7 @@ class OurRoot extends StatefulWidget {
 }
 
 class _OurRootState extends State<OurRoot> {
-  AuthStatus _authStatus = AuthStatus.notLoggedIn;
+  AuthStatus _authStatus = AuthStatus.unknown;
   String currentUid;
   //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -57,25 +56,27 @@ class _OurRootState extends State<OurRoot> {
     super.didChangeDependencies();
 
     //get the state, check current User, set AuthStatus based on state
-    // AuthModel _authStream = Provider.of<AuthModel>(context);
-    // if (_authStream != null) {
-    //   setState(() {
-    //     _authStatus = AuthStatus.loggedIn;
-    //     currentUid = _authStream.uid;
-    //   });
-    // } else {
-    //   setState(() {
-    //     _authStatus = AuthStatus.notLoggedIn;
-    //   });
-    // }
-    // _authStatus = AuthStatus.notLoggedIn;
-    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
-    String _returnString = await _currentUser.onStartUp();
-    if (_returnString == "success") {
+    AuthModel _authStream = Provider.of<AuthModel>(context);
+    //print("this does work");
+    if (_authStream != null) {
       setState(() {
         _authStatus = AuthStatus.loggedIn;
+        currentUid = _authStream.uid;
+      });
+    } else {
+      setState(() {
+        _authStatus = AuthStatus.notLoggedIn;
       });
     }
+    // _authStatus = AuthStatus.notLoggedIn;
+    // CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+    // String _returnString = await _currentUser.onStartUp();
+    // if (_returnString == "success") {
+    //   //if(_currentUser)
+    //   setState(() {
+    //     _authStatus = AuthStatus.loggedIn;
+    //   });
+    //}
   }
 
   @override
@@ -83,15 +84,28 @@ class _OurRootState extends State<OurRoot> {
     Widget retVal;
 
     switch (_authStatus) {
-      // case AuthStatus.unknown:
-      //   retVal = SplashScreen();
-      //   break;
+      case AuthStatus.unknown:
+        retVal = SplashScreen();
+        break;
       case AuthStatus.notLoggedIn:
         retVal = Login();
         break;
       case AuthStatus.loggedIn:
-        retVal = Home();
+        if (DBStream().getCurrentUser(currentUid) != null) {
+          print("not null!");
+        }
+        retVal = StreamProvider<UserModel>.value(
+          value: DBStream().getCurrentUser(currentUid),
+          child: LoggedIn(),
+        );
         break;
+      case AuthStatus.notInGroup:
+        retVal = NoGroup();
+        break;
+      case AuthStatus.inGroup:
+        retVal = InGroup();
+        break;
+
       default:
     }
     return retVal;
@@ -102,7 +116,6 @@ class LoggedIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserModel _userStream = Provider.of<UserModel>(context);
-    print(_userStream);
     Widget retVal;
     if (_userStream != null) {
       if (_userStream.groupId != null) {
@@ -114,8 +127,7 @@ class LoggedIn extends StatelessWidget {
         retVal = NoGroup();
       }
     } else {
-      retVal = NoGroup();
-      print("user stream null");
+      retVal = Home();
     }
 
     return retVal;

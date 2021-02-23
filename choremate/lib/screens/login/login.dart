@@ -12,6 +12,9 @@ class Login extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.all(20.0),
               children: <Widget>[
+                SizedBox(
+                  height: 100,
+                ),
                 // Padding(
                 //   padding: EdgeInsets.all(40.0),
                 //   child: Image.asset("assets/logo.png"),

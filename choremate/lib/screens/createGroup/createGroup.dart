@@ -1,27 +1,42 @@
+import 'package:choremate/models/userModel.dart';
+import 'package:choremate/screens/addMembers.dart';
+//import 'package:choremate/services/dbStream.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/screens/home_widget.dart';
+//import 'package:choremate/screens/home_widget.dart';
+import 'package:choremate/services/dbFuture.dart';
+import 'package:choremate/screens/root/root.dart';
 
 class CreateGroup extends StatefulWidget {
+  final UserModel userModel;
+
+  CreateGroup({this.userModel});
   @override
   _CreateGroupState createState() => _CreateGroupState();
 }
 
 class _CreateGroupState extends State<CreateGroup> {
-  void _goToHome(BuildContext context, String groupName) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Home(
-            //onGroupCreation: true,
-            //onError: false,
-            //groupName: groupName,
-            ),
-      ),
-    );
+  void _createGroup(BuildContext context, String groupName) async {
+    UserModel _currentUser = widget.userModel;
+    print(_currentUser);
+    String _returnString =
+        await DBFuture().createGroup(groupName, _currentUser);
+
+    if (_returnString == "success") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OurRoot(),
+          ),
+          (route) => false);
+    } else {
+      print("error adding members");
+    }
   }
 
   TextEditingController _groupNameController = TextEditingController();
+  TextEditingController _memberNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,11 +64,21 @@ class _CreateGroupState extends State<CreateGroup> {
                   SizedBox(
                     height: 20.0,
                   ),
+                  TextFormField(
+                    controller: _memberNameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.group),
+                      hintText: "Member Name",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
                   RaisedButton(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 80),
                       child: Text(
-                        "Add Book",
+                        "Create",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -62,7 +87,7 @@ class _CreateGroupState extends State<CreateGroup> {
                       ),
                     ),
                     onPressed: () =>
-                        _goToHome(context, _groupNameController.text),
+                        _createGroup(context, _groupNameController.text),
                   ),
                 ],
               ),
