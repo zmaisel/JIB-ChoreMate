@@ -3,11 +3,21 @@ import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/joinGroup/joinGroup.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
-import 'package:choremate/states/currentUser.dart';
+//import 'package:choremate/states/currentUser.dart';
+//import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NoGroup extends StatelessWidget {
+//import '../home_widget.dart';
+import '../todo.dart';
+
+class NoGroup extends StatefulWidget {
+  @override
+  NoGroupState createState() => NoGroupState();
+}
+
+class NoGroupState extends State<NoGroup> {
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     UserModel _currentUser = Provider.of<UserModel>(context);
@@ -46,6 +56,8 @@ class NoGroup extends StatelessWidget {
       }
     }
 
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -64,10 +76,6 @@ class NoGroup extends StatelessWidget {
           ),
           Spacer(
             flex: 1,
-          ),
-          Padding(
-            padding: EdgeInsets.all(80.0),
-            //child: Image.asset("assets/logo.png"),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -121,6 +129,58 @@ class NoGroup extends StatelessWidget {
                 ),
               ],
             ),
+          )
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index, // this will be set when a new tab is tapped
+        onTap: (int index) {
+          setState(() {
+            this.index = index;
+          });
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OurRoot(),
+                ),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => todo(),
+                ),
+              );
+              break;
+            case 2:
+              Navigator.of(context).pushNamed('/Calendar');
+              break;
+          }
+        },
+        fixedColor: green,
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.cleaning_services),
+            title: new Text('Chores'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            title: Text('Calendar'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            title: Text('Notifcations'),
+            backgroundColor: blue,
           )
         ],
       ),

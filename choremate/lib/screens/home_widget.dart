@@ -1,16 +1,25 @@
+import 'package:choremate/models/groupModel.dart';
+import 'package:choremate/models/userModel.dart';
+import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/noGroup/noGroup.dart';
+//import 'package:choremate/screens/root.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/states/currentUser.dart';
 import 'package:provider/provider.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/todo.dart';
 
+import 'inGroup/inGroup.dart';
+
 void main() => runApp(Home());
 
 class Home extends StatefulWidget {
+  //final UserModel userModel;
+  //final GroupModel groupModel;
+
+  //Home({this.userModel, this.groupModel});
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -18,15 +27,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  void _goToNoGroup(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NoGroup(),
-      ),
-    );
-  }
-
   void _signOut(BuildContext context) async {
     String _returnString = await Auth().signOut();
     if (_returnString == "success") {
@@ -38,6 +38,12 @@ class _HomeState extends State<Home> {
           (route) => false);
     }
   }
+
+  // String getHouseholdName(BuildContext context) {
+  //   GroupModel _group = Provider.of<GroupModel>(context);
+  //   String groupName = _group.name;
+  //   return groupName;
+  // }
 
   int index = 0;
 
@@ -67,7 +73,7 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: RaisedButton(
                     child: Text("Show More"),
-                    onPressed: () => Home(),
+                    onPressed: () => OurRoot(),
                   ),
                 )
               ],
@@ -102,7 +108,7 @@ class _HomeState extends State<Home> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Home(),
+                  builder: (context) => OurRoot(),
                 ),
               );
               break;

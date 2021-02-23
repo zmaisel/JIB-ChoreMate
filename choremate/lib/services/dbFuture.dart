@@ -37,6 +37,7 @@ class DBFuture {
 
       await _firestore.collection("users").document(user.uid).updateData({
         'groupId': _docRef.documentID,
+        'groupName': groupName.trim(),
       });
 
       //add a book

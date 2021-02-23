@@ -1,3 +1,4 @@
+import 'package:choremate/screens/root/root.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
@@ -9,6 +10,8 @@ import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
+
+import 'home_widget.dart';
 
 class todo extends StatefulWidget {
   //final bool darkThemeEnabled;
@@ -103,10 +106,20 @@ class todo_state extends State<todo> {
               });
               switch (index) {
                 case 0:
-                  Navigator.of(context).pushNamed('/home');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OurRoot(),
+                    ),
+                  );
                   break;
                 case 1:
-                  Navigator.of(context).pushNamed('/todo');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => todo(),
+                    ),
+                  );
                   break;
                 case 2:
                   Navigator.of(context).pushNamed('/Calendar');

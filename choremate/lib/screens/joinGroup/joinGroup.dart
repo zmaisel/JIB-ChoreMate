@@ -1,10 +1,10 @@
 import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/dbFuture.dart';
-import 'package:choremate/states/currentUser.dart';
+//import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 class JoinGroup extends StatefulWidget {
   final UserModel userModel;
