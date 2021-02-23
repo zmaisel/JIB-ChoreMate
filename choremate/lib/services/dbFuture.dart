@@ -1,14 +1,14 @@
 import 'package:choremate/models/task.dart';
 //import 'package:choremate/models/reviewModel.dart';
 import 'package:choremate/models/userModel.dart';
+import 'package:choremate/states/currentUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 class DBFuture {
   Firestore _firestore = Firestore.instance;
 
-  Future<String> createGroup(
-      String groupName, UserModel user, Task initialChore) async {
+  Future<String> createGroup(String groupName, UserModel user) async {
     String retVal = "error";
     List<String> members = List();
     List<String> tokens = List();
@@ -18,14 +18,13 @@ class DBFuture {
       tokens.add(user.notifToken);
       DocumentReference _docRef;
       if (user.notifToken != null) {
+        print("made it here!");
         _docRef = await _firestore.collection("groups").add({
           'name': groupName.trim(),
           'leader': user.uid,
           'members': members,
           'tokens': tokens,
           'groupCreated': Timestamp.now(),
-          'nextBookId': "waiting",
-          'indexPickingBook': 0
         });
       } else {
         _docRef = await _firestore.collection("groups").add({
@@ -33,8 +32,6 @@ class DBFuture {
           'leader': user.uid,
           'members': members,
           'groupCreated': Timestamp.now(),
-          'nextBookId': "waiting",
-          'indexPickingBook': 0
         });
       }
 
@@ -59,10 +56,10 @@ class DBFuture {
     List<String> tokens = List();
     try {
       members.add(userModel.uid);
-      tokens.add(userModel.notifToken);
+      //tokens.add(userModel.notifToken);
       await _firestore.collection("groups").document(groupId).updateData({
         'members': FieldValue.arrayUnion(members),
-        'tokens': FieldValue.arrayUnion(tokens),
+        //'tokens': FieldValue.arrayUnion(tokens),
       });
 
       await _firestore.collection("users").document(userModel.uid).updateData({
@@ -86,7 +83,7 @@ class DBFuture {
     List<String> tokens = List();
     try {
       members.add(userModel.uid);
-      tokens.add(userModel.notifToken);
+      //tokens.add(userModel.notifToken);
       await _firestore.collection("groups").document(groupId).updateData({
         'members': FieldValue.arrayRemove(members),
         'tokens': FieldValue.arrayRemove(tokens),

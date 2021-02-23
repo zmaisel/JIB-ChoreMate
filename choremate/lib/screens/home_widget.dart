@@ -1,9 +1,12 @@
+import 'package:choremate/screens/noGroup/noGroup.dart';
+import 'package:choremate/services/auth.dart';
+import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:choremate/screens/todo.dart';
 import 'package:choremate/states/currentUser.dart';
 import 'package:provider/provider.dart';
 import 'package:choremate/screens/root/root.dart';
+import 'package:choremate/screens/todo.dart';
 
 void main() => runApp(Home());
 
@@ -15,7 +18,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  void _goToNoGroup(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NoGroup(),
+      ),
+    );
+  }
+
+  void _signOut(BuildContext context) async {
+    String _returnString = await Auth().signOut();
+    if (_returnString == "success") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OurRoot(),
+          ),
+          (route) => false);
+    }
+  }
+
   int index = 0;
+
   @override
   Widget build(BuildContext context) {
     Color green = const Color(0xFFa8e1a6);
@@ -26,23 +51,46 @@ class _HomeState extends State<Home> {
         title: Text('ChoreMate'),
         backgroundColor: blue,
       ),
-      body: Center(
+      body: ListView(children: <Widget>[
+        SizedBox(
+          height: 40,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ShadowContainer(
+            child: Column(
+              children: <Widget>[
+                Text("Household A",
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: RaisedButton(
+                    child: Text("Show More"),
+                    onPressed: () => Home(),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: FloatingActionButton(
+            tooltip: "Add Household",
+            child: Icon(Icons.add),
+            backgroundColor: green,
+            onPressed: () => Home(),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(40.0),
           child: RaisedButton(
-        child: Text("Sign Out"),
-        onPressed: () async {
-          CurrentUser _currentUser =
-              Provider.of<CurrentUser>(context, listen: false);
-          String _returnString = await _currentUser.signOut();
-          if (_returnString == "success") {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OurRoot(),
-                ),
-                (route) => false);
-          }
-        },
-      )),
+            child: Text("Sign Out"),
+            onPressed: () => _signOut(context),
+          ),
+        ),
+      ]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index, // this will be set when a new tab is tapped
         onTap: (int index) {
@@ -51,10 +99,20 @@ class _HomeState extends State<Home> {
           });
           switch (index) {
             case 0:
-              Navigator.of(context).pushNamed('/home');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Home(),
+                ),
+              );
               break;
             case 1:
-              Navigator.of(context).pushNamed('/todo');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => todo(),
+                ),
+              );
               break;
             case 2:
               Navigator.of(context).pushNamed('/Calendar');

@@ -1,8 +1,6 @@
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/states/currentUser.dart';
-import 'package:provider/provider.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -15,35 +13,35 @@ class _SignUpFormState extends State<SignUpForm> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
-  // void _signUpUser(String email, String password, BuildContext context,
-  //     String fullName) async {
-  //   try {
-  //     String _returnString = await Auth().signUpUser(email, password, fullName);
-  //     if (_returnString == "success") {
-  //       Navigator.pop(context);
-  //     } else {
-  //       Scaffold.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text(_returnString),
-  //           duration: Duration(seconds: 2),
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-  void _signUpUser(String email, String password, BuildContext context) async {
-    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
-
+  void _signUpUser(String email, String password, BuildContext context,
+      String fullName) async {
     try {
-      if (await _currentUser.signUpUser(email, password)) {
+      String _returnString = await Auth().signUpUser(email, password, fullName);
+      if (_returnString == "success") {
         Navigator.pop(context);
+      } else {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_returnString),
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
     } catch (e) {
       print(e);
     }
   }
+  // void _signUpUser(String email, String password, BuildContext context) async {
+  //   CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+
+  //   try {
+  //     if (await _currentUser.signUpUser(email, password)) {
+  //       Navigator.pop(context);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +115,8 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             onPressed: () {
               if (_passwordController.text == _confirmPasswordController.text) {
-                _signUpUser(
-                    _emailController.text, _passwordController.text, context);
+                _signUpUser(_emailController.text, _passwordController.text,
+                    context, _fullNameController.text);
               } else {
                 Scaffold.of(context).showSnackBar(
                   SnackBar(

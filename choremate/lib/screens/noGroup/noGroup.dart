@@ -3,6 +3,7 @@ import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/joinGroup/joinGroup.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
+import 'package:choremate/states/currentUser.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,9 @@ class NoGroup extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CreateGroup(),
+          builder: (context) => CreateGroup(
+            userModel: _currentUser,
+          ),
         ),
       );
     }
@@ -64,12 +67,12 @@ class NoGroup extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.all(80.0),
-            child: Image.asset("assets/logo.png"),
+            //child: Image.asset("assets/logo.png"),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40.0),
             child: Text(
-              "Welcome to Book Club",
+              "Welcome to ChoreMate",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 40.0,
@@ -80,8 +83,8 @@ class NoGroup extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Text(
-              "Since you are not in a book club, you can select either " +
-                  "to join a club or create a club.",
+              "Since you are not in a household, you can select either " +
+                  "to join a household or create one.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20.0,

@@ -3,6 +3,7 @@ import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/services/dbFuture.dart';
+import 'package:choremate/states/currentUser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
