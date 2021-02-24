@@ -48,7 +48,7 @@ class InGroupState extends State<InGroup> {
     //UserModel user = Provider.of<UserModel>(context, listen: false);
     //print(group);
     String _returnString =
-        await DBFuture().leaveGroup(group.id, widget.userModel);
+        await DBFuture().leaveGroup(widget.userModel.groupId, widget.userModel);
     if (_returnString == "success") {
       Navigator.pushAndRemoveUntil(
         context,
@@ -161,19 +161,21 @@ class InGroupState extends State<InGroup> {
           });
           switch (index) {
             case 0:
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => OurRoot(),
                 ),
+                (route) => false,
               );
               break;
             case 1:
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => todo(),
                 ),
+                (route) => false,
               );
               break;
             case 2:

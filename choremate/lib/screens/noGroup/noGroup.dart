@@ -140,19 +140,21 @@ class NoGroupState extends State<NoGroup> {
           });
           switch (index) {
             case 0:
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => OurRoot(),
                 ),
+                (route) => false,
               );
               break;
             case 1:
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => todo(),
                 ),
+                (route) => false,
               );
               break;
             case 2:
