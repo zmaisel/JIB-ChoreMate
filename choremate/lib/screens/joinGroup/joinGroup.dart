@@ -1,8 +1,10 @@
 import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/dbFuture.dart';
+//import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
+//import 'package:provider/provider.dart';
 
 class JoinGroup extends StatefulWidget {
   final UserModel userModel;
@@ -15,6 +17,7 @@ class JoinGroup extends StatefulWidget {
 class _JoinGroupState extends State<JoinGroup> {
   void _joinGroup(BuildContext context, String groupId) async {
     UserModel _currentUser = widget.userModel;
+    //CurrentUser _currentUser = Provider.of<CurrentUser>(context);
     String _returnString = await DBFuture().joinGroup(groupId, _currentUser);
     if (_returnString == "success") {
       Navigator.pushAndRemoveUntil(

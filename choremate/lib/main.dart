@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => CurrentUser(),
+    return StreamProvider<AuthModel>.value(
+        value: Auth().user,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           home: OurRoot(),

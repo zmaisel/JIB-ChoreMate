@@ -1,4 +1,3 @@
-import 'package:choremate/screens/home/home.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/signUp/signup.dart';
 import 'package:choremate/services/auth.dart';
@@ -28,13 +27,13 @@ class _LoginFormState extends State<LoginForm> {
     String password,
     BuildContext context,
   }) async {
-    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+    //CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
     try {
       String _returnString;
 
       switch (type) {
         case LoginType.email:
-          _returnString = await _currentUser.loginUser(email, password);
+          _returnString = await Auth().loginUserWithEmail(email, password);
           break;
         // case LoginType.google:
         //   _returnString = await Auth().loginUserWithGoogle();
@@ -64,8 +63,10 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Widget _googleButton() {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     return OutlineButton(
-      splashColor: Colors.grey,
+      splashColor: green,
       onPressed: () {
         _loginUser(type: LoginType.google, context: context);
       },
@@ -78,14 +79,14 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            //Image(image: AssetImage("assets/google_logo.png"), height: 25.0),
+            //Image(image: AssetImage("assets/logo.png"), height: 25.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
+                  color: green,
                 ),
               ),
             )
@@ -97,15 +98,18 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     return ShadowContainer(
       child: Column(
         children: <Widget>[
+          Image(image: AssetImage("assets/logo.png"), height: 50.0),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
             child: Text(
               "Log In",
               style: TextStyle(
-                color: Theme.of(context).secondaryHeaderColor,
+                color: blue,
                 fontSize: 25.0,
                 fontWeight: FontWeight.bold,
               ),
@@ -114,8 +118,9 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             controller: _emailController,
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.alternate_email),
+              prefixIcon: Icon(Icons.alternate_email, color: blue),
               hintText: "Email",
+              hoverColor: green,
             ),
           ),
           SizedBox(
@@ -124,7 +129,7 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             controller: _passwordController,
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.lock_outline),
+              prefixIcon: Icon(Icons.lock_outline, color: blue),
               hintText: "Password",
             ),
             obscureText: true,
@@ -133,6 +138,7 @@ class _LoginFormState extends State<LoginForm> {
             height: 20.0,
           ),
           RaisedButton(
+            color: blue,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 100),
               child: Text(
