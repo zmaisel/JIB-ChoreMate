@@ -1,22 +1,25 @@
-enum Repeating { daily, weekly, monthly }
+enum Repeating { daily, weekly, monthly, none, start }
 
 class Task {
   int _id;
-  String _task, _date, _time, _status;
-  Repeating _rpt;
+  String _task, _date, _time, _status, _rpt, _assignment;
+  Repeating _value;
+  //User _user;
 
-  Task(this._task, this._date, this._time, this._status, this._rpt);
-  Task.withId(
-      this._id, this._task, this._date, this._time, this._status, this._rpt);
+  Task(this._task, this._date, this._time, this._status, this._rpt, this._value,
+      this._assignment);
+  Task.withId(this._id, this._task, this._date, this._time, this._status,
+      this._rpt, this._value, this._assignment);
 
   int get id => _id;
   String get task => _task;
   String get date => _date;
   String get time => _time;
   String get status => _status;
-  Repeating get rpt => _rpt;
-
-  //String get assignment => _assignment;
+  String get rpt => _rpt;
+  Repeating get value => _value;
+  String get assignment => _assignment;
+  //User get user => _user;
 
   set task(String newTask) {
     if (newTask.length <= 255) {
@@ -30,9 +33,12 @@ class Task {
 
   set status(String newStatus) => this._status = newStatus;
 
-  //set assignment(String newAssignment) => this._assignment = newAssignment;
+  //set user(User newUser) => this._user = newUser;
+  set assignment(String newAssignment) => this._assignment = newAssignment;
 
-  set rpt(Repeating newRpt) => this._rpt = newRpt;
+  set rpt(String newRpt) => this._rpt = newRpt;
+
+  set value(Repeating newValue) => this._value = newValue;
 
   //Convert Task object into MAP object
   Map<String, dynamic> toMap() {
@@ -42,7 +48,9 @@ class Task {
     map['date'] = _date;
     map['time'] = _time;
     map['status'] = _status;
-    //map['assignment'] = _assignment;
+    map['rpt'] = _rpt;
+    //map['user'] = _user;
+    map['assignment'] = _assignment;
     return map;
   }
 
@@ -53,6 +61,8 @@ class Task {
     this._date = map['date'];
     this._time = map['time'];
     this._status = map['status'];
-    //this._assignment = map['assignment'];
+    this._rpt = map['rpt'];
+    //this._user = map['user'];
+    this._assignment = map['assignment'];
   }
 }

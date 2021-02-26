@@ -1,1 +1,6 @@
-# JIB-ChoreMate - Test Anudeep
+# JIB-ChoreMate
+<<<<<<< HEAD
+#testing
+=======
+# cecilia testing
+>>>>>>> origin/Cecilia
