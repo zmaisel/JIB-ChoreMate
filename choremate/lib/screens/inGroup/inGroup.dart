@@ -4,12 +4,14 @@ import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/services/dbFuture.dart';
+import 'package:choremate/services/dbStream.dart';
 //import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../home_widget.dart';
 import '../todo.dart';
 
@@ -68,6 +70,69 @@ class InGroupState extends State<InGroup> {
     ));
   }
 
+  Future<List<String>> _listGroupMembers() async {
+    
+    // var futureValue = DBFuture().listGroupMembers();
+    // DocumentSnapshot currentGroup;
+    // futureValue.then((DocumentSnapshot result){
+    //   setState(() {
+    //     currentGroup = result;
+    //    });
+    //   });
+    // var listMembers = currentGroup.data; 
+    // var listf = listMembers.values.take(20);
+    // List members = listf.toList(growable: true);
+    // print(members.toString());
+    //   if(members.length > 4){
+    //     members.removeAt(0);
+    //     members.removeAt(0);
+    //     members.removeAt(0);
+    //     members.removeAt(0);
+    //     List membersList = members.elementAt(0);
+    //     for(int i = 0; i < membersList.length; i++){
+    //       String memberID = membersList.elementAt(i).toString();
+          
+    //       print(currentGroup.reference.documentID + "  :::::  " + memberID  + "  :::::  ");
+    //     }
+    //   }
+    Firestore _firestore = Firestore.instance;
+    QuerySnapshot querySnapshot = await _firestore.collection("groups").getDocuments();
+    var list = querySnapshot.documents; 
+    List<String> memberIDs = new List<String>();
+
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser _firebaseUser = await _auth.currentUser();
+    print(_firebaseUser.uid);
+    bool cont = true;
+    for(int j = 0; j < list.length; j++) {
+      memberIDs.clear();
+      var listMembers = list[j].data; 
+      var listf = listMembers.values.take(20);
+      List members = listf.toList(growable: true);
+      if(members.length > 4){
+        members.removeAt(0);
+        members.removeAt(0);
+        members.removeAt(0);
+        members.removeAt(0);
+        List membersList = members.elementAt(0);
+        for(int i = 0; i < membersList.length; i++){
+          String memberID = membersList.elementAt(i).toString();
+          memberIDs.add(memberID);
+          print(list[j].reference.documentID + "  :::::  " + memberID  + "  :::::  ");
+          if(_firebaseUser.uid == memberID){
+            cont = false;
+          }
+        }
+        if(!cont){
+          break;
+        }
+      }
+    }
+    print(memberIDs.toString());
+    return memberIDs;
+
+  }
+
   // void _goToBookHistory() {
   //   GroupModel group = Provider.of<GroupModel>(context, listen: false);
   //   Navigator.push(
@@ -106,7 +171,78 @@ class InGroupState extends State<InGroup> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: RaisedButton(
                     child: Text("Show More"),
-                    onPressed: () => OurRoot(),
+                    onPressed: () async {
+          
+                      List<String> groupMembers = await _listGroupMembers();
+                      // groupMembersList.then((List<String> result){
+                      //                                 setState(() {
+                      //                                   groupMembers = result;
+                      //                                 });
+                      //                               });
+                      Firestore _firestore = Firestore.instance;
+                      FirebaseAuth _auth = FirebaseAuth.instance;
+                      FirebaseUser _firebaseUser = await _auth.currentUser();
+                      List<String> memberNames = new List<String>();
+                      for(int j = 0; j < groupMembers.length; j++) {
+                        QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
+                        List<DocumentSnapshot> list = querySnapshot.documents;
+                        print("ATTENTION " + list[0].data.toString());
+                        bool cont = true;
+                        for(int i = 0; i < list.length; i++) {
+                          var listMembers = list[i].data; 
+                          var listf = listMembers.values.take(20);
+                          List members = listf.toList(growable: true);
+                          //print("hehe " + members.toString());
+                          
+                            members.removeAt(0);
+                            members.removeAt(0);
+                            members.removeAt(0);
+                            members.removeAt(0);
+                            String membersName = members.elementAt(0);
+                            memberNames.add(membersName);
+                            print("list " + membersName);
+                          
+                        }
+                        //groupMembers[j] = document.data[2].toString();
+                      }
+                    for(int j = 0; j < groupMembers.length; j++) {
+                      DocumentSnapshot member = await _firestore.collection("users").document(groupMembers[j]).get();
+                      groupMembers[j] = member.data["fullName"];
+                    }
+                    //DocumentSnapshot member = await _firestore.collection("users").document(groupMembers[0]).get();
+                    
+                    print("hi");
+                    print(groupMembers.toString());
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                elevation: 16,
+                child: Container(
+                  height: 400.0,
+                  width: 360.0,
+                  child: ListView.builder(
+        padding: const EdgeInsets.all(8),
+        itemCount: groupMembers.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            height: 50,
+            margin: EdgeInsets.all(2),
+            child: Center(
+              child: Text('${groupMembers[index]}',
+                style: TextStyle(fontSize: 18),
+              )
+            ),
+          );
+        }
+      )
+                  
+                ),
+              );
+            },
+          );
+        },
                   ),
                 )
               ],
