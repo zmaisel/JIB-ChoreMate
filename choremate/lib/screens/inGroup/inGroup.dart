@@ -183,6 +183,7 @@ class InGroupState extends State<InGroup> {
                       FirebaseAuth _auth = FirebaseAuth.instance;
                       FirebaseUser _firebaseUser = await _auth.currentUser();
                       List<String> memberNames = new List<String>();
+                      memberNames.clear();
                       for(int j = 0; j < groupMembers.length; j++) {
                         QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
                         List<DocumentSnapshot> list = querySnapshot.documents;
