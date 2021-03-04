@@ -8,10 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:choremate/models/authModel.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/states/currentUser.dart';
+import 'package:choremate/screens/calendar.dart';
 //import 'AppFooter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(MyApp()))
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
 final routes = {

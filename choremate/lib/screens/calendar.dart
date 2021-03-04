@@ -12,6 +12,7 @@ import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
+import 'package:choremate/screens/todo.dart';
 
 import 'home_widget.dart';
 
@@ -34,11 +35,12 @@ class calendar extends StatefulWidget {
   }
 }
 
-class calendar_state extends State<calendar> {
+class calendar_state extends State<calendar> with TickerProviderStateMixin {
   Map<DateTime, List> _events;
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
+  int index = 2;
 
   @override
   void initState() {
@@ -136,26 +138,87 @@ class calendar_state extends State<calendar> {
 
   @override
   Widget build(BuildContext context) {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("ChoreMate"),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
-          _buildTableCalendar(),
-          // _buildTableCalendarWithBuilders(),
-          const SizedBox(height: 8.0),
-          _buildButtons(),
-          const SizedBox(height: 8.0),
-          Expanded(child: _buildEventList()),
-        ],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index, // this will be set when a new tab is tapped
+            onTap: (int index) {
+              setState(() {
+                this.index = index;
+              });
+              switch (index) {
+                case 0:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OurRoot(),
+                    ),
+                    (route) => false,
+                  );
+                  break;
+                case 1:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => todo(),
+                    ),
+                    (route) => false,
+                  );
+                  break;
+                case 2:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => calendar(),
+                    ),
+                    (route) => false,
+                  );
+                  break;
+              }
+            },
+            fixedColor: green,
+            items: [
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.home),
+                title: new Text('Home'),
+                backgroundColor: blue,
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.cleaning_services),
+                title: new Text('Chores'),
+                backgroundColor: blue,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today),
+                title: Text('Calendar'),
+                backgroundColor: blue,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                title: Text('Notifcations'),
+                backgroundColor: blue,
+              )
+            ],
+          ),
+          body: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              // Switch out 2 lines below to play with TableCalendar's settings
+              //-----------------------
+              _buildTableCalendar(),
+              // _buildTableCalendarWithBuilders(),
+              const SizedBox(height: 8.0),
+              _buildButtons(),
+              const SizedBox(height: 8.0),
+              Expanded(child: _buildEventList()),
+            ],
       ),
     );
   }
-
   // Simple TableCalendar configuration (using Styles)
   Widget _buildTableCalendar() {
     return TableCalendar(
@@ -377,3 +440,4 @@ class calendar_state extends State<calendar> {
           .toList(),
     );
   }
+}
