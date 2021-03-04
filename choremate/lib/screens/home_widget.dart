@@ -121,7 +121,13 @@ class _HomeState extends State<Home> {
               );
               break;
             case 2:
-              Navigator.of(context).pushNamed('/Calendar');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => calendar(),
+                ),
+                (route) => false,
+              );
               break;
           }
         },

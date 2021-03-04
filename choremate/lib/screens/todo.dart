@@ -124,7 +124,13 @@ class todo_state extends State<todo> {
                   );
                   break;
                 case 2:
-                  Navigator.of(context).pushNamed('/Calendar');
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => calendar(),
+                    ),
+                    (route) => false,
+                  );
                   break;
               }
             },

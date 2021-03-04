@@ -315,7 +315,13 @@ class InGroupState extends State<InGroup> {
               );
               break;
             case 2:
-              Navigator.of(context).pushNamed('/Calendar');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => calendar(),
+                ),
+                (route) => false,
+              );
               break;
           }
         },

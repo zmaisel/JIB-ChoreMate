@@ -11,17 +11,17 @@ import 'package:choremate/states/currentUser.dart';
 //import 'AppFooter.dart';
 
 void main() {
-  runApp(MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()))
 }
 
 final routes = {
   '/todo': (context) => todo(),
   '/home': (context) => Home(),
+  '/calendar': (context) => calendar(),
 };
 //   '/login': (BuildContext context) => new LoginPage(),
 
 //   '/register': (BuildContext context) => new RegisterPage(),
-
 //   '/': (BuildContext context) => new LoginPage(),
 
 class MyApp extends StatelessWidget {
