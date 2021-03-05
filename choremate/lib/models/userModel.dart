@@ -8,7 +8,7 @@ class UserModel {
   String groupId;
   String groupName;
   String notifToken;
-  //List<String> currentChores;
+  List<String> currentChores;
   //String nextChore;
 
   UserModel({
@@ -19,7 +19,7 @@ class UserModel {
     this.groupId,
     this.groupName,
     this.notifToken,
-    //this.currentChores,
+    this.currentChores,
     //this.nextChore
   });
 
@@ -32,6 +32,6 @@ class UserModel {
     groupName = doc.data['groupName'];
     notifToken = doc.data['notifToken'];
     //nextChore = doc.data['nextChore'];
-    //currentChores = List<String>.from(doc.data["currentChores"]);
+    currentChores = List<String>.from(doc.data["currentChores"]);
   }
 }

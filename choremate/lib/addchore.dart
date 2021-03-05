@@ -49,7 +49,7 @@ class _AddChoreState extends State<AddChore> {
               child: TextField(
                 controller: assignment,
                 autocorrect: true,
-                decoration: InputDecoration(hintText: 'Enter name here'),
+                decoration: InputDecoration(hintText: 'Enter UserId here'),
               )),
           Container(
             width: 280,
