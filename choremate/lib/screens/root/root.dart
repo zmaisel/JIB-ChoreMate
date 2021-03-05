@@ -113,7 +113,7 @@ class LoggedIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserModel _userStream = Provider.of<UserModel>(context);
-    print("user not null" + _userStream.fullName);
+    //print("user not null" + _userStream.fullName);
     Widget retVal;
     if (_userStream != null) {
       if (_userStream.groupId != null) {
