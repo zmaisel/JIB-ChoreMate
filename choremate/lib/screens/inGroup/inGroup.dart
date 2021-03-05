@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../home_widget.dart';
 import '../todo.dart';
+import 'package:choremate/screens/calendar.dart';
 
 class InGroup extends StatefulWidget {
   final UserModel userModel;
@@ -316,7 +317,13 @@ class InGroupState extends State<InGroup> {
               );
               break;
             case 2:
-              Navigator.of(context).pushNamed('/Calendar');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => calendar(),
+                ),
+                (route) => false,
+              );
               break;
           }
         },

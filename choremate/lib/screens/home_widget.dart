@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/todo.dart';
+import 'package:choremate/screens/calendar.dart';
 
 import 'inGroup/inGroup.dart';
 
@@ -121,7 +122,13 @@ class _HomeState extends State<Home> {
               );
               break;
             case 2:
-              Navigator.of(context).pushNamed('/Calendar');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => calendar(),
+                ),
+                (route) => false,
+              );
               break;
           }
         },

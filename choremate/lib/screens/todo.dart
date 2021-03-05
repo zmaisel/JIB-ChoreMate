@@ -10,6 +10,7 @@ import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
+import 'package:choremate/screens/calendar.dart';
 
 import 'home_widget.dart';
 
@@ -124,7 +125,13 @@ class todo_state extends State<todo> {
                   );
                   break;
                 case 2:
-                  Navigator.of(context).pushNamed('/Calendar');
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => calendar(),
+                    ),
+                    (route) => false,
+                  );
                   break;
               }
             },
