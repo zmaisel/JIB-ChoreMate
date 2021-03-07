@@ -4,6 +4,10 @@ import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:choremate/services/dbFuture.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 var globalDate = "Pick Date";
 
@@ -292,6 +296,7 @@ class task_state extends State<new_task> {
   void updateTask() {
     task.task = taskController.text;
     task.assignment = assignmentController.text;
+    //DBFuture().updateChore(task.choreID, currentGroup, task.task, task.date, task.time, task.status, task.rpt, task.assignment);
   }
 
   //check to make sure all of the fields are selected
@@ -317,6 +322,8 @@ class task_state extends State<new_task> {
   }
 
   //Save data
+  String currentGroup = "";
+  String choreID = "";
   void _save() async {
     int result;
     if (_isEditable()) {
@@ -327,14 +334,41 @@ class task_state extends State<new_task> {
     }
     //task.task = taskController.text;
     //task.date = formattedDate;
+    Firestore _firestore = Firestore.instance;
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser currentUser = await _auth.currentUser();
+
+    _firestore.collection("users").document(currentUser.uid).get().then((value) {
+      this.currentGroup = value.data["groupId"].toString();
+      print("currentgroupid " + value.data["groupId"]);
+    });
 
     if (_checkNotNull() == true) {
       if (task.id != null) {
         //Update Operation
+        print("updated");
+        
+        print(task.choreID);
         result = await helper.updateTask(task);
+        List<Task> listChores = await helper.getTaskList();
+        listChores.forEach((element) {print(element.task); });
+        //String value = await DBFuture().updateChore(this.choreID, currentGroup, task.task, task.date, task.time, task.status, task.rpt, task.assignment);
+
+        print("updated2");
+        
       } else {
         //Insert Operation
         result = await helper.insertTask(task);
+
+        task.choreID = await DBFuture().addChore(this.currentGroup, task.task, task.date, task.time, task.status, task.rpt, task.assignment);
+        print("choreID: " + task.choreID);
+        task.id = 1;
+        // _firestore.collection("groups").document(currentGroup).updateData({
+        //   "chores": "yes"
+        // }).then((value) => {
+        //   _firestore.collection("groups").document(currentGroup).collection("Chores")
+        // });
+        
       }
 
       todoState.updateListView();

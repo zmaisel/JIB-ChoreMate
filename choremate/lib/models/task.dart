@@ -2,6 +2,7 @@ enum Repeating { daily, weekly, monthly, none, start }
 
 class Task {
   int _id;
+  String _choreID;
   String _task, _date, _time, _status, _rpt, _assignment;
   Repeating _value;
   //User _user;
@@ -13,6 +14,7 @@ class Task {
 
   int get id => _id;
   String get task => _task;
+  String get choreID => _choreID;
   String get date => _date;
   String get time => _time;
   String get status => _status;
@@ -26,6 +28,9 @@ class Task {
       this._task = newTask;
     }
   }
+  set id(int id) => this._id = id;
+
+  set choreID(String choreID) => this._choreID = choreID;
 
   set date(String newDate) => this._date = newDate;
 

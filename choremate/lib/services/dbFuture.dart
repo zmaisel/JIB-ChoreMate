@@ -4,9 +4,23 @@ import 'package:choremate/models/userModel.dart';
 import 'package:choremate/states/currentUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DBFuture {
   Firestore _firestore = Firestore.instance;
+
+  // Future<String> getCurrentGroup() async {
+  //   FirebaseAuth _auth = FirebaseAuth.instance;
+  //   FirebaseUser currentUser = await _auth.currentUser();
+  //   print(currentUser.uid);
+
+  //   String currentGroupID;
+  //   _firestore.collection("users").document(currentUser.uid).get().then((value) {
+  //     currentGroupID = value.data["groupId"];
+  //     print(value.data["groupId"]);
+  //   });
+  //   return currentGroupID;
+  // }
 
   Future<String> createGroup(String groupName, UserModel user) async {
     String retVal = "error";
@@ -26,6 +40,7 @@ class DBFuture {
           'tokens': tokens,
           'groupCreated': Timestamp.now(),
         });
+        
       } else {
         _docRef = await _firestore.collection("groups").add({
           'name': groupName.trim(),
@@ -100,26 +115,65 @@ class DBFuture {
     return retVal;
   }
 
-  Future<String> addChore(String groupId, Task chore) async {
+  Future<String> addChore(String groupId, String name, String date, String time, String status, String rpt, String assignment) async {
     String retVal = "error";
 
     try {
       DocumentReference _docRef = await _firestore
           .collection("groups")
           .document(groupId)
-          .collection("books")
+          .collection("chores")
           .add({
-        'name': chore.task.trim(),
-        'author': chore.assignment.trim(),
-        'length': chore.time,
-        'dateCompleted': chore.date,
+        'choreID': "",
+        'name': name,
+        'date': date,
+        'time': time,
+        'status': status,
+        'repeating': rpt,
+        'assignment': assignment
       });
+      DocumentSnapshot docSnap = await _docRef.get();
+      
+      print(docSnap.reference.documentID.toString());
+      String choreID = docSnap.reference.documentID.toString();
+      // //add current book to group schedule
+      // await _firestore.collection("groups").document(groupId).updateData({
+      //   "currentBookId": _docRef.documentID,
+      //   "currentBookDue": chore.time,
+      // });
 
-      //add current book to group schedule
-      await _firestore.collection("groups").document(groupId).updateData({
-        "currentBookId": _docRef.documentID,
-        "currentBookDue": chore.time,
-      });
+      retVal = "success";
+      updateChore(choreID, groupId, name, date, time, status, rpt, assignment);
+      return choreID;
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
+  Future<String> updateChore(String choreID, String groupId, String name, String date, String time, String status, String rpt, String assignment) async {
+    String retVal = "error";
+
+    try {
+    await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("chores")
+          .document(choreID).updateData({
+            'choreID': choreID,
+            'name': name,
+            'date': date,
+            'time': time,
+            'status': status,
+            'repeating': rpt,
+            'assignment': assignment
+          });
+
+      // //add current book to group schedule
+      // await _firestore.collection("groups").document(groupId).updateData({
+      //   "currentBookId": _docRef.documentID,
+      //   "currentBookDue": chore.time,
+      // });
 
       retVal = "success";
     } catch (e) {
