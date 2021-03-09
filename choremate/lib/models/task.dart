@@ -8,9 +8,9 @@ class Task {
   //User _user;
 
   Task(this._task, this._date, this._time, this._status, this._rpt, this._value,
-      this._assignment);
+      this._uid);
   Task.withId(this._id, this._task, this._date, this._time, this._status,
-      this._rpt, this._value, this._assignment);
+      this._rpt, this._value, this._uid);
 
   int get id => _id;
   String get task => _task;
@@ -20,7 +20,7 @@ class Task {
   String get status => _status;
   String get rpt => _rpt;
   Repeating get value => _value;
-  String get assignment => _assignment;
+  String get uid => _uid;
   //User get user => _user;
 
   set task(String newTask) {
@@ -39,7 +39,7 @@ class Task {
   set status(String newStatus) => this._status = newStatus;
 
   //set user(User newUser) => this._user = newUser;
-  set assignment(String newAssignment) => this._assignment = newAssignment;
+  set uid(String newUid) => this._uid = newUid;
 
   set rpt(String newRpt) => this._rpt = newRpt;
 
@@ -55,7 +55,7 @@ class Task {
     map['status'] = _status;
     map['rpt'] = _rpt;
     //map['user'] = _user;
-    map['assignment'] = _assignment;
+    map['uid'] = _uid;
     return map;
   }
 
@@ -68,6 +68,6 @@ class Task {
     this._status = map['status'];
     this._rpt = map['rpt'];
     //this._user = map['user'];
-    this._assignment = map['assignment'];
+    this._uid = map['uid'];
   }
 }

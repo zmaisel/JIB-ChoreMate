@@ -1,6 +1,7 @@
+import 'package:choremate/models/choreModel.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/utilities/databaseHelper.dart';
-import 'package:choremate/models/task.dart';
+//import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
@@ -8,28 +9,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 var globalDate = "Pick Date";
 
 class new_task extends StatefulWidget {
   final String appBarTitle;
-  final Task task;
+  final ChoreModel chore;
   todo_state todoState;
-  new_task(this.task, this.appBarTitle, this.todoState);
+  new_task(this.chore, this.appBarTitle, this.todoState);
   bool _isEditable = false;
 
   @override
   State<StatefulWidget> createState() {
-    return task_state(this.task, this.appBarTitle, this.todoState);
+    return task_state(this.chore, this.appBarTitle, this.todoState);
   }
 }
 
 class task_state extends State<new_task> {
   todo_state todoState;
   String appBarTitle;
-  Task task;
+  ChoreModel chore;
   List<Widget> icons;
-  task_state(this.task, this.appBarTitle, this.todoState);
+  task_state(this.chore, this.appBarTitle, this.todoState);
 
   bool marked = false;
 
@@ -43,10 +43,11 @@ class task_state extends State<new_task> {
 
   final scaffoldkey = GlobalKey<ScaffoldState>();
 
-  DatabaseHelper helper = DatabaseHelper();
+  //DatabaseHelper helper = DatabaseHelper();
   Utils utility = new Utils();
   TextEditingController taskController = new TextEditingController();
   TextEditingController assignmentController = new TextEditingController();
+  TextEditingController groupController = new TextEditingController();
 
   var formattedDate = "Pick Date";
   var formattedTime = "Select Time";
@@ -56,8 +57,9 @@ class task_state extends State<new_task> {
 
   @override
   Widget build(BuildContext context) {
-    taskController.text = task.task;
-    assignmentController.text = task.assignment;
+    taskController.text = chore.name;
+    assignmentController.text = chore.uid;
+    groupController.text = chore.groupId;
 
     return Scaffold(
         key: scaffoldkey,
@@ -131,32 +133,53 @@ class task_state extends State<new_task> {
                   updateTask();
                 },
               )),
+          Padding(
+              padding: EdgeInsets.all(_minPadding),
+              child: TextField(
+                controller: groupController,
+                decoration: InputDecoration(
+                    labelText: "Household",
+                    hintText: "Household ID",
+                    labelStyle: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "Lato",
+                      fontWeight: FontWeight.bold,
+                    ),
+                    hintStyle: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "Lato",
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey)), //Input Decoration
+                onChanged: (value) {
+                  updateTask();
+                },
+              )),
           ListTile(
-            title: task.date.isEmpty
+            title: chore.dueDate.isEmpty
                 ? Text(
                     "Pick Date",
                     style: titleStyle,
                   )
-                : Text(task.date),
+                : Text(chore.dueDate),
             subtitle: Text(""),
             trailing: Icon(Icons.calendar_today),
             onTap: () async {
-              var pickedDate = await utility.selectDate(context, task.date);
+              var pickedDate = await utility.selectDate(context, chore.dueDate);
               if (pickedDate != null && pickedDate.isNotEmpty)
                 setState(() {
                   this.formattedDate = pickedDate.toString();
-                  task.date = formattedDate;
+                  chore.dueDate = formattedDate;
                 });
             },
           ), //DateListTile
 
           ListTile(
-            title: task.time.isEmpty
+            title: chore.dueTime.isEmpty
                 ? Text(
                     "Select Time",
                     style: titleStyle,
                   )
-                : Text(task.time),
+                : Text(chore.dueTime),
             subtitle: Text(""),
             trailing: Icon(Icons.access_time),
             onTap: () async {
@@ -164,7 +187,7 @@ class task_state extends State<new_task> {
               if (pickedTime != null && pickedTime.isNotEmpty)
                 setState(() {
                   formattedTime = pickedTime;
-                  task.time = formattedTime;
+                  chore.dueTime = formattedTime;
                 });
             },
           ),
@@ -173,7 +196,7 @@ class task_state extends State<new_task> {
               padding: EdgeInsets.only(right: 50.0),
               child: _isEditable()
                   ? Text(
-                      "Current Repetition: " + task.rpt,
+                      "Current Repetition: " + chore.repeating,
                       style: titleStyle,
                     )
                   : Container(
@@ -183,11 +206,11 @@ class task_state extends State<new_task> {
             title: const Text('Daily'),
             leading: Radio(
               value: Repeating.daily,
-              groupValue: task.value,
+              groupValue: chore.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = "Daily";
-                  task.value = value;
+                  chore.repeating = "Daily";
+                  chore.value = value;
                 });
               },
             ),
@@ -196,11 +219,11 @@ class task_state extends State<new_task> {
             title: const Text('Weekly'),
             leading: Radio(
               value: Repeating.weekly,
-              groupValue: task.value,
+              groupValue: chore.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = "Weekly";
-                  task.value = value;
+                  chore.repeating = "Weekly";
+                  chore.value = value;
                 });
               },
             ),
@@ -209,11 +232,11 @@ class task_state extends State<new_task> {
             title: const Text('Monthly'),
             leading: Radio(
               value: Repeating.monthly,
-              groupValue: task.value,
+              groupValue: chore.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = "Monthly";
-                  task.value = value;
+                  chore.repeating = "Monthly";
+                  chore.value = value;
                 });
               },
             ),
@@ -222,11 +245,11 @@ class task_state extends State<new_task> {
             title: const Text('None'),
             leading: Radio(
               value: Repeating.none,
-              groupValue: task.value,
+              groupValue: chore.value,
               onChanged: (Repeating value) {
                 setState(() {
-                  task.rpt = "None";
-                  task.value = value;
+                  chore.repeating = "None";
+                  chore.value = value;
                 });
               },
             ),
@@ -305,15 +328,15 @@ class task_state extends State<new_task> {
     if (taskController.text.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Task cannot be empty');
       res = false;
-    } else if (task.date.isEmpty) {
+    } else if (chore.dueDate.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select the Date');
       res = false;
-    } else if (task.time.isEmpty) {
+    } else if (chore.dueTime.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select the Time');
       res = false;
-    } else if (task.assignment.isEmpty) {
+    } else if (chore.uid.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please assign the chore to a user');
-    } else if (task.rpt.isEmpty) {
+    } else if (chore.repeating.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select a repeating option');
     } else {
       res = true;
@@ -325,12 +348,12 @@ class task_state extends State<new_task> {
   String currentGroup = "";
   String choreID = "";
   void _save() async {
-    int result;
+    String result;
     if (_isEditable()) {
       if (marked) {
-        task.status = "Task Completed";
+        chore.status = "Task Completed";
       } else
-        task.status = "";
+        chore.status = "";
     }
     //task.task = taskController.text;
     //task.date = formattedDate;
@@ -344,7 +367,7 @@ class task_state extends State<new_task> {
     });
 
     if (_checkNotNull() == true) {
-      if (task.id != null) {
+      if (chore.choreId != null) {
         //Update Operation
         print("updated");
         
@@ -369,13 +392,15 @@ class task_state extends State<new_task> {
         //   _firestore.collection("groups").document(currentGroup).collection("Chores")
         // });
         
+
+        //result = await DBFuture.updateTask(task);
       }
 
       todoState.updateListView();
 
       Navigator.pop(context);
 
-      if (result != 0) {
+      if (result == "success") {
         utility.showAlertDialog(context, 'Status', 'Chore saved successfully.');
       } else {
         utility.showAlertDialog(context, 'Status', 'Problem saving task.');
@@ -383,9 +408,8 @@ class task_state extends State<new_task> {
     }
   } //_save()
 
-  //method to delete a chore
   void _delete() {
-    int result;
+    String result;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -394,7 +418,7 @@ class task_state extends State<new_task> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
-                  await helper.deleteTask(task.id);
+                  await DBFuture().deleteChore(chore.groupId, chore);
                   todoState.updateListView();
                   Navigator.pop(context);
                   Navigator.pop(context);

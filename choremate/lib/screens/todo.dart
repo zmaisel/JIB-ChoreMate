@@ -1,4 +1,6 @@
+import 'package:choremate/models/choreModel.dart';
 import 'package:choremate/screens/root/root.dart';
+import 'package:choremate/services/dbFuture.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
@@ -27,7 +29,7 @@ class todo extends StatefulWidget {
 class todo_state extends State<todo> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
-  List<Task> taskList;
+  List<ChoreModel> choreList;
   int count = 0;
   int index = 1;
   String _themeType;
@@ -52,8 +54,9 @@ class todo_state extends State<todo> {
   Widget build(BuildContext context) {
     Color green = const Color(0xFFa8e1a6);
     Color blue = const Color(0xFF5ac9fc);
-    if (taskList == null) {
-      taskList = List<Task>();
+    if (choreList == null) {
+      choreList = List<ChoreModel>();
+      // need the current group here
       updateListView();
     }
 
@@ -300,32 +303,32 @@ class todo_state extends State<todo> {
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
-                navigateToTask(Task('', '', '', '', '', Repeating.start, ''),
-                    "Add Chore", this);
+                navigateToTask(ChoreModel(), "Add Chore", this);
               }), //FloatingActionButton
         ));
   } //build()
 
-  void navigateToTask(Task task, String title, todo_state obj) async {
+  void navigateToTask(ChoreModel chore, String title, todo_state obj) async {
     bool result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => new_task(task, title, obj)),
+      MaterialPageRoute(builder: (context) => new_task(chore, title, obj)),
     );
     if (result == true) {
-      updateListView();
+      updateListView(chore.groupId);
     }
   }
 
   //update the screen with the lastest chore list
-  void updateListView() {
+  void updateListView(String groupId) {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
 
     dbFuture.then((database) {
-      Future<List<Task>> taskListFuture = databaseHelper.getTaskList();
-      taskListFuture.then((taskList) {
+      Future<List<ChoreModel>> choreListFuture =
+          DBFuture().getChoreList(groupId);
+      choreListFuture.then((choreList) {
         setState(() {
-          this.taskList = taskList;
-          this.count = taskList.length;
+          this.choreList = choreList;
+          this.count = choreList.length;
         });
       });
     });
