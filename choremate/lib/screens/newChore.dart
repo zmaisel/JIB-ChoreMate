@@ -1,9 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:choremate/services/dbFuture.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 var globalDate = "Pick Date";
 
@@ -292,6 +297,7 @@ class task_state extends State<new_task> {
   void updateTask() {
     task.task = taskController.text;
     task.assignment = assignmentController.text;
+    //DBFuture().updateChore(task.choreID, currentGroup, task.task, task.date, task.time, task.status, task.rpt, task.assignment);
   }
 
   //check to make sure all of the fields are selected
@@ -316,25 +322,52 @@ class task_state extends State<new_task> {
     return res;
   }
 
-  //Save data
+  String currentGroup = "";
+  String choreID = "";
   void _save() async {
     int result;
+    String retString;
+
+    //task.task = taskController.text;
+    //task.date = formattedDate;
+    Firestore _firestore = Firestore.instance;
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser currentUser = await _auth.currentUser();
+
+    _firestore
+        .collection("users")
+        .document(currentUser.uid)
+        .get()
+        .then((value) {
+      this.currentGroup = value.data["groupId"].toString();
+      print("currentgroupid " + value.data["groupId"]);
+    });
     if (_isEditable()) {
       if (marked) {
         task.status = "Task Completed";
+        DBFuture().updateChore(task.choreID, currentGroup, task.task, task.date,
+            task.time, task.status, task.rpt, task.assignment);
       } else
         task.status = "";
     }
-    //task.task = taskController.text;
-    //task.date = formattedDate;
-
     if (_checkNotNull() == true) {
       if (task.id != null) {
-        //Update Operation
-        result = await helper.updateTask(task);
+        retString = await DBFuture().updateChore(
+            task.choreID,
+            this.currentGroup,
+            task.task,
+            task.date,
+            task.time,
+            task.status,
+            task.rpt,
+            task.assignment);
       } else {
-        //Insert Operation
-        result = await helper.insertTask(task);
+        task.choreID = await DBFuture().addChore(this.currentGroup, task.task,
+            task.date, task.time, task.status, task.rpt, task.assignment);
+        //print("choreID: " + task.choreID);
+        var rng = new Random();
+        task.id = rng.nextInt(100);
+        print(task.id);
       }
 
       todoState.updateListView();
@@ -360,7 +393,7 @@ class task_state extends State<new_task> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
-                  await helper.deleteTask(task.id);
+                  await DBFuture().deleteChore(currentGroup, task.choreID);
                   todoState.updateListView();
                   Navigator.pop(context);
                   Navigator.pop(context);

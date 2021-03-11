@@ -4,9 +4,27 @@ import 'package:choremate/models/userModel.dart';
 import 'package:choremate/states/currentUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DBFuture {
   Firestore _firestore = Firestore.instance;
+
+  Future<String> getCurrentGroup() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseUser currentUser = await _auth.currentUser();
+    print(currentUser.uid);
+
+    String currentGroupID;
+    _firestore
+        .collection("users")
+        .document(currentUser.uid)
+        .get()
+        .then((value) {
+      currentGroupID = value.data["groupId"];
+      print(value.data["groupId"]);
+    });
+    return currentGroupID;
+  }
 
   Future<String> createGroup(String groupName, UserModel user) async {
     String retVal = "error";
@@ -100,26 +118,74 @@ class DBFuture {
     return retVal;
   }
 
-  Future<String> addChore(String groupId, Task chore) async {
+  Future<String> addChore(String groupId, String name, String date, String time,
+      String status, String rpt, String assignment) async {
     String retVal = "error";
 
     try {
       DocumentReference _docRef = await _firestore
           .collection("groups")
           .document(groupId)
-          .collection("books")
+          .collection("chores")
           .add({
-        'name': chore.task.trim(),
-        'author': chore.assignment.trim(),
-        'length': chore.time,
-        'dateCompleted': chore.date,
+        'choreID': "",
+        'task': name,
+        'date': date,
+        'time': time,
+        'status': status,
+        'rpt': rpt,
+        'assignment': assignment
+      });
+      DocumentSnapshot docSnap = await _docRef.get();
+
+      print(docSnap.reference.documentID.toString());
+      String choreID = docSnap.reference.documentID.toString();
+      // //add current book to group schedule
+      // await _firestore.collection("groups").document(groupId).updateData({
+      //   "currentBookId": _docRef.documentID,
+      //   "currentBookDue": chore.time,
+      // });
+
+      retVal = "success";
+      updateChore(choreID, groupId, name, date, time, status, rpt, assignment);
+      return choreID;
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
+  Future<String> updateChore(
+      String choreID,
+      String groupId,
+      String name,
+      String date,
+      String time,
+      String status,
+      String rpt,
+      String assignment) async {
+    String retVal = "error";
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("chores")
+          .document(choreID)
+          .updateData({
+        'choreID': choreID,
+        'task': name,
+        'date': date,
+        'time': time,
+        'status': status,
+        'rpt': rpt,
+        'assignment': assignment
       });
 
-      //add current book to group schedule
-      await _firestore.collection("groups").document(groupId).updateData({
-        "currentBookId": _docRef.documentID,
-        "currentBookDue": chore.time,
-      });
+      // //add current book to group schedule
+      // await _firestore.collection("groups").document(groupId).updateData({
+      //   "currentBookId": _docRef.documentID,
+      //   "currentBookDue": chore.time,
+      // });
 
       retVal = "success";
     } catch (e) {
@@ -127,6 +193,147 @@ class DBFuture {
     }
 
     return retVal;
+  }
+
+  Future<String> completeChore(
+      String choreID,
+      String groupId,
+      String name,
+      String date,
+      String time,
+      String status,
+      String rpt,
+      String assignment) async {
+    String retVal = "error";
+    //first add the chore to to completed collection
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("completedChores")
+          .add({
+        'choreID': choreID,
+        'task': name,
+        'date': date,
+        'time': time,
+        'status': status,
+        'rpt': rpt,
+        'assignment': assignment
+      });
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+    //delete the chore from the incomplete collection
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("chores")
+          .document(choreID)
+          .delete();
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+
+    return retVal;
+  }
+
+  Future<String> deleteChore(String groupID, String choreID) async {
+    String retVal = "error";
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupID)
+          .collection("chores")
+          .document(choreID)
+          .delete();
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+
+    return retVal;
+  }
+
+  Future<List<Map<String, dynamic>>> getChoreMapList(String groupID) async {
+    final QuerySnapshot result = await _firestore
+        .collection("groups")
+        .document(groupID)
+        .collection("chores")
+        .getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    var choreMapList = List<Map<String, dynamic>>();
+    for (int i = 0; i < documents.length; i++) {
+      choreMapList.add(documents.elementAt(i).data);
+    }
+
+    return choreMapList;
+  }
+
+  //get the chore list to display
+  Future<List<Task>> getChoreList(String groupID) async {
+    List<Task> choreList = List<Task>();
+
+    try {
+      //THIS DOESN'T WORK FOR SOME REASON
+      var choreMapList =
+          await getChoreMapList(groupID); //Get Map List from database
+      int count = choreMapList.length;
+
+      //For loop to create Task List from a Map List
+      for (int i = 0; i < count; i++) {
+        choreList.add(Task.fromMapObject(choreMapList[i]));
+        //choreList[i].
+      }
+    } catch (e) {
+      print("Here is what isn't working.");
+      print(e);
+    }
+
+    return choreList;
+  }
+
+  Future<List<Map<String, dynamic>>> getCompletedChoreMapList(
+      String groupID) async {
+    var choreMapList = List<Map<String, dynamic>>();
+    try {
+      final QuerySnapshot result = await _firestore
+          .collection("groups")
+          .document(groupID)
+          .collection("completedChores")
+          .getDocuments();
+      final List<DocumentSnapshot> documents = result.documents;
+      for (int i = 0; i < documents.length; i++) {
+        choreMapList.add(documents.elementAt(i).data);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return choreMapList;
+  }
+
+  //get the chore list to display
+  Future<List<Task>> getCompletedChoreList(String groupID) async {
+    List<Task> choreList = List<Task>();
+
+    try {
+      //THIS DOESN'T WORK FOR SOME REASON
+      var choreMapList =
+          await getCompletedChoreMapList(groupID); //Get Map List from database
+      int count = choreMapList.length;
+
+      //For loop to create Task List from a Map List
+      for (int i = 0; i < count; i++) {
+        choreList.add(Task.fromMapObject(choreMapList[i]));
+      }
+    } catch (e) {
+      print("Here is what isn't working.");
+      print(e);
+    }
+
+    return choreList;
   }
 
   Future<String> addNextBook(String groupId, Task chore) async {

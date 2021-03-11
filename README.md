@@ -1,4 +1,4 @@
-# JIB-ChoreMate
+# JIB-ChoreMate - add chore to firebase working
 <<<<<<< HEAD
 #testing
 =======

@@ -333,7 +333,7 @@ class InGroupState extends State<InGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => todo(),
+                  builder: (context) => todo(userModel: widget.userModel),
                 ),
                 (route) => false,
               );
@@ -342,7 +342,7 @@ class InGroupState extends State<InGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => calendar(),
+                  builder: (context) => calendar(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

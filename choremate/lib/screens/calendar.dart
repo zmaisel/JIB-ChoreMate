@@ -1,3 +1,4 @@
+import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -28,6 +29,8 @@ final Map<DateTime, List> _holidays = {
 class calendar extends StatefulWidget {
   //final bool darkThemeEnabled;
   //calendar(this.darkThemeEnabled);
+  final UserModel userModel;
+  calendar({this.userModel});
 
   @override
   State<StatefulWidget> createState() {
@@ -146,79 +149,80 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index, // this will be set when a new tab is tapped
-            onTap: (int index) {
-              setState(() {
-                this.index = index;
-              });
-              switch (index) {
-                case 0:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OurRoot(),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-                case 1:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => todo(),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-                case 2:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => calendar(),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-              }
-            },
-            fixedColor: green,
-            items: [
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-                backgroundColor: blue,
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.cleaning_services),
-                title: new Text('Chores'),
-                backgroundColor: blue,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today),
-                title: Text('Calendar'),
-                backgroundColor: blue,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.notifications),
-                title: Text('Notifcations'),
-                backgroundColor: blue,
-              )
-            ],
+        onTap: (int index) {
+          setState(() {
+            this.index = index;
+          });
+          switch (index) {
+            case 0:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OurRoot(),
+                ),
+                (route) => false,
+              );
+              break;
+            case 1:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => todo(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
+            case 2:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => calendar(),
+                ),
+                (route) => false,
+              );
+              break;
+          }
+        },
+        fixedColor: green,
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+            backgroundColor: blue,
           ),
-          body: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              // Switch out 2 lines below to play with TableCalendar's settings
-              //-----------------------
-              _buildTableCalendar(),
-              // _buildTableCalendarWithBuilders(),
-              const SizedBox(height: 8.0),
-              _buildButtons(),
-              const SizedBox(height: 8.0),
-              Expanded(child: _buildEventList()),
-            ],
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.cleaning_services),
+            title: new Text('Chores'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            title: Text('Calendar'),
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            title: Text('Notifcations'),
+            backgroundColor: blue,
+          )
+        ],
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          // Switch out 2 lines below to play with TableCalendar's settings
+          //-----------------------
+          _buildTableCalendar(),
+          // _buildTableCalendarWithBuilders(),
+          const SizedBox(height: 8.0),
+          _buildButtons(),
+          const SizedBox(height: 8.0),
+          Expanded(child: _buildEventList()),
+        ],
       ),
     );
   }
+
   // Simple TableCalendar configuration (using Styles)
   Widget _buildTableCalendar() {
     return TableCalendar(
