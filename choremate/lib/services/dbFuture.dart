@@ -81,8 +81,19 @@ class DBFuture {
         //'tokens': FieldValue.arrayUnion(tokens),
       });
 
+      String groupName;
+      await _firestore
+          .collection("groups")
+          .document(groupId)
+          .get()
+          .then((value) {
+        groupName = value.data["name"].toString();
+      });
+      print(groupName);
+
       await _firestore.collection("users").document(userModel.uid).updateData({
         'groupId': groupId.trim(),
+        'groupName': groupName.trim(),
       });
 
       retVal = "success";
@@ -334,142 +345,6 @@ class DBFuture {
     }
 
     return choreList;
-  }
-
-  Future<String> addNextBook(String groupId, Task chore) async {
-    String retVal = "error";
-
-    try {
-      DocumentReference _docRef = await _firestore
-          .collection("groups")
-          .document(groupId)
-          .collection("books")
-          .add({
-        'name': chore.task.trim(),
-        'author': chore.assignment.trim(),
-        'length': chore.time,
-        'dateCompleted': chore.date,
-      });
-
-      //add current book to group schedule
-      await _firestore.collection("groups").document(groupId).updateData({
-        "nextBookId": _docRef.documentID,
-        "nextBookDue": chore.date,
-      });
-
-      //adding a notification document
-      DocumentSnapshot doc =
-          await _firestore.collection("groups").document(groupId).get();
-      createNotifications(List<String>.from(doc.data["tokens"]) ?? [],
-          chore.task, chore.assignment);
-
-      retVal = "success";
-    } catch (e) {
-      print(e);
-    }
-
-    return retVal;
-  }
-
-  // Future<String> addCurrentBook(String groupId, BookModel book) async {
-  //   String retVal = "error";
-
-  //   try {
-  //     DocumentReference _docRef = await _firestore
-  //         .collection("groups")
-  //         .document(groupId)
-  //         .collection("books")
-  //         .add({
-  //       'name': book.name.trim(),
-  //       'author': book.author.trim(),
-  //       'length': book.length,
-  //       'dateCompleted': book.dateCompleted,
-  //     });
-
-  //     //add current book to group schedule
-  //     await _firestore.collection("groups").document(groupId).updateData({
-  //       "currentBookId": _docRef.documentID,
-  //       "currentBookDue": book.dateCompleted,
-  //     });
-
-  //     //adding a notification document
-  //     DocumentSnapshot doc =
-  //         await _firestore.collection("groups").document(groupId).get();
-  //     createNotifications(
-  //         List<String>.from(doc.data["tokens"]) ?? [], book.name, book.author);
-
-  //     retVal = "success";
-  //   } catch (e) {
-  //     print(e);
-  //   }
-
-  //   return retVal;
-  // }
-
-  // Future<BookModel> getCurrentBook(String groupId, String bookId) async {
-  //   BookModel retVal;
-
-  //   try {
-  //     DocumentSnapshot _docSnapshot = await _firestore
-  //         .collection("groups")
-  //         .document(groupId)
-  //         .collection("books")
-  //         .document(bookId)
-  //         .get();
-  //     retVal = BookModel.fromDocumentSnapshot(doc: _docSnapshot);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-
-  //   return retVal;
-  // }
-
-  Future<String> finishedBook(
-    String groupId,
-    String bookId,
-    String uid,
-    int rating,
-    String review,
-  ) async {
-    String retVal = "error";
-    try {
-      await _firestore
-          .collection("groups")
-          .document(groupId)
-          .collection("books")
-          .document(bookId)
-          .collection("reviews")
-          .document(uid)
-          .setData({
-        'rating': rating,
-        'review': review,
-      });
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
-  }
-
-  Future<bool> isUserDoneWithBook(
-      String groupId, String bookId, String uid) async {
-    bool retVal = false;
-    try {
-      DocumentSnapshot _docSnapshot = await _firestore
-          .collection("groups")
-          .document(groupId)
-          .collection("books")
-          .document(bookId)
-          .collection("reviews")
-          .document(uid)
-          .get();
-
-      if (_docSnapshot.exists) {
-        retVal = true;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
   }
 
   Future<String> createUser(UserModel user) async {
