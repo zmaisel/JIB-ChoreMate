@@ -2,17 +2,19 @@ enum Repeating { daily, weekly, monthly, none, start }
 
 class Task {
   int _id;
+  String _choreID;
   String _task, _date, _time, _status, _rpt, _assignment;
   Repeating _value;
   //User _user;
 
   Task(this._task, this._date, this._time, this._status, this._rpt, this._value,
-      this._assignment);
+      this._assignment, this._choreID);
   Task.withId(this._id, this._task, this._date, this._time, this._status,
-      this._rpt, this._value, this._assignment);
+      this._rpt, this._value, this._assignment, this._choreID);
 
   int get id => _id;
   String get task => _task;
+  String get choreID => _choreID;
   String get date => _date;
   String get time => _time;
   String get status => _status;
@@ -26,6 +28,10 @@ class Task {
       this._task = newTask;
     }
   }
+
+  set id(int id) => this._id = id;
+
+  set choreID(String choreID) => this._choreID = choreID;
 
   set date(String newDate) => this._date = newDate;
 
@@ -51,6 +57,8 @@ class Task {
     map['rpt'] = _rpt;
     //map['user'] = _user;
     map['assignment'] = _assignment;
+    map['choreID'] = _choreID;
+    map['value'] = _value;
     return map;
   }
 
@@ -64,5 +72,7 @@ class Task {
     this._rpt = map['rpt'];
     //this._user = map['user'];
     this._assignment = map['assignment'];
+    this._choreID = map['choreID'];
+    this._value = map['value'];
   }
 }
