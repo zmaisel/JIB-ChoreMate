@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "444817061990",
+    "project_id": "choremate-3ccdd",
+    "storage_bucket": "choremate-3ccdd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444817061990:android:303ec940960a7646fc55a7",
+        "android_client_info": {
+          "package_name": "com.example.choremate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "444817061990-2eq44jjk2cs3crdffamljmste3kjuaup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXNCRPTU7o9s9mm5rbb6wqZcZ870sgfPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "444817061990-2eq44jjk2cs3crdffamljmste3kjuaup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "444817061990-7ct41obhc96p5jaq1v0gen7v1hkiksm3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.juniordesign.choremate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
