@@ -1,4 +1,7 @@
+import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/root/root.dart';
+import 'package:choremate/services/dbFuture.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
@@ -10,12 +13,15 @@ import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
+import 'package:choremate/screens/calendar.dart';
 
 import 'home_widget.dart';
 
 class todo extends StatefulWidget {
   //final bool darkThemeEnabled;
   //todo(this.darkThemeEnabled);
+  final UserModel userModel;
+  todo({this.userModel});
 
   @override
   State<StatefulWidget> createState() {
@@ -118,13 +124,20 @@ class todo_state extends State<todo> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => todo(),
+                      builder: (context) => todo(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
                   break;
                 case 2:
-                  Navigator.of(context).pushNamed('/Calendar');
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          calendar(userModel: widget.userModel),
+                    ),
+                    (route) => false,
+                  );
                   break;
               }
             },
@@ -160,7 +173,7 @@ class todo_state extends State<todo> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height,
                     child: FutureBuilder(
-                      future: databaseHelper.getInCompleteTaskList(),
+                      future: DBFuture().getChoreList(widget.userModel.groupId),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.data == null) {
                           return Text("Loading");
@@ -223,7 +236,8 @@ class todo_state extends State<todo> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height,
                     child: FutureBuilder(
-                      future: databaseHelper.getCompleteTaskList(),
+                      future: DBFuture()
+                          .getCompletedChoreList(widget.userModel.groupId),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.data == null) {
                           return Text("Loading");
@@ -266,7 +280,8 @@ class todo_state extends State<todo> {
                                                       size: 28),
                                                   onPressed: () {
                                                     delete(snapshot
-                                                        .data[position].id);
+                                                        .data[position]
+                                                        .choreID);
                                                   },
                                                 )
                                               : Container(),
@@ -293,13 +308,25 @@ class todo_state extends State<todo> {
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
-                navigateToTask(Task('', '', '', '', '', Repeating.start, ''),
-                    "Add Chore", this);
+                navigateToTask(
+                    Task('', '', '', '', '', Repeating.start, '', ''),
+                    "Add Chore",
+                    this);
               }), //FloatingActionButton
         ));
   } //build()
 
   void navigateToTask(Task task, String title, todo_state obj) async {
+    //null ones are what we need to fix in order to make this work
+    // print(task.assignment);
+    // print(task.choreID);
+    // print(task.date);
+    // print(task.id); //null
+    // print(task.rpt); //null
+    // print(task.status);
+    // print(task.task);
+    // print(task.time);
+    // print(task.value); //null
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => new_task(task, title, obj)),
@@ -310,23 +337,32 @@ class todo_state extends State<todo> {
   }
 
   //update the screen with the lastest chore list
-  void updateListView() {
-    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+  void updateListView() async {
+    //final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+    //Firestore _firestore = Firestore.instance;
+    String groupId = await DBFuture().getCurrentGroup();
+    List<Task> choreList = await DBFuture().getChoreList(groupId);
 
-    dbFuture.then((database) {
-      Future<List<Task>> taskListFuture = databaseHelper.getTaskList();
-      taskListFuture.then((taskList) {
-        setState(() {
-          this.taskList = taskList;
-          this.count = taskList.length;
-        });
-      });
+    setState(() {
+      this.taskList = choreList;
+      this.count = choreList.length;
     });
+
+    // dbFuture.then((database) {
+    //   Future<List<Task>> taskListFuture = databaseHelper.getTaskList();
+    //   taskListFuture.then((taskList) {
+    //     setState(() {
+    //       this.taskList = taskList;
+    //       this.count = taskList.length;
+    //     });
+    //   });
+    // });
   } //updateListView()
 
   //delete a chore from the database
-  void delete(int id) async {
-    await databaseHelper.deleteTask(id);
+  void delete(String choreID) async {
+    //await databaseHelper.deleteTask(id);
+    await DBFuture().deleteChore(widget.userModel.groupId, choreID);
     updateListView();
     //Navigator.pop(context);
     utility.showSnackBar(homeScaffold, 'Chore Deleted Successfully');
