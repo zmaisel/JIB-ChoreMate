@@ -185,12 +185,16 @@ class InGroupState extends State<InGroup> {
                       FirebaseAuth _auth = FirebaseAuth.instance;
                       FirebaseUser _firebaseUser = await _auth.currentUser();
                       List<String> memberNames = new List<String>();
+                      String groupID;
+                      String theUser;
                       memberNames.clear();
                       for (int j = 0; j < groupMembers.length; j++) {
                         QuerySnapshot querySnapshot =
                             await _firestore.collection("users").getDocuments();
                         List<DocumentSnapshot> list = querySnapshot.documents;
                         print("ATTENTION " + list[0].data.toString());
+                        theUser = list[0].data["fullName"];
+                        groupID = list[0].data["groupId"];
                         bool cont = true;
                         for (int i = 0; i < list.length; i++) {
                           var listMembers = list[i].data;
@@ -215,10 +219,32 @@ class InGroupState extends State<InGroup> {
                             .get();
                         groupMembers[j] = member.data["fullName"];
                       }
+
+                      //String choreName;
+
+                      QuerySnapshot result = await _firestore
+                          .collection("groups")
+                          .document(groupID)
+                          .collection("chores")
+                          .getDocuments();
+                      List<DocumentSnapshot> choreList = result.documents;
+                      print(choreList.toString());
+                      List<String> chores = new List<String>();
+                      for (int k = 0; k < choreList.length; k++) {
+                        String chore = choreList[k]['task'].toString();
+                        //print(chore);
+                        String assigned = choreList[k]['assignment'].toString();
+                        if (assigned == theUser) {
+                          chores.add(chore);
+                          print('YAY');
+                        }
+                      }
+                      print(chores.toString());
+
                       //DocumentSnapshot member = await _firestore.collection("users").document(groupMembers[0]).get();
 
                       print("hi");
-                      print(groupMembers.toString());
+                      //print(groupMembers.toString());
                       showDialog(
                         context: context,
                         builder: (context) {
@@ -238,10 +264,34 @@ class InGroupState extends State<InGroup> {
                                         height: 50,
                                         margin: EdgeInsets.all(2),
                                         child: Center(
-                                            child: Text(
-                                          '${groupMembers[index]}',
-                                          style: TextStyle(fontSize: 18),
-                                        )),
+                                          child: new GestureDetector(
+                                              onTap: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title:
+                                                            Text('Chore Data'),
+                                                        content: Text('User: ' +
+                                                            '${groupMembers[index]}' +
+                                                            '\n' +
+                                                            'Household: ' +
+                                                            widget.userModel
+                                                                .groupName +
+                                                            '\n' +
+                                                            'Incomplete Chores:' +
+                                                            '\n' +
+                                                            '${chores[index]}' +
+                                                            '\n'),
+                                                      );
+                                                    });
+                                              },
+                                              child: Text(
+                                                  '${groupMembers[index]}',
+                                                  style:
+                                                      TextStyle(fontSize: 18))),
+                                        ),
                                       );
                                     })),
                           );
