@@ -20,6 +20,7 @@ final routes = {
   '/todo': (context) => todo(),
   '/home': (context) => Home(),
   '/calendar': (context) => calendar(),
+  '/reminders': (context) => reminders(),
 };
 //   '/login': (BuildContext context) => new LoginPage(),
 

@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/todo.dart';
+import 'package:choremate/screens/reminders.dart';
 
 import 'home_widget.dart';
 
@@ -176,7 +177,24 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => calendar(),
+                  builder: (context) => calendar(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => case 3:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => reminders(userModel: widget.userModel),
+                    ),
+                    (route) => false,
+                  );
+                  break;
                 ),
                 (route) => false,
               );
@@ -202,7 +220,7 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifcations'),
+            title: Text('Reminders'),
             backgroundColor: blue,
           )
         ],

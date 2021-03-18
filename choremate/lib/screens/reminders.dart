@@ -14,28 +14,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
-import 'package:choremate/screens/reminders.dart';
-
+import 'package:choremate/screens/todo.dart';
 import 'home_widget.dart';
 
-class todo extends StatefulWidget {
+class reminders extends StatefulWidget {
   //final bool darkThemeEnabled;
-  //todo(this.darkThemeEnabled);
+  //reminders(this.darkThemeEnabled);
   final UserModel userModel;
-  todo({this.userModel});
+  reminders({this.userModel});
 
   @override
   State<StatefulWidget> createState() {
-    return todo_state();
+    return reminders_state();
   }
 }
 
-class todo_state extends State<todo> {
+class reminders_state extends State<reminders> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
-  int index = 1;
+  int index = 3;
   String _themeType;
   final homeScaffold = GlobalKey<ScaffoldState>();
 
@@ -125,7 +124,7 @@ class todo_state extends State<todo> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => todo(userModel: widget.userModel),
+                      builder: (context) => reminders(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
@@ -144,7 +143,15 @@ class todo_state extends State<todo> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
+                      builder: (context) => case 3:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
                       builder: (context) => reminders(userModel: widget.userModel),
+                    ),
+                    (route) => false,
+                  );
+                  break;
                     ),
                     (route) => false,
                   );
@@ -183,7 +190,7 @@ class todo_state extends State<todo> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height,
                     child: FutureBuilder(
-                      future: DBFuture().getChoreList(widget.userModel.groupId),
+                      future: DBFuture().getReminderList(widget.userModel.groupId),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.data == null) {
                           return Text("Loading");
@@ -191,7 +198,7 @@ class todo_state extends State<todo> {
                           if (snapshot.data.length < 1) {
                             return Center(
                               child: Text(
-                                'No Chores Added',
+                                'No Reminders',
                                 style: TextStyle(fontSize: 20),
                               ),
                             );
@@ -313,19 +320,19 @@ class todo_state extends State<todo> {
             ), //Container
           ]),
           floatingActionButton: FloatingActionButton(
-              tooltip: "Add Chore",
+              tooltip: "Add Reminder",
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
                 navigateToTask(
                     Task('', '', '', '', '', Repeating.start, '', ''),
-                    "Add Chore",
+                    "Add Reminder",
                     this);
               }), //FloatingActionButton
         ));
   } //build()
 
-  void navigateToTask(Task task, String title, todo_state obj) async {
+  void navigateToTask(Task task, String title, reminders_state obj) async {
     //null ones are what we need to fix in order to make this work
     print(task.assignment);
     print(task.choreID);
@@ -345,16 +352,16 @@ class todo_state extends State<todo> {
     }
   }
 
-  //update the screen with the lastest chore list
+  //update the screen with the lastest reminder list
   void updateListView() async {
     //final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     //Firestore _firestore = Firestore.instance;
     String groupId = await DBFuture().getCurrentGroup();
-    List<Task> choreList = await DBFuture().getChoreList(groupId);
+    List<Task> reminderList = await DBFuture().getReminderList(groupId);
 
     setState(() {
-      this.taskList = choreList;
-      this.count = choreList.length;
+      this.taskList = reminderList;
+      this.count = reminderList.length;
     });
 
     // dbFuture.then((database) {
@@ -368,11 +375,11 @@ class todo_state extends State<todo> {
     // });
   } //updateListView()
 
-  //delete a chore from the database
+  //delete a reminder from the database
   void delete(int id) async {
     await databaseHelper.deleteTask(id);
     updateListView();
     //Navigator.pop(context);
-    utility.showSnackBar(homeScaffold, 'Chore Deleted Successfully');
+    utility.showSnackBar(homeScaffold, 'Reminder Deleted Successfully');
   }
 }

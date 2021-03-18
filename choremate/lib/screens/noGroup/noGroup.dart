@@ -7,6 +7,7 @@ import 'package:choremate/services/auth.dart';
 //import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:choremate/screens/reminders.dart';
 
 //import '../home_widget.dart';
 import '../todo.dart';
@@ -167,6 +168,15 @@ class NoGroupState extends State<NoGroup> {
                 (route) => false,
               );
               break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => reminders(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
           }
         },
         fixedColor: green,
@@ -188,7 +198,7 @@ class NoGroupState extends State<NoGroup> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifcations'),
+            title: Text('Reminders'),
             backgroundColor: blue,
           )
         ],
