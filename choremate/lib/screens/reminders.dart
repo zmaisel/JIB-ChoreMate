@@ -16,6 +16,7 @@ import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
 import 'package:choremate/screens/todo.dart';
 import 'home_widget.dart';
+import 'package:choremate/screens/newReminder.dart';
 
 class reminders extends StatefulWidget {
   //final bool darkThemeEnabled;
@@ -32,7 +33,7 @@ class reminders extends StatefulWidget {
 class reminders_state extends State<reminders> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
-  List<Task> taskList;
+  List<Reminder> reminderList;
   int count = 0;
   int index = 3;
   String _themeType;
@@ -57,15 +58,12 @@ class reminders_state extends State<reminders> {
   Widget build(BuildContext context) {
     Color green = const Color(0xFFa8e1a6);
     Color blue = const Color(0xFF5ac9fc);
-    if (taskList == null) {
-      taskList = List<Task>();
+    if (reminderList == null) {
+      reminderList = List<Reminder>();
       updateListView();
     }
 
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          key: homeScaffold,
+    return Scaffold(
           appBar: AppBar(
             title: Text('ChoreMate'
                 //AppLocalizations.of(context).title(),
@@ -95,14 +93,6 @@ class reminders_state extends State<reminders> {
                 },
               )
             ],
-            bottom: TabBar(tabs: [
-              Tab(
-                icon: Icon(Icons.format_list_numbered_rtl),
-              ),
-              Tab(
-                icon: Icon(Icons.playlist_add_check),
-              )
-            ]),
           ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: index, // this will be set when a new tab is tapped
@@ -182,7 +172,7 @@ class reminders_state extends State<reminders> {
               )
             ],
           ), //AppBar
-          body: TabBarView(children: [
+          body: ListView(child:
             new Container(
               padding: EdgeInsets.all(8.0),
               child: ListView(
@@ -211,17 +201,14 @@ class reminders_state extends State<reminders> {
                                     onTap: () {
                                       if (snapshot.data[position].status !=
                                           "Chore Completed")
-                                        navigateToTask(snapshot.data[position],
+                                        navigateToReminder(snapshot.data[position],
                                             "Edit Chore", this);
                                     },
                                     child: Card(
                                       margin: EdgeInsets.all(1.0),
                                       elevation: 2.0,
                                       child: CustomWidget(
-                                        title: snapshot.data[position].task,
-                                        sub1: snapshot.data[position].date,
-                                        sub2: snapshot.data[position].time,
-                                        status: snapshot.data[position].status,
+                                        title: snapshot.data[position].message,
                                         delete:
                                             snapshot.data[position].status ==
                                                     "Chore Completed"
@@ -245,107 +232,27 @@ class reminders_state extends State<reminders> {
                   )
                 ],
               ),
-            ), //Container
-            new Container(
-              padding: EdgeInsets.all(8.0),
-              child: ListView(
-                children: <Widget>[
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: FutureBuilder(
-                      future: DBFuture()
-                          .getCompletedChoreList(widget.userModel.groupId),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.data == null) {
-                          return Text("Loading");
-                        } else {
-                          if (snapshot.data.length < 1) {
-                            return Center(
-                              child: Text(
-                                'No Chores Completed',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            );
-                          }
-                          return ListView.builder(
-                              itemCount: snapshot.data.length,
-                              itemBuilder:
-                                  (BuildContext context, int position) {
-                                return new GestureDetector(
-                                    onTap: () {
-                                      if (snapshot.data[position].status !=
-                                          "Chore Completed")
-                                        navigateToTask(snapshot.data[position],
-                                            "Edit Chore", this);
-                                    },
-                                    child: Card(
-                                      margin: EdgeInsets.all(1.0),
-                                      elevation: 2.0,
-                                      child: CustomWidget(
-                                          title: snapshot.data[position].task,
-                                          sub1: snapshot.data[position].date,
-                                          sub2: snapshot.data[position].time,
-                                          status:
-                                              snapshot.data[position].status,
-                                          delete: snapshot
-                                                      .data[position].status ==
-                                                  "Chore Completed"
-                                              ? IconButton(
-                                                  icon: Icon(Icons.delete,
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      size: 28),
-                                                  onPressed: () {
-                                                    delete(snapshot
-                                                        .data[position].id);
-                                                  },
-                                                )
-                                              : Container(),
-                                          trailing: Container()
-//                                    Icon(
-//                                          Icons.edit,
-//                                          color: Theme.of(context).primaryColor,
-//                                          size: 28,
-//                                        ),
-                                          ),
-                                    ) //Card
-                                    );
-                              });
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ), //Container
+            ), 
           ]),
           floatingActionButton: FloatingActionButton(
               tooltip: "Add Reminder",
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
-                navigateToTask(
-                    Task('', '', '', '', '', Repeating.start, '', ''),
+                navigateToReminder(
+                    Reminder('', '', '', '', '', Repeating.start, '', ''),
                     "Add Reminder",
                     this);
               }), //FloatingActionButton
         ));
   } //build()
 
-  void navigateToTask(Task task, String title, reminders_state obj) async {
+  void navigateToReminder(Reminder reminder, String title, reminders_state obj) async {
     //null ones are what we need to fix in order to make this work
-    print(task.assignment);
-    print(task.choreID);
-    print(task.date);
-    print(task.id); //null
-    print(task.rpt); //null
-    print(task.status);
-    print(task.task);
-    print(task.time);
-    print(task.value); //null
+    print(reminder.id);
     bool result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => new_task(task, title, obj)),
+      MaterialPageRoute(builder: (context) => new_reminder(reminder, title, obj)),
     );
     if (result == true) {
       updateListView();
@@ -357,27 +264,17 @@ class reminders_state extends State<reminders> {
     //final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     //Firestore _firestore = Firestore.instance;
     String groupId = await DBFuture().getCurrentGroup();
-    List<Task> reminderList = await DBFuture().getReminderList(groupId);
+    List<Reminder> reminderList = await DBFuture().getReminderList(groupId);
 
     setState(() {
-      this.taskList = reminderList;
+      this.reminderList = reminderList;
       this.count = reminderList.length;
     });
-
-    // dbFuture.then((database) {
-    //   Future<List<Task>> taskListFuture = databaseHelper.getTaskList();
-    //   taskListFuture.then((taskList) {
-    //     setState(() {
-    //       this.taskList = taskList;
-    //       this.count = taskList.length;
-    //     });
-    //   });
-    // });
   } //updateListView()
 
   //delete a reminder from the database
   void delete(int id) async {
-    await databaseHelper.deleteTask(id);
+    await databaseHelper.deleteReminder(id);
     updateListView();
     //Navigator.pop(context);
     utility.showSnackBar(homeScaffold, 'Reminder Deleted Successfully');

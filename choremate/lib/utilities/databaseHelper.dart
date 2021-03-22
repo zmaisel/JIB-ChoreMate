@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/models/user.dart';
+import 'package:choremate/models/reminder.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
@@ -27,6 +28,11 @@ class DatabaseHelper {
   final String columnName = "name";
   final String columnUserName = "username";
   final String columnPassword = "password";
+
+  //variables for reminder table
+  String taskTable = "reminder_table";
+  String rId = "id";
+  String message = "message";
 
   DatabaseHelper._createInstance();
 
@@ -61,12 +67,15 @@ class DatabaseHelper {
     return taskDatabase;
   }
 
-  //create the database with the chore and user tables
+  //create the database with the chore, user, and reminder tables
   void _createDb(Database db, int newVersion) async {
     await db.execute(
         'CREATE TABLE $taskTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTask TEXT, $colDate TEXT, $colTime TEXT, $colStatus TEXT, $colRpt TEXT, $colAssignment TEXT)');
     await db.execute(
+
         "CREATE TABLE $userTable(id INTEGER PRIMARY KEY, $columnName TEXT, $columnUserName TEXT, $columnPassword TEXT, flaglogged TEXT)");
+    await db.execute(
+        'CREATE TABLE $reminderTable ($rId INTEGER PRIMARY KEY AUTOINCREMENT, $message TEXT)');
   }
 
   //upgrade method, not sure if we need this yet
@@ -215,4 +224,43 @@ class DatabaseHelper {
       return null;
     }
   }
+
+  // Adding reminders to database
+
+  //Fetch Operation: Get all reminder objects from database
+  Future<List<Map<String, dynamic>>> getReminderMapList() async {
+    Database db = await this.database;
+    //var result = db.rawQuery('SELECT * FROM $reminderTable order by $rId ASC');
+    var result = db.query(reminderTable, orderBy: '$rId ASC');
+    return result;
+  }
+
+  //Insert Operation: Insert a reminder object to database
+  Future<int> insertReminder(Reminder reminder) async {
+    Database db = await this.database;
+    var result = await db.insert(reminderTable, reminder.toMap());
+    print(await db.query("reminder_table"));
+    return result;
+  }
+
+  //Delete Operation: Delete a reminder object from database
+  Future<int> deleteReminder(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM $reminderTable WHERE $rId=$id');
+    return result;
+  }
+
+  //get the reminder list to display
+  Future<List<Reminder>> getReminderList() async {
+    var reminderMapList = await getReminderMapList(); //Get Map List from database
+    int count = reminderMapList.length;
+
+    List<Reminder> reminderList = List<Reminder>();
+    //For loop to create Reminder List from a Map List
+    for (int i = 0; i < count; i++) {
+      reminderList.add(Reminder.fromMapObject(reminderMapList[i]));
+    }
+    return reminderList;
+  }
+
 }
