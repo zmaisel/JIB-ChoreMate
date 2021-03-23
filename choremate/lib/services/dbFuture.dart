@@ -371,6 +371,113 @@ class DBFuture {
     return retVal;
   }
 
+  //REMINDERS
+
+  Future<String> addReminder(String groupId, String name, String date, String time,
+      String status, String rpt, String assignment) async {
+    String retVal = "error";
+
+    try {
+      DocumentReference _docRef = await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("reminders"
+          .add({
+        'messageID': "",
+        'message': name 
+      }));
+      DocumentSnapshot docSnap = await _docRef.get();
+
+      print(docSnap.reference.documentID.toString());
+      String messageID = docSnap.reference.documentID.toString();
+
+      retVal = "success";
+      updateReminder(messageID, groupId, name);
+      return messageID;
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
+  Future<String> updateReminder(
+      String messageID,
+      String groupId,
+      String name) async {
+    String retVal = "error";
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("reminders")
+          .document(messageID)
+          .updateData({
+        'messageID': messageID,
+        'message': name,
+      });
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+
+    return retVal;
+  }
+
+
+  Future<String> deleteReminder(String groupID, String messageID) async {
+    String retVal = "error";
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupID)
+          .collection("reminders")
+          .document(messageID)
+          .delete();
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+
+    return retVal;
+  }
+
+  Future<List<Map<String, dynamic>>> getReminderMapList(String groupID) async {
+    final QuerySnapshot result = await _firestore
+        .collection("groups")
+        .document(groupID)
+        .collection("reminders")
+        .getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    var reminderMapList = List<Map<String, dynamic>>();
+    for (int i = 0; i < documents.length; i++) {
+      reminderMapList.add(documents.elementAt(i).data);
+    }
+
+    return reminderMapList;
+  }
+
+  //get the reminder list to display
+  Future<List<Message>> getReminderList(String groupID) async {
+    List<Message> reminderList = List<Message>();
+
+    try {
+      //THIS DOESN'T WORK FOR SOME REASON
+      var reminderMapList =
+          await getReminderMapList(groupID); //Get Map List from database
+      int count = reminderMapList.length;
+
+      //For loop to create Message List from a Map List
+      for (int i = 0; i < count; i++) {
+        reminderList.add(Message.fromMapObject(reminderMapList[i]));
+      }
+    } catch (e) {
+      print("Here is what isn't working.");
+      print(e);
+    }
+
+    return reminderList;
+  }
+
   // Future<String> addCurrentBook(String groupId, BookModel book) async {
   //   String retVal = "error";
 
