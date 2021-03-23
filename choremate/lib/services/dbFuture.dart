@@ -371,6 +371,86 @@ class DBFuture {
     return retVal;
   }
 
+  // reminders
+
+  Future<String> addReminder(String groupId, String message) async {
+    String retVal = "error";
+
+    try {
+      DocumentReference _docRef = await _firestore
+          .collection("groups")
+          .document(groupId)
+          .collection("reminders")
+          .add({
+        'message': message,
+      });
+      DocumentSnapshot docSnap = await _docRef.get();
+
+      print(docSnap.reference.documentID.toString());
+
+      retVal = "success";
+      // updateChore(choreID, groupId, name, date, time, status, rpt, assignment);
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
+  Future<String> deleteReminder(String groupID, int id) async {
+    String retVal = "error";
+    try {
+      await _firestore
+          .collection("groups")
+          .document(groupID)
+          .collection("reminders")
+          .document(id)
+          .delete();
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+
+    return retVal;
+  }
+
+  Future<List<Map<String, dynamic>>> getReminderMapList(String groupID) async {
+    final QuerySnapshot result = await _firestore
+        .collection("groups")
+        .document(groupID)
+        .collection("reminders")
+        .getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    var reminderMapList = List<Map<String, dynamic>>();
+    for (int i = 0; i < documents.length; i++) {
+      reminderMapList.add(documents.elementAt(i).data);
+    }
+
+    return reminderMapList;
+  }
+
+  //get the chore list to display
+  Future<List<Task>> getReminderList(String groupID) async {
+    List<Task> reminderList = List<Reminder>();
+
+    try {
+      //THIS DOESN'T WORK FOR SOME REASON
+      var reminderMapList =
+          await getReminderMapList(groupID); //Get Map List from database
+      int count = reminderMapList.length;
+
+      //For loop to create Reminder List from a Map List
+      for (int i = 0; i < count; i++) {
+        reminderList.add(Reminder.fromMapObject(reminderMapList[i]));
+        //choreList[i].
+      }
+    } catch (e) {
+      print("Here is what isn't working.");
+      print(e);
+    }
+
+    return reminderList;
+  }
+
   // Future<String> addCurrentBook(String groupId, BookModel book) async {
   //   String retVal = "error";
 
@@ -565,3 +645,5 @@ class DBFuture {
 //   }
 // }
 }
+
+

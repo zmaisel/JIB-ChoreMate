@@ -6,7 +6,7 @@ class Reminder {
   Reminder.withId(this._id);
 
   int get id => _id;
-  String get task => _reminder;
+  String get reminder => _reminder;
 
   set reminder(String newReminder) {
     if (newReminder.length <= 255) {
@@ -25,7 +25,7 @@ class Reminder {
   }
 
   //Extract Reminder object from MAP object
-  Task.fromMapObject(Map<String, dynamic> map) {
+  Reminder.fromMapObject(Map<String, dynamic> map) {
     this._id = map['id'];
     this._message = map['message'];
   }
