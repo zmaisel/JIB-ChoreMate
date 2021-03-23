@@ -42,7 +42,6 @@ class message_state extends State<new_message> {
       new TextStyle(fontSize: 18, fontFamily: "Lato", color: Colors.white);
 
   final scaffoldkey = GlobalKey<ScaffoldState>();
-
   Utils utility = new Utils();
   TextEditingController messageController = new TextEditingController();
 
@@ -193,7 +192,6 @@ class message_state extends State<new_message> {
     if (_checkNotNull() == true) {
       message.messageID = await DBFuture().addReminder(this.currentGroup, message.message);    
         var rng = new Random();
-      }
 
       remindersState.updateListView();
 
