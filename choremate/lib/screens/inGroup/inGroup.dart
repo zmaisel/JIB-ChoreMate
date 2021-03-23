@@ -5,7 +5,6 @@ import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:choremate/services/dbStream.dart';
-//import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../home_widget.dart';
 import '../todo.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/screens/reminders.dart';
 
 class InGroup extends StatefulWidget {
   final UserModel userModel;
@@ -378,6 +378,16 @@ class InGroupState extends State<InGroup> {
                 (route) => false,
               );
               break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      reminders(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
           }
         },
         fixedColor: green,
@@ -399,7 +409,7 @@ class InGroupState extends State<InGroup> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifcations'),
+            title: Text('Reminders'),
             backgroundColor: blue,
           )
         ],

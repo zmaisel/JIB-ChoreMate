@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
@@ -10,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:choremate/models/message.dart';
+import 'package:choremate/screens/reminders.dart';
 
 class new_message extends StatefulWidget {
   final String appBarTitle;
@@ -43,7 +43,6 @@ class message_state extends State<new_message> {
 
   final scaffoldkey = GlobalKey<ScaffoldState>();
 
-  DatabaseHelper helper = DatabaseHelper();
   Utils utility = new Utils();
   TextEditingController messageController = new TextEditingController();
 
@@ -52,6 +51,7 @@ class message_state extends State<new_message> {
   @override
   Widget build(BuildContext context) {
     messageController.text = message.message;
+
     return Scaffold(
         key: scaffoldkey,
         appBar: AppBar(
@@ -67,6 +67,9 @@ class message_state extends State<new_message> {
         body: ListView(children: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 50.0),
+              child: Container(
+                height: 2,
+              )),
           Padding(
             padding: EdgeInsets.all(_minPadding),
             child: TextField(
@@ -139,6 +142,8 @@ class message_state extends State<new_message> {
 
         ); //Scaffold
   } //build()
+
+  void markedDone() {}
 
 
   bool _isEditable() {

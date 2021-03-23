@@ -7,8 +7,8 @@ import 'package:choremate/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:choremate/models/authModel.dart';
 import 'package:choremate/screens/root/root.dart';
-import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/screens/reminders.dart';
 //import 'AppFooter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -20,6 +20,7 @@ final routes = {
   '/todo': (context) => todo(),
   '/home': (context) => Home(),
   '/calendar': (context) => calendar(),
+  '/reminders': (context) => reminders()
 };
 //   '/login': (BuildContext context) => new LoginPage(),
 

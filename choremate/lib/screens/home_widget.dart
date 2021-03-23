@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/screens/reminders.dart';
 
 import 'inGroup/inGroup.dart';
 
@@ -130,6 +131,16 @@ class _HomeState extends State<Home> {
                 (route) => false,
               );
               break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      reminders(),
+                ),
+                (route) => false,
+              );
+              break;
           }
         },
         fixedColor: green,
@@ -151,7 +162,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifcations'),
+            title: Text('Reminders'),
             backgroundColor: blue,
           )
         ],

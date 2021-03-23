@@ -6,7 +6,6 @@ import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
 import 'package:choremate/models/task.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
@@ -14,6 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/todo.dart';
+import 'package:choremate/models/message.dart';
+import 'package:choremate/screens/newReminder.dart';
+import 'package:choremate/screens/reminders.dart';
 
 import 'home_widget.dart';
 
@@ -181,6 +183,16 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
                 (route) => false,
               );
               break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      reminders(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
           }
         },
         fixedColor: green,
@@ -202,7 +214,7 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifcations'),
+            title: Text('Reminders'),
             backgroundColor: blue,
           )
         ],

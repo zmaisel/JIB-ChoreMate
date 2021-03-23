@@ -1,10 +1,10 @@
 import 'package:choremate/models/task.dart';
 //import 'package:choremate/models/reviewModel.dart';
 import 'package:choremate/models/userModel.dart';
-import 'package:choremate/states/currentUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:choremate/models/message.dart';
 
 class DBFuture {
   Firestore _firestore = Firestore.instance;
@@ -373,20 +373,19 @@ class DBFuture {
 
   //REMINDERS
 
-  Future<String> addReminder(String groupId, String name, String date, String time,
-      String status, String rpt, String assignment) async {
+  Future<String> addReminder(String groupId, String name) async {
     String retVal = "error";
 
     try {
-      DocumentReference _docRef = await _firestore
+      DocumentReference _docRef2 = await _firestore
           .collection("groups")
           .document(groupId)
-          .collection("reminders"
+          .collection("reminders")
           .add({
         'messageID': "",
         'message': name 
-      }));
-      DocumentSnapshot docSnap = await _docRef.get();
+      });
+      DocumentSnapshot docSnap = await _docRef2.get();
 
       print(docSnap.reference.documentID.toString());
       String messageID = docSnap.reference.documentID.toString();

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
 import 'package:choremate/models/task.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
@@ -14,6 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/models/message.dart';
+import 'package:choremate/screens/newReminder.dart';
+import 'package:choremate/screens/todo.dart';
 
 import 'home_widget.dart';
 
@@ -30,7 +32,7 @@ class reminders extends StatefulWidget {
 }
 
 class reminders_state extends State<reminders> {
-  DatabaseHelper databaseHelper = DatabaseHelper();
+  //DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
   List<Message> messageList;
   int count = 0;
@@ -139,6 +141,16 @@ class reminders_state extends State<reminders> {
                     (route) => false,
                   );
                   break;
+                case 3:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          reminders(userModel: widget.userModel),
+                    ),
+                    (route) => false,
+                  );
+                  break;
               }
             },
             fixedColor: green,
@@ -165,7 +177,7 @@ class reminders_state extends State<reminders> {
               )
             ],
           ), //AppBar
-          body: ListView(child:
+          body: ListView(children: <Widget>[
             new Container(
               padding: EdgeInsets.all(8.0),
               child: ListView(
@@ -218,14 +230,14 @@ class reminders_state extends State<reminders> {
                 ],
               ),
             ),              
-          ),
+          ]),
           floatingActionButton: FloatingActionButton(
               tooltip: "Add Reminder",
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
                 navigateToMessage(
-                    Message('', '', '', '', '', Repeating.start, '', ''),
+                    Message('', ''),
                     "Add Reminder",
                     this);
               }), //FloatingActionButton
@@ -248,7 +260,6 @@ class reminders_state extends State<reminders> {
 
   //update the screen with the lastest reminder list
   void updateListView() async {
-    //final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     //Firestore _firestore = Firestore.instance;
     String groupId = await DBFuture().getCurrentGroup();
     List<Message> reminderList = await DBFuture().getReminderList(groupId);
@@ -262,7 +273,7 @@ class reminders_state extends State<reminders> {
 
   //delete a reminder from the database
   void delete(int id) async {
-    await databaseHelper.deleteMessage(id);
+    //await databaseHelper.deleteMessage(id);
     updateListView();
     //Navigator.pop(context);
     utility.showSnackBar(homeScaffold, 'Reminder Deleted Successfully');

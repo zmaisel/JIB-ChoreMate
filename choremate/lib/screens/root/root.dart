@@ -8,7 +8,7 @@ import 'package:choremate/screens/login/login.dart';
 import 'package:choremate/screens/noGroup/noGroup.dart';
 import 'package:choremate/screens/splashScreen/splashScreen.dart';
 import 'package:choremate/services/dbStream.dart';
-import 'package:choremate/states/currentUser.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

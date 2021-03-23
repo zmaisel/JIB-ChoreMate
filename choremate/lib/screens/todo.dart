@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
 import 'package:choremate/models/task.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
@@ -14,6 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/models/message.dart';
+import 'package:choremate/screens/newReminder.dart';
+import 'package:choremate/screens/reminders.dart';
 
 import 'home_widget.dart';
 
@@ -30,7 +32,7 @@ class todo extends StatefulWidget {
 }
 
 class todo_state extends State<todo> {
-  DatabaseHelper databaseHelper = DatabaseHelper();
+  //DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
@@ -139,6 +141,16 @@ class todo_state extends State<todo> {
                     (route) => false,
                   );
                   break;
+                case 3:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          reminders(userModel: widget.userModel),
+                    ),
+                    (route) => false,
+                  );
+                  break;
               }
             },
             fixedColor: green,
@@ -160,7 +172,7 @@ class todo_state extends State<todo> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications),
-                title: Text('Notifcations'),
+                title: Text('Reminders'),
                 backgroundColor: blue,
               )
             ],
@@ -360,7 +372,7 @@ class todo_state extends State<todo> {
 
   //delete a chore from the database
   void delete(int id) async {
-    await databaseHelper.deleteTask(id);
+    //await databaseHelper.deleteTask(id);
     updateListView();
     //Navigator.pop(context);
     utility.showSnackBar(homeScaffold, 'Chore Deleted Successfully');
