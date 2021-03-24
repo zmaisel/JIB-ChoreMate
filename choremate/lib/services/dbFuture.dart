@@ -29,10 +29,12 @@ class DBFuture {
   Future<String> createGroup(String groupName, UserModel user) async {
     String retVal = "error";
     List<String> members = List();
+    List<String> memberNames = List();
     List<String> tokens = List();
 
     try {
       members.add(user.uid);
+      memberNames.add(user.fullName);
       tokens.add(user.notifToken);
       DocumentReference _docRef;
       if (user.notifToken != null) {
@@ -41,6 +43,7 @@ class DBFuture {
           'name': groupName.trim(),
           'leader': user.uid,
           'members': members,
+          'memberNames': memberNames,
           'tokens': tokens,
           'groupCreated': Timestamp.now(),
         });
@@ -49,6 +52,7 @@ class DBFuture {
           'name': groupName.trim(),
           'leader': user.uid,
           'members': members,
+          'memberNames': memberNames,
           'groupCreated': Timestamp.now(),
         });
       }
@@ -73,11 +77,13 @@ class DBFuture {
     String retVal = "error";
     List<String> members = List();
     List<String> tokens = List();
+    List<String> memberNames = List();
     try {
       members.add(userModel.uid);
       //tokens.add(userModel.notifToken);
       await _firestore.collection("groups").document(groupId).updateData({
         'members': FieldValue.arrayUnion(members),
+        'memberNames': FieldValue.arrayUnion(memberNames),
         //'tokens': FieldValue.arrayUnion(tokens),
       });
 
@@ -139,7 +145,6 @@ class DBFuture {
           .document(groupId)
           .collection("chores")
           .add({
-        'choreID': "",
         'task': name,
         'date': date,
         'time': time,
@@ -156,9 +161,8 @@ class DBFuture {
       //   "currentBookId": _docRef.documentID,
       //   "currentBookDue": chore.time,
       // });
-
       retVal = "success";
-      updateChore(choreID, groupId, name, date, time, status, rpt, assignment);
+      //updateChore(choreID, groupId, name, date, time, status, rpt, assignment);
       return choreID;
     } catch (e) {
       print(e);
@@ -183,7 +187,7 @@ class DBFuture {
           .collection("chores")
           .document(choreID)
           .updateData({
-        'choreID': choreID,
+        //'choreID': choreID,
         'task': name,
         'date': date,
         'time': time,
@@ -191,18 +195,10 @@ class DBFuture {
         'rpt': rpt,
         'assignment': assignment
       });
-
-      // //add current book to group schedule
-      // await _firestore.collection("groups").document(groupId).updateData({
-      //   "currentBookId": _docRef.documentID,
-      //   "currentBookDue": chore.time,
-      // });
-
       retVal = "success";
     } catch (e) {
       print(e);
     }
-
     return retVal;
   }
 
@@ -223,7 +219,7 @@ class DBFuture {
           .document(groupId)
           .collection("completedChores")
           .add({
-        'choreID': choreID,
+        //'choreID': choreID,
         'task': name,
         'date': date,
         'time': time,
@@ -330,7 +326,6 @@ class DBFuture {
     List<Task> choreList = List<Task>();
 
     try {
-      //THIS DOESN'T WORK FOR SOME REASON
       var choreMapList =
           await getCompletedChoreMapList(groupID); //Get Map List from database
       int count = choreMapList.length;
@@ -345,6 +340,14 @@ class DBFuture {
     }
 
     return choreList;
+  }
+
+  Future<List<String>> getUserList(String groupID) async {
+    DocumentSnapshot document =
+        await _firestore.collection("groups").document(groupID).get();
+    List<String> userList = List.from(document['memberNames']);
+    print(userList);
+    return userList;
   }
 
   Future<String> createUser(UserModel user) async {

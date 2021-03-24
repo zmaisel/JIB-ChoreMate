@@ -329,7 +329,8 @@ class todo_state extends State<todo> {
     // print(task.value); //null
     bool result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => new_task(task, title, obj)),
+      MaterialPageRoute(
+          builder: (context) => new_task(task, title, obj, widget.userModel)),
     );
     if (result == true) {
       updateListView();
