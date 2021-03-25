@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
@@ -15,8 +15,9 @@ var globalDate = "Pick Date";
 class new_task extends StatefulWidget {
   final String appBarTitle;
   final Task task;
+  final UserModel currentUser;
   todo_state todoState;
-  new_task(this.task, this.appBarTitle, this.todoState);
+  new_task(this.task, this.appBarTitle, this.todoState, this.currentUser);
   bool _isEditable = false;
 
   @override
@@ -44,7 +45,6 @@ class task_state extends State<new_task> {
 
   final scaffoldkey = GlobalKey<ScaffoldState>();
 
-  DatabaseHelper helper = DatabaseHelper();
   Utils utility = new Utils();
   TextEditingController taskController = new TextEditingController();
   TextEditingController assignmentController = new TextEditingController();
@@ -54,11 +54,17 @@ class task_state extends State<new_task> {
   var _minPadding = 10.0;
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay();
+  List<String> userList;
+
+  String dropdownValue;
 
   @override
   Widget build(BuildContext context) {
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
+    getGroupMembers();
     taskController.text = task.task;
-    assignmentController.text = task.assignment;
+    //dropdownValue = userList.first;
 
     return Scaffold(
         key: scaffoldkey,
@@ -71,6 +77,7 @@ class task_state extends State<new_task> {
             },
           ),
           title: Text(appBarTitle, style: TextStyle(fontSize: 25)),
+          backgroundColor: blue,
         ),
         body: ListView(children: <Widget>[
           Padding(
@@ -112,26 +119,36 @@ class task_state extends State<new_task> {
           ),
           // text field to assign chore to a user //Padding
           Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text("Assign to:", style: titleStyle),
+          ),
+          Padding(
               padding: EdgeInsets.all(_minPadding),
-              child: TextField(
-                controller: assignmentController,
-                decoration: InputDecoration(
-                    labelText: "Assign to",
-                    hintText: "name",
-                    labelStyle: TextStyle(
-                      fontSize: 20,
-                      fontFamily: "Lato",
-                      fontWeight: FontWeight.bold,
-                    ),
-                    hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontFamily: "Lato",
-                        fontStyle: FontStyle.italic,
-                        color: Colors.grey)), //Input Decoration
-                onChanged: (value) {
-                  updateTask();
-                },
-              )),
+              child: FutureBuilder(
+                  future: DBFuture().getUserList(widget.currentUser.groupId),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.data == null) {
+                      return Text("Loading");
+                    }
+                    return DropdownButton<String>(
+                      value: dropdownValue,
+                      icon: const Icon(Icons.arrow_drop_down_outlined),
+                      underline: Container(height: 2, color: Colors.grey),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                          task.assignment = newValue;
+                        });
+                      },
+                      items: userList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    );
+                  })),
           ListTile(
             title: task.date.isEmpty
                 ? Text(
@@ -238,7 +255,7 @@ class task_state extends State<new_task> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50.0)),
               padding: EdgeInsets.all(_minPadding / 2),
-              color: Theme.of(context).primaryColor,
+              color: blue,
               textColor: Colors.white,
               elevation: 5.0,
               child: Text(
@@ -296,8 +313,6 @@ class task_state extends State<new_task> {
 
   void updateTask() {
     task.task = taskController.text;
-    task.assignment = assignmentController.text;
-    //DBFuture().updateChore(task.choreID, currentGroup, task.task, task.date, task.time, task.status, task.rpt, task.assignment);
   }
 
   //check to make sure all of the fields are selected
@@ -312,8 +327,6 @@ class task_state extends State<new_task> {
     } else if (task.time.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select the Time');
       res = false;
-    } else if (task.assignment.isEmpty) {
-      utility.showSnackBar(scaffoldkey, 'Please assign the chore to a user');
     } else if (task.rpt.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select a repeating option');
     } else {
@@ -324,61 +337,36 @@ class task_state extends State<new_task> {
 
   String currentGroup = "";
   String choreID = "";
-  void _save() async {
+  _save() async {
     int result;
     String retString;
 
-    //task.task = taskController.text;
-    //task.date = formattedDate;
-    Firestore _firestore = Firestore.instance;
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser currentUser = await _auth.currentUser();
-
-    _firestore
-        .collection("users")
-        .document(currentUser.uid)
-        .get()
-        .then((value) {
-      this.currentGroup = value.data["groupId"].toString();
-      print("currentgroupid " + value.data["groupId"]);
-    });
     if (_isEditable()) {
       if (marked) {
         task.status = "Task Completed";
-        DBFuture().updateChore(task.choreID, currentGroup, task.task, task.date,
-            task.time, task.status, task.rpt, task.assignment);
-      } else
+        //print("when completing, task id:" + task.choreID);
+        DBFuture().completeChore(task, widget.currentUser.groupId);
+      } else {
         task.status = "";
+        retString =
+            await DBFuture().updateChore(widget.currentUser.groupId, task);
+      }
+    } else if (_checkNotNull() == true) {
+      task.choreID =
+          await DBFuture().addChore(task, widget.currentUser.groupId);
+      print("choreID here in newchore code: " + task.choreID);
+
+      //print(task.id);
     }
-    if (_checkNotNull() == true) {
-      if (task.id != null) {
-        retString = await DBFuture().updateChore(
-            task.choreID,
-            this.currentGroup,
-            task.task,
-            task.date,
-            task.time,
-            task.status,
-            task.rpt,
-            task.assignment);
-      } else {
-        task.choreID = await DBFuture().addChore(this.currentGroup, task.task,
-            task.date, task.time, task.status, task.rpt, task.assignment);
-        //print("choreID: " + task.choreID);
-        var rng = new Random();
-        task.id = rng.nextInt(100);
-        print(task.id);
-      }
 
-      todoState.updateListView();
+    todoState.updateListView();
 
-      Navigator.pop(context);
+    Navigator.pop(context);
 
-      if (result != 0) {
-        utility.showAlertDialog(context, 'Status', 'Chore saved successfully.');
-      } else {
-        utility.showAlertDialog(context, 'Status', 'Problem saving task.');
-      }
+    if (result != 0) {
+      utility.showAlertDialog(context, 'Status', 'Chore saved successfully.');
+    } else {
+      utility.showAlertDialog(context, 'Status', 'Problem saving task.');
     }
   } //_save()
 
@@ -393,7 +381,9 @@ class task_state extends State<new_task> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
-                  await DBFuture().deleteChore(currentGroup, task.choreID);
+                  print(task.choreID);
+                  await DBFuture()
+                      .deleteChore(widget.currentUser.groupId, task.choreID);
                   todoState.updateListView();
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -411,5 +401,9 @@ class task_state extends State<new_task> {
             ],
           );
         });
+  }
+
+  void getGroupMembers() async {
+    userList = await DBFuture().getUserList(widget.currentUser.groupId);
   }
 } //class task_state

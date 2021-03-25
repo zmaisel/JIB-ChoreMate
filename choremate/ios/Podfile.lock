@@ -428,7 +428,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
-  cloud_firestore: c6f34148c1dfbb57a6147f9bb49c1c9f5c27036e
+  cloud_firestore: 2a4f8f802fb0b701cf809b283b6bec7477ebaa6f
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
   firebase_auth: af8784c4d8d87c36f730a305f97bfbcb24db024b
   firebase_core: 335c02abd48672b7c83c683df833d0488a72e73e

@@ -29,10 +29,12 @@ class DBFuture {
   Future<String> createGroup(String groupName, UserModel user) async {
     String retVal = "error";
     List<String> members = List();
+    List<String> memberNames = List();
     List<String> tokens = List();
 
     try {
       members.add(user.uid);
+      memberNames.add(user.fullName);
       tokens.add(user.notifToken);
       DocumentReference _docRef;
       if (user.notifToken != null) {
@@ -41,6 +43,7 @@ class DBFuture {
           'name': groupName.trim(),
           'leader': user.uid,
           'members': members,
+          'memberNames': memberNames,
           'tokens': tokens,
           'groupCreated': Timestamp.now(),
         });
@@ -49,6 +52,7 @@ class DBFuture {
           'name': groupName.trim(),
           'leader': user.uid,
           'members': members,
+          'memberNames': memberNames,
           'groupCreated': Timestamp.now(),
         });
       }
@@ -73,16 +77,30 @@ class DBFuture {
     String retVal = "error";
     List<String> members = List();
     List<String> tokens = List();
+    List<String> memberNames = List();
     try {
       members.add(userModel.uid);
+      memberNames.add(userModel.fullName);
       //tokens.add(userModel.notifToken);
       await _firestore.collection("groups").document(groupId).updateData({
         'members': FieldValue.arrayUnion(members),
+        'memberNames': FieldValue.arrayUnion(memberNames),
         //'tokens': FieldValue.arrayUnion(tokens),
       });
 
+      String groupName;
+      await _firestore
+          .collection("groups")
+          .document(groupId)
+          .get()
+          .then((value) {
+        groupName = value.data["name"].toString();
+      });
+      print(groupName);
+
       await _firestore.collection("users").document(userModel.uid).updateData({
         'groupId': groupId.trim(),
+        'groupName': groupName.trim(),
       });
 
       retVal = "success";
@@ -118,92 +136,63 @@ class DBFuture {
     return retVal;
   }
 
-  Future<String> addChore(String groupId, String name, String date, String time,
-      String status, String rpt, String assignment) async {
+  Future<String> addChore(Task chore, String groupID) async {
     String retVal = "error";
 
     try {
       DocumentReference _docRef = await _firestore
           .collection("groups")
-          .document(groupId)
+          .document(groupID)
           .collection("chores")
           .add({
-        'choreID': "",
-        'task': name,
-        'date': date,
-        'time': time,
-        'status': status,
-        'rpt': rpt,
-        'assignment': assignment
+        'task': chore.task,
+        'date': chore.date,
+        'time': chore.time,
+        'status': chore.status,
+        'rpt': chore.rpt,
+        'assignment': chore.assignment
       });
       DocumentSnapshot docSnap = await _docRef.get();
 
-      print(docSnap.reference.documentID.toString());
-      String choreID = docSnap.reference.documentID.toString();
-      // //add current book to group schedule
-      // await _firestore.collection("groups").document(groupId).updateData({
-      //   "currentBookId": _docRef.documentID,
-      //   "currentBookDue": chore.time,
-      // });
-
+      //print(docSnap.reference.documentID.toString());
+      chore.choreID = docSnap.reference.documentID.toString();
+      //print("choreID here in DBFuture:" + choreID);
       retVal = "success";
-      updateChore(choreID, groupId, name, date, time, status, rpt, assignment);
-      return choreID;
+      updateChore(groupID, chore);
+      return chore.choreID;
     } catch (e) {
       print(e);
     }
     return retVal;
   }
 
-  Future<String> updateChore(
-      String choreID,
-      String groupId,
-      String name,
-      String date,
-      String time,
-      String status,
-      String rpt,
-      String assignment) async {
+  Future<String> updateChore(String groupId, Task chore) async {
     String retVal = "error";
     try {
       await _firestore
           .collection("groups")
           .document(groupId)
           .collection("chores")
-          .document(choreID)
+          .document(chore.choreID)
           .updateData({
-        'choreID': choreID,
-        'task': name,
-        'date': date,
-        'time': time,
-        'status': status,
-        'rpt': rpt,
-        'assignment': assignment
+        'choreID': chore.choreID,
+        'task': chore.task,
+        'date': chore.date,
+        'time': chore.time,
+        'status': chore.status,
+        'rpt': chore.rpt,
+        'assignment': chore.assignment
       });
 
-      // //add current book to group schedule
-      // await _firestore.collection("groups").document(groupId).updateData({
-      //   "currentBookId": _docRef.documentID,
-      //   "currentBookDue": chore.time,
-      // });
-
       retVal = "success";
+      //return choreID;
     } catch (e) {
       print(e);
     }
-
     return retVal;
   }
 
-  Future<String> completeChore(
-      String choreID,
-      String groupId,
-      String name,
-      String date,
-      String time,
-      String status,
-      String rpt,
-      String assignment) async {
+  Future<String> completeChore(Task chore, String groupId) async {
     String retVal = "error";
     //first add the chore to to completed collection
     try {
@@ -212,13 +201,13 @@ class DBFuture {
           .document(groupId)
           .collection("completedChores")
           .add({
-        'choreID': choreID,
-        'task': name,
-        'date': date,
-        'time': time,
-        'status': status,
-        'rpt': rpt,
-        'assignment': assignment
+        'choreID': chore.choreID,
+        'task': chore.task,
+        'date': chore.date,
+        'time': chore.time,
+        'status': chore.status,
+        'rpt': chore.rpt,
+        'assignment': chore.assignment
       });
       retVal = "success";
     } catch (e) {
@@ -230,7 +219,7 @@ class DBFuture {
           .collection("groups")
           .document(groupId)
           .collection("chores")
-          .document(choreID)
+          .document(chore.choreID)
           .delete();
       retVal = "success";
     } catch (e) {
@@ -249,8 +238,10 @@ class DBFuture {
           .collection("chores")
           .document(choreID)
           .delete();
+      print("chore trying to delete id:" + choreID);
       retVal = "success";
     } catch (e) {
+      print("error deleting");
       print(e);
     }
 
@@ -319,7 +310,6 @@ class DBFuture {
     List<Task> choreList = List<Task>();
 
     try {
-      //THIS DOESN'T WORK FOR SOME REASON
       var choreMapList =
           await getCompletedChoreMapList(groupID); //Get Map List from database
       int count = choreMapList.length;
@@ -336,140 +326,12 @@ class DBFuture {
     return choreList;
   }
 
-  Future<String> addNextBook(String groupId, Task chore) async {
-    String retVal = "error";
-
-    try {
-      DocumentReference _docRef = await _firestore
-          .collection("groups")
-          .document(groupId)
-          .collection("books")
-          .add({
-        'name': chore.task.trim(),
-        'author': chore.assignment.trim(),
-        'length': chore.time,
-        'dateCompleted': chore.date,
-      });
-
-      //add current book to group schedule
-      await _firestore.collection("groups").document(groupId).updateData({
-        "nextBookId": _docRef.documentID,
-        "nextBookDue": chore.date,
-      });
-
-      //adding a notification document
-      DocumentSnapshot doc =
-          await _firestore.collection("groups").document(groupId).get();
-      createNotifications(List<String>.from(doc.data["tokens"]) ?? [],
-          chore.task, chore.assignment);
-
-      retVal = "success";
-    } catch (e) {
-      print(e);
-    }
-
-    return retVal;
-  }
-
-  // Future<String> addCurrentBook(String groupId, BookModel book) async {
-  //   String retVal = "error";
-
-  //   try {
-  //     DocumentReference _docRef = await _firestore
-  //         .collection("groups")
-  //         .document(groupId)
-  //         .collection("books")
-  //         .add({
-  //       'name': book.name.trim(),
-  //       'author': book.author.trim(),
-  //       'length': book.length,
-  //       'dateCompleted': book.dateCompleted,
-  //     });
-
-  //     //add current book to group schedule
-  //     await _firestore.collection("groups").document(groupId).updateData({
-  //       "currentBookId": _docRef.documentID,
-  //       "currentBookDue": book.dateCompleted,
-  //     });
-
-  //     //adding a notification document
-  //     DocumentSnapshot doc =
-  //         await _firestore.collection("groups").document(groupId).get();
-  //     createNotifications(
-  //         List<String>.from(doc.data["tokens"]) ?? [], book.name, book.author);
-
-  //     retVal = "success";
-  //   } catch (e) {
-  //     print(e);
-  //   }
-
-  //   return retVal;
-  // }
-
-  // Future<BookModel> getCurrentBook(String groupId, String bookId) async {
-  //   BookModel retVal;
-
-  //   try {
-  //     DocumentSnapshot _docSnapshot = await _firestore
-  //         .collection("groups")
-  //         .document(groupId)
-  //         .collection("books")
-  //         .document(bookId)
-  //         .get();
-  //     retVal = BookModel.fromDocumentSnapshot(doc: _docSnapshot);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-
-  //   return retVal;
-  // }
-
-  Future<String> finishedBook(
-    String groupId,
-    String bookId,
-    String uid,
-    int rating,
-    String review,
-  ) async {
-    String retVal = "error";
-    try {
-      await _firestore
-          .collection("groups")
-          .document(groupId)
-          .collection("books")
-          .document(bookId)
-          .collection("reviews")
-          .document(uid)
-          .setData({
-        'rating': rating,
-        'review': review,
-      });
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
-  }
-
-  Future<bool> isUserDoneWithBook(
-      String groupId, String bookId, String uid) async {
-    bool retVal = false;
-    try {
-      DocumentSnapshot _docSnapshot = await _firestore
-          .collection("groups")
-          .document(groupId)
-          .collection("books")
-          .document(bookId)
-          .collection("reviews")
-          .document(uid)
-          .get();
-
-      if (_docSnapshot.exists) {
-        retVal = true;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
+  Future<List<String>> getUserList(String groupID) async {
+    DocumentSnapshot document =
+        await _firestore.collection("groups").document(groupID).get();
+    List<String> userList = List.from(document['memberNames']);
+    print(userList);
+    return userList;
   }
 
   Future<String> createUser(UserModel user) async {

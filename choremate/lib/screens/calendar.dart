@@ -6,7 +6,6 @@ import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
 import 'package:choremate/models/task.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';

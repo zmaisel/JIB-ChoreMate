@@ -34,10 +34,7 @@ dependencies:
 
   table_calendar: ^2.3.3
 
-  cloud_firestore: ^0.11.0+2
-  firebase_core: ^0.4.0+9
-  firebase_messaging:
-  firebase_auth:
+  
   provider:
 
 
@@ -55,6 +52,10 @@ dev_dependencies:
   intl: ^0.16.1
   intl_translation: ^0.17.2
   flutter_launcher_icons: "^0.7.2"
+  cloud_firestore: ^0.13.5
+  firebase_core: ^0.4.4+3
+  firebase_messaging:
+  firebase_auth: ^0.16.0
 
 
 # For information on the generic Dart part of this file, see the
