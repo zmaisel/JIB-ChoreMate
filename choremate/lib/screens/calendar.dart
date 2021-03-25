@@ -174,15 +174,6 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
                 (route) => false,
               );
               break;
-            case 2:
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => calendar(),
-                ),
-                (route) => false,
-              );
-              break;
             case 3:
               Navigator.pushAndRemoveUntil(
                 context,

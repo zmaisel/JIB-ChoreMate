@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
@@ -14,8 +14,10 @@ import 'package:choremate/screens/reminders.dart';
 class new_message extends StatefulWidget {
   final String appBarTitle;
   final Message message;
+  final UserModel currentUser;
+
   reminders_state remindersState;
-  new_message(this.message, this.appBarTitle, this.remindersState);
+  new_message(this.message, this.appBarTitle, this.remindersState, this.currentUser);
   bool _isEditable = false;
 
   @override
@@ -190,7 +192,7 @@ class message_state extends State<new_message> {
     });
 
     if (_checkNotNull() == true) {
-      message.messageID = await DBFuture().addReminder(this.currentGroup, message.message);    
+      message.messageID = await DBFuture().addReminder(widget.currentUser.groupId, message.message);    
         var rng = new Random();
 
       remindersState.updateListView();
@@ -216,7 +218,7 @@ class message_state extends State<new_message> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
-                  await DBFuture().deleteReminder(currentGroup, message.messageID);
+                  await DBFuture().deleteReminder(widget.currentUser.groupId, message.messageID);
                   remindersState.updateListView();
                   Navigator.pop(context);
                   Navigator.pop(context);

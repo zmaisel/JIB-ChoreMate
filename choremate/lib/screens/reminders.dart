@@ -97,14 +97,6 @@ class reminders_state extends State<reminders> {
                 },
               )
             ],
-            bottom: TabBar(tabs: [
-              Tab(
-                icon: Icon(Icons.format_list_numbered_rtl),
-              ),
-              Tab(
-                icon: Icon(Icons.playlist_add_check),
-              )
-            ]),
           ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: index, // this will be set when a new tab is tapped
@@ -126,7 +118,7 @@ class reminders_state extends State<reminders> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => reminders(userModel: widget.userModel),
+                      builder: (context) => todo(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
@@ -137,16 +129,6 @@ class reminders_state extends State<reminders> {
                     MaterialPageRoute(
                       builder: (context) =>
                           calendar(userModel: widget.userModel),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-                case 3:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          reminders(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
@@ -212,8 +194,6 @@ class reminders_state extends State<reminders> {
                                       elevation: 2.0,
                                       child: CustomWidget(
                                         title: snapshot.data[position].message,
-                                        delete:
-                                            Container(),
                                         trailing: Icon(
                                           Icons.edit,
                                           color: Theme.of(context).primaryColor,
@@ -221,7 +201,7 @@ class reminders_state extends State<reminders> {
                                         ),
                                       ),
                                     ) //Card
-                                    );
+                                );
                               });
                         }
                       },
@@ -251,7 +231,8 @@ class reminders_state extends State<reminders> {
     print(message.message);
     bool result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => new_message(message, title, obj)),
+      MaterialPageRoute(
+          builder: (context) => new_message(message, title, obj, widget.userModel)),
     );
     if (result == true) {
       updateListView();

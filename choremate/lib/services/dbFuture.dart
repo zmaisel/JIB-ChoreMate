@@ -391,7 +391,7 @@ class DBFuture {
       String messageID = docSnap.reference.documentID.toString();
 
       retVal = "success";
-      updateReminder(messageID, groupId, name);
+      //updateReminder(messageID, groupId, name);
       return messageID;
     } catch (e) {
       print(e);
@@ -411,7 +411,7 @@ class DBFuture {
           .collection("reminders")
           .document(messageID)
           .updateData({
-        'messageID': messageID,
+        //'messageID': messageID,
         'message': name,
       });
       retVal = "success";

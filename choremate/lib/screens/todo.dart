@@ -122,15 +122,6 @@ class todo_state extends State<todo> {
                     (route) => false,
                   );
                   break;
-                case 1:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => todo(userModel: widget.userModel),
-                    ),
-                    (route) => false,
-                  );
-                  break;
                 case 2:
                   Navigator.pushAndRemoveUntil(
                     context,
