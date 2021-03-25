@@ -60,9 +60,11 @@ class task_state extends State<new_task> {
 
   @override
   Widget build(BuildContext context) {
-    taskController.text = task.task;
+    Color green = const Color(0xFFa8e1a6);
+    Color blue = const Color(0xFF5ac9fc);
     getGroupMembers();
-    dropdownValue = userList.elementAt(0);
+    taskController.text = task.task;
+    //dropdownValue = userList.first;
 
     return Scaffold(
         key: scaffoldkey,
@@ -75,6 +77,7 @@ class task_state extends State<new_task> {
             },
           ),
           title: Text(appBarTitle, style: TextStyle(fontSize: 25)),
+          backgroundColor: blue,
         ),
         body: ListView(children: <Widget>[
           Padding(
@@ -121,26 +124,31 @@ class task_state extends State<new_task> {
           ),
           Padding(
               padding: EdgeInsets.all(_minPadding),
-              child: DropdownButton<String>(
-                value: dropdownValue,
-                icon: const Icon(Icons.arrow_downward),
-                underline: Container(
-                  height: 2,
-                  color: Colors.blueAccent,
-                ),
-                onChanged: (String newValue) {
-                  setState(() {
-                    dropdownValue = newValue;
-                    task.assignment = newValue;
-                  });
-                },
-                items: userList.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              )),
+              child: FutureBuilder(
+                  future: DBFuture().getUserList(widget.currentUser.groupId),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.data == null) {
+                      return Text("Loading");
+                    }
+                    return DropdownButton<String>(
+                      value: dropdownValue,
+                      icon: const Icon(Icons.arrow_drop_down_outlined),
+                      underline: Container(height: 2, color: Colors.grey),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                          task.assignment = newValue;
+                        });
+                      },
+                      items: userList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    );
+                  })),
           ListTile(
             title: task.date.isEmpty
                 ? Text(
@@ -247,7 +255,7 @@ class task_state extends State<new_task> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50.0)),
               padding: EdgeInsets.all(_minPadding / 2),
-              color: Theme.of(context).primaryColor,
+              color: blue,
               textColor: Colors.white,
               elevation: 5.0,
               child: Text(

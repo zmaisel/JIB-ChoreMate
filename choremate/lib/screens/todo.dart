@@ -317,7 +317,7 @@ class todo_state extends State<todo> {
   void navigateToTask(Task task, String title, todo_state obj) async {
     //null ones are what we need to fix in order to make this work
     // print(task.assignment);
-    print(task.choreID); // this is null and causing problems
+    //print(task.choreID); // this is null and causing problems
     // print(task.date);
     // print(task.id); //null
     // print(task.rpt); //null
@@ -325,6 +325,7 @@ class todo_state extends State<todo> {
     // print(task.task);
     // print(task.time);
     // print(task.value); //null
+
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(

@@ -80,6 +80,7 @@ class DBFuture {
     List<String> memberNames = List();
     try {
       members.add(userModel.uid);
+      memberNames.add(userModel.fullName);
       //tokens.add(userModel.notifToken);
       await _firestore.collection("groups").document(groupId).updateData({
         'members': FieldValue.arrayUnion(members),
