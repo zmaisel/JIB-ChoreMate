@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
@@ -46,7 +45,6 @@ class task_state extends State<new_task> {
 
   final scaffoldkey = GlobalKey<ScaffoldState>();
 
-  DatabaseHelper helper = DatabaseHelper();
   Utils utility = new Utils();
   TextEditingController taskController = new TextEditingController();
   TextEditingController assignmentController = new TextEditingController();
@@ -56,14 +54,13 @@ class task_state extends State<new_task> {
   var _minPadding = 10.0;
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay();
-  List<String> userList = List();
+  List<String> userList;
 
   String dropdownValue;
 
   @override
   Widget build(BuildContext context) {
     taskController.text = task.task;
-    assignmentController.text = task.assignment;
     getGroupMembers();
     dropdownValue = userList.elementAt(0);
 
@@ -332,83 +329,36 @@ class task_state extends State<new_task> {
 
   String currentGroup = "";
   String choreID = "";
-  void _save() async {
+  _save() async {
     int result;
     String retString;
 
-    //task.task = taskController.text;
-    //task.date = formattedDate;
-    Firestore _firestore = Firestore.instance;
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser currentUser = await _auth.currentUser();
-
-    _firestore
-        .collection("users")
-        .document(currentUser.uid)
-        .get()
-        .then((value) {
-      this.currentGroup = value.data["groupId"].toString();
-      print("currentgroupid " + value.data["groupId"]);
-    });
     if (_isEditable()) {
       if (marked) {
         task.status = "Task Completed";
-        DBFuture().completeChore(
-            task.choreID,
-            widget.currentUser.groupId,
-            task.task,
-            task.date,
-            task.time,
-            task.status,
-            task.rpt,
-            task.assignment);
-      } else
+        //print("when completing, task id:" + task.choreID);
+        DBFuture().completeChore(task, widget.currentUser.groupId);
+      } else {
         task.status = "";
+        retString =
+            await DBFuture().updateChore(widget.currentUser.groupId, task);
+      }
+    } else if (_checkNotNull() == true) {
+      task.choreID =
+          await DBFuture().addChore(task, widget.currentUser.groupId);
+      print("choreID here in newchore code: " + task.choreID);
+
+      //print(task.id);
     }
-    if (_checkNotNull() == true) {
-      if (task.id != null) {
-        retString = await DBFuture().updateChore(
-            task.choreID,
-            widget.currentUser.groupId,
-            task.task,
-            task.date,
-            task.time,
-            task.status,
-            task.rpt,
-            task.assignment);
-      } else {
-        print("crashing right before adding chore");
-        print(widget.currentUser.groupId);
-        print(task.task);
-        print(task.date);
-        print(task.time);
-        print(task.status);
-        print(task.rpt);
-        print(task.assignment);
-        task.choreID = await DBFuture().addChore(
-            widget.currentUser.groupId,
-            task.task,
-            task.date,
-            task.time,
-            task.status,
-            task.rpt,
-            task.assignment);
-        //print("choreID: " + task.choreID);
-        print("crashing right after chore");
-        var rng = new Random();
-        task.id = rng.nextInt(100);
-        print(task.id);
-      }
 
-      todoState.updateListView();
+    todoState.updateListView();
 
-      Navigator.pop(context);
+    Navigator.pop(context);
 
-      if (result != 0) {
-        utility.showAlertDialog(context, 'Status', 'Chore saved successfully.');
-      } else {
-        utility.showAlertDialog(context, 'Status', 'Problem saving task.');
-      }
+    if (result != 0) {
+      utility.showAlertDialog(context, 'Status', 'Chore saved successfully.');
+    } else {
+      utility.showAlertDialog(context, 'Status', 'Problem saving task.');
     }
   } //_save()
 
@@ -423,6 +373,7 @@ class task_state extends State<new_task> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
+                  print(task.choreID);
                   await DBFuture()
                       .deleteChore(widget.currentUser.groupId, task.choreID);
                   todoState.updateListView();
@@ -446,7 +397,5 @@ class task_state extends State<new_task> {
 
   void getGroupMembers() async {
     userList = await DBFuture().getUserList(widget.currentUser.groupId);
-    //print("called the function");
-    //print(userList);
   }
 } //class task_state

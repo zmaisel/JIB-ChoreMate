@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
 import 'package:choremate/models/task.dart';
-import 'package:choremate/utilities/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
@@ -30,7 +29,6 @@ class todo extends StatefulWidget {
 }
 
 class todo_state extends State<todo> {
-  DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
@@ -319,7 +317,7 @@ class todo_state extends State<todo> {
   void navigateToTask(Task task, String title, todo_state obj) async {
     //null ones are what we need to fix in order to make this work
     // print(task.assignment);
-    // print(task.choreID);
+    print(task.choreID); // this is null and causing problems
     // print(task.date);
     // print(task.id); //null
     // print(task.rpt); //null
