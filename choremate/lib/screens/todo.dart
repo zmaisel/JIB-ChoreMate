@@ -195,7 +195,7 @@ class todo_state extends State<todo> {
                           widget.userModel.groupId, widget.userModel.uid),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.data == null) {
-                          return Text("Loading");
+                          return Text("Please select a Chore List to view");
                         } else {
                           if (snapshot.data.length < 1) {
                             return Center(
