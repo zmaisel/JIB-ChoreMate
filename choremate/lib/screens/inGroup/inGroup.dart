@@ -163,6 +163,20 @@ class InGroupState extends State<InGroup> {
           height: 40,
         ),
         Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ShadowContainer(
+                child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.person),
+                ),
+                Text(widget.userModel.email,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))
+              ],
+            ))),
+        Padding(
           padding: const EdgeInsets.all(10.0),
           child: ShadowContainer(
             child: Column(

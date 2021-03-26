@@ -118,12 +118,15 @@ class DBFuture {
     String retVal = "error";
     List<String> members = List();
     List<String> tokens = List();
+    List<String> memberNames = List();
     try {
       members.add(userModel.uid);
+      memberNames.add(userModel.fullName);
       //tokens.add(userModel.notifToken);
       await _firestore.collection("groups").document(groupId).updateData({
         'members': FieldValue.arrayRemove(members),
         'tokens': FieldValue.arrayRemove(tokens),
+        'memberNames': FieldValue.arrayRemove(memberNames),
       });
 
       await _firestore.collection("users").document(userModel.uid).updateData({
@@ -136,7 +139,8 @@ class DBFuture {
     return retVal;
   }
 
-  Future<String> addChore(Task chore, String groupID) async {
+  Future<String> addChore(
+      Task chore, String groupID, String fullName, String uid) async {
     String retVal = "error";
 
     try {
@@ -159,11 +163,45 @@ class DBFuture {
       //print("choreID here in DBFuture:" + choreID);
       retVal = "success";
       updateChore(groupID, chore);
-      return chore.choreID;
     } catch (e) {
       print(e);
     }
-    return retVal;
+    if (chore.assignment.contains(fullName)) {
+      await _firestore
+          .collection("users")
+          .document(uid)
+          .collection("chores")
+          .add({
+        'task': chore.task,
+        'date': chore.date,
+        'time': chore.time,
+        'status': chore.status,
+        'rpt': chore.rpt,
+        'assignment': chore.assignment
+      });
+    } else {
+      List<String> userList = await getUserList(groupID);
+      for (int i = 0; i < userList.length; i++) {
+        if (userList.elementAt(i).contains(chore.assignment)) {
+          List<String> uidList = await getUIDList(groupID);
+
+          await _firestore
+              .collection("users")
+              .document(uidList.elementAt(i))
+              .collection("chores")
+              .add({
+            'task': chore.task,
+            'date': chore.date,
+            'time': chore.time,
+            'status': chore.status,
+            'rpt': chore.rpt,
+            'assignment': chore.assignment
+          });
+        }
+      }
+    }
+    return chore.choreID;
+    //return retVal;
   }
 
   Future<String> updateChore(String groupId, Task chore) async {
@@ -326,11 +364,69 @@ class DBFuture {
     return choreList;
   }
 
+  Future<List<Task>> determineChoreList(
+      String value, String groupID, String uid) async {
+    List<Task> retList = List();
+    print("dropdownValue:" + value);
+    if (value.compareTo("My Chores") == 0) {
+      retList = await getUserChoreList(uid);
+    } else {
+      retList = await getChoreList(groupID);
+      print(retList);
+    }
+    return retList;
+  }
+
+  Future<List<Map<String, dynamic>>> getUserChoreMapList(String uid) async {
+    final QuerySnapshot result = await _firestore
+        .collection("users")
+        .document(uid)
+        .collection("chores")
+        .getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    var choreMapList = List<Map<String, dynamic>>();
+    for (int i = 0; i < documents.length; i++) {
+      choreMapList.add(documents.elementAt(i).data);
+    }
+
+    return choreMapList;
+  }
+
+  //get the chore list to display
+  Future<List<Task>> getUserChoreList(String uid) async {
+    List<Task> choreList = List<Task>();
+
+    try {
+      //THIS DOESN'T WORK FOR SOME REASON
+      var choreMapList =
+          await getUserChoreMapList(uid); //Get Map List from database
+      int count = choreMapList.length;
+
+      //For loop to create Task List from a Map List
+      for (int i = 0; i < count; i++) {
+        choreList.add(Task.fromMapObject(choreMapList[i]));
+        //choreList[i].
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return choreList;
+  }
+
   Future<List<String>> getUserList(String groupID) async {
     DocumentSnapshot document =
         await _firestore.collection("groups").document(groupID).get();
     List<String> userList = List.from(document['memberNames']);
     print(userList);
+    return userList;
+  }
+
+  Future<List<String>> getUIDList(String groupID) async {
+    DocumentSnapshot document =
+        await _firestore.collection("groups").document(groupID).get();
+    List<String> userList = List.from(document['members']);
+
     return userList;
   }
 

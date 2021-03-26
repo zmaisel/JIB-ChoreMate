@@ -352,8 +352,8 @@ class task_state extends State<new_task> {
             await DBFuture().updateChore(widget.currentUser.groupId, task);
       }
     } else if (_checkNotNull() == true) {
-      task.choreID =
-          await DBFuture().addChore(task, widget.currentUser.groupId);
+      task.choreID = await DBFuture().addChore(task, widget.currentUser.groupId,
+          widget.currentUser.fullName, widget.currentUser.uid);
       print("choreID here in newchore code: " + task.choreID);
 
       //print(task.id);
