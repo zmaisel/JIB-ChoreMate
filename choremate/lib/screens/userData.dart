@@ -1,18 +1,7 @@
-import 'package:choremate/custom%20widgets/CustomWidget.dart';
-import 'package:choremate/models/groupModel.dart';
 import 'package:choremate/models/userModel.dart';
-import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/root/root.dart';
-import 'package:choremate/services/auth.dart';
 import 'package:choremate/services/dbFuture.dart';
-import 'package:choremate/services/dbStream.dart';
-//import 'package:choremate/states/currentUser.dart';
-import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/models/task.dart';
 

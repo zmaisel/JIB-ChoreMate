@@ -1,7 +1,6 @@
 import 'package:choremate/models/task.dart';
 //import 'package:choremate/models/reviewModel.dart';
 import 'package:choremate/models/userModel.dart';
-import 'package:choremate/states/currentUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';

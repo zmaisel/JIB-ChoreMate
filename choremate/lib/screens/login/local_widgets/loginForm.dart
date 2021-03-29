@@ -3,9 +3,8 @@ import 'package:choremate/screens/signUp/signup.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/states/currentUser.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 enum LoginType {
   email,

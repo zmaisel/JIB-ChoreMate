@@ -1,12 +1,12 @@
-import 'package:choremate/custom%20widgets/CustomWidget.dart';
+//import 'package:choremate/custom%20widgets/CustomWidget.dart';
 import 'package:choremate/models/groupModel.dart';
 import 'package:choremate/models/userModel.dart';
-import 'package:choremate/screens/createGroup/createGroup.dart';
+//import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/groupDetails.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
-import 'package:choremate/services/dbFuture.dart';
-import 'package:choremate/services/dbStream.dart';
+//import 'package:choremate/services/dbFuture.dart';
+//import 'package:choremate/services/dbStream.dart';
 //import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../home_widget.dart';
+//import '../home_widget.dart';
 import '../todo.dart';
 import 'package:choremate/screens/calendar.dart';
 
@@ -37,23 +37,6 @@ class InGroupState extends State<InGroup> {
 
   void _signOut(BuildContext context) async {
     String _returnString = await Auth().signOut();
-    if (_returnString == "success") {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OurRoot(),
-        ),
-        (route) => false,
-      );
-    }
-  }
-
-  void _leaveGroup(BuildContext context) async {
-    GroupModel group = Provider.of<GroupModel>(context, listen: false);
-    //UserModel user = Provider.of<UserModel>(context, listen: false);
-    //print(group);
-    String _returnString =
-        await DBFuture().leaveGroup(widget.userModel.groupId, widget.userModel);
     if (_returnString == "success") {
       Navigator.pushAndRemoveUntil(
         context,

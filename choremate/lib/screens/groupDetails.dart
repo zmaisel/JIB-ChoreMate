@@ -1,19 +1,8 @@
-import 'package:choremate/custom%20widgets/CustomWidget.dart';
-import 'package:choremate/models/groupModel.dart';
 import 'package:choremate/models/userModel.dart';
-import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/userData.dart';
-import 'package:choremate/services/auth.dart';
 import 'package:choremate/services/dbFuture.dart';
-import 'package:choremate/services/dbStream.dart';
-//import 'package:choremate/states/currentUser.dart';
-import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/screens/calendar.dart';
 
@@ -37,7 +26,7 @@ class GroupDetailsState extends State<GroupDetails> {
   }
 
   void _leaveGroup(BuildContext context) async {
-    GroupModel group = Provider.of<GroupModel>(context, listen: false);
+    //GroupModel group = Provider.of<GroupModel>(context, listen: false);
     //UserModel user = Provider.of<UserModel>(context, listen: false);
     //print(group);
     String _returnString =
@@ -53,82 +42,6 @@ class GroupDetailsState extends State<GroupDetails> {
     }
   }
 
-  Future<List<String>> _listGroupMembers() async {
-    // var futureValue = DBFuture().listGroupMembers();
-    // DocumentSnapshot currentGroup;
-    // futureValue.then((DocumentSnapshot result){
-    //   setState(() {
-    //     currentGroup = result;
-    //    });
-    //   });
-    // var listMembers = currentGroup.data;
-    // var listf = listMembers.values.take(20);
-    // List members = listf.toList(growable: true);
-    // print(members.toString());
-    //   if(members.length > 4){
-    //     members.removeAt(0);
-    //     members.removeAt(0);
-    //     members.removeAt(0);
-    //     members.removeAt(0);
-    //     List membersList = members.elementAt(0);
-    //     for(int i = 0; i < membersList.length; i++){
-    //       String memberID = membersList.elementAt(i).toString();
-
-    //       print(currentGroup.reference.documentID + "  :::::  " + memberID  + "  :::::  ");
-    //     }
-    //   }
-    Firestore _firestore = Firestore.instance;
-    QuerySnapshot querySnapshot =
-        await _firestore.collection("groups").getDocuments();
-    var list = querySnapshot.documents;
-    List<String> memberIDs = new List<String>();
-
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser _firebaseUser = await _auth.currentUser();
-    print(_firebaseUser.uid);
-    bool cont = true;
-    for (int j = 0; j < list.length; j++) {
-      memberIDs.clear();
-      var listMembers = list[j].data;
-      var listf = listMembers.values.take(20);
-      List members = listf.toList(growable: true);
-      if (members.length > 4) {
-        members.removeAt(0);
-        members.removeAt(0);
-        members.removeAt(0);
-        members.removeAt(0);
-        List membersList = members.elementAt(0);
-        for (int i = 0; i < membersList.length; i++) {
-          String memberID = membersList.elementAt(i).toString();
-          memberIDs.add(memberID);
-          print(list[j].reference.documentID +
-              "  :::::  " +
-              memberID +
-              "  :::::  ");
-          if (_firebaseUser.uid == memberID) {
-            cont = false;
-          }
-        }
-        if (!cont) {
-          break;
-        }
-      }
-    }
-    print(memberIDs.toString());
-    return memberIDs;
-  }
-
-  // void _goToBookHistory() {
-  //   GroupModel group = Provider.of<GroupModel>(context, listen: false);
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => BookHistory(
-  //         groupId: group.id,
-  //       ),
-  //     ),
-  //   );
-  // }
   int index = 0;
 
   @override
