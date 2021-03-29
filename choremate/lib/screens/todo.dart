@@ -34,7 +34,7 @@ class todo_state extends State<todo> {
   int count = 0;
   int index = 1;
   String _themeType;
-  String dropdownValue;
+  String dropdownValue = "My Chores";
 
   final homeScaffold = GlobalKey<ScaffoldState>();
 
@@ -329,7 +329,7 @@ class todo_state extends State<todo> {
               backgroundColor: green,
               onPressed: () {
                 navigateToTask(
-                    Task('', '', '', '', '', Repeating.start, '', ''),
+                    Task('', '', '', '', '', Repeating.start, '', '', '', ''),
                     "Add Chore",
                     this);
               }), //FloatingActionButton
@@ -365,7 +365,7 @@ class todo_state extends State<todo> {
     String groupId = await DBFuture().getCurrentGroup();
     List<Task> choreList = await DBFuture().determineChoreList(
         dropdownValue, widget.userModel.groupId, widget.userModel.uid);
-    print(choreList);
+    //print(choreList);
     // if (dropdownValue.compareTo("My Chores") == 0) {
     //   choreList = await DBFuture().getUserChoreList(widget.userModel.uid);
     //   print("doing this");

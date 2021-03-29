@@ -38,7 +38,7 @@ class DBFuture {
       tokens.add(user.notifToken);
       DocumentReference _docRef;
       if (user.notifToken != null) {
-        print("made it here!");
+        //print("made it here!");
         _docRef = await _firestore.collection("groups").add({
           'name': groupName.trim(),
           'leader': user.uid,
@@ -139,7 +139,7 @@ class DBFuture {
     return retVal;
   }
 
-  Future<String> addChore(
+  Future<Task> addChore(
       Task chore, String groupID, String fullName, String uid) async {
     String retVal = "error";
 
@@ -162,46 +162,46 @@ class DBFuture {
       chore.choreID = docSnap.reference.documentID.toString();
       //print("choreID here in DBFuture:" + choreID);
       retVal = "success";
-      updateChore(groupID, chore);
     } catch (e) {
       print(e);
     }
-    if (chore.assignment.contains(fullName)) {
-      await _firestore
-          .collection("users")
-          .document(uid)
-          .collection("chores")
-          .add({
-        'task': chore.task,
-        'date': chore.date,
-        'time': chore.time,
-        'status': chore.status,
-        'rpt': chore.rpt,
-        'assignment': chore.assignment
-      });
-    } else {
-      List<String> userList = await getUserList(groupID);
-      for (int i = 0; i < userList.length; i++) {
-        if (userList.elementAt(i).contains(chore.assignment)) {
-          List<String> uidList = await getUIDList(groupID);
+    chore.assignmentUID = await getAssignment(groupID, chore);
+    //chore.choreIDUser = await assignChore(chore);
+    updateChore(groupID, chore);
+    return chore;
+    //return retVal;
+  }
 
-          await _firestore
-              .collection("users")
-              .document(uidList.elementAt(i))
-              .collection("chores")
-              .add({
-            'task': chore.task,
-            'date': chore.date,
-            'time': chore.time,
-            'status': chore.status,
-            'rpt': chore.rpt,
-            'assignment': chore.assignment
-          });
-        }
+  Future<String> getAssignment(String groupID, Task chore) async {
+    List<String> userList = await getUserList(groupID);
+    String uidAssigned;
+    for (int i = 0; i < userList.length; i++) {
+      if (userList.elementAt(i).contains(chore.assignment)) {
+        List<String> uidList = await getUIDList(groupID);
+        uidAssigned = uidList.elementAt(i);
       }
     }
-    return chore.choreID;
-    //return retVal;
+    return uidAssigned;
+  }
+
+  Future<String> assignChore(Task chore) async {
+    DocumentReference doc = await _firestore
+        .collection("users")
+        .document(chore.assignmentUID)
+        .collection("chores")
+        .add({
+      //'choreID': chore.choreID,
+      'task': chore.task,
+      'date': chore.date,
+      'time': chore.time,
+      'status': chore.status,
+      'rpt': chore.rpt,
+      'assignment': chore.assignment,
+      'assignmentUID': chore.assignmentUID
+    });
+    DocumentSnapshot docSnap = await doc.get();
+    chore.choreIDUser = docSnap.reference.documentID.toString();
+    return chore.choreIDUser;
   }
 
   Future<String> updateChore(String groupId, Task chore) async {
@@ -219,7 +219,8 @@ class DBFuture {
         'time': chore.time,
         'status': chore.status,
         'rpt': chore.rpt,
-        'assignment': chore.assignment
+        'assignment': chore.assignment,
+        'assignmentUID': chore.assignmentUID,
       });
 
       retVal = "success";
@@ -230,7 +231,7 @@ class DBFuture {
     return retVal;
   }
 
-  Future<String> completeChore(Task chore, String groupId) async {
+  Future<String> completeChore(Task chore, String groupId, String uid) async {
     String retVal = "error";
     //first add the chore to to completed collection
     try {
@@ -245,7 +246,8 @@ class DBFuture {
         'time': chore.time,
         'status': chore.status,
         'rpt': chore.rpt,
-        'assignment': chore.assignment
+        'assignment': chore.assignment,
+        'assignmentUID': chore.assignmentUID
       });
       retVal = "success";
     } catch (e) {
@@ -260,9 +262,25 @@ class DBFuture {
           .document(chore.choreID)
           .delete();
       retVal = "success";
+      //print(retVal);
     } catch (e) {
+      print("not deleting");
       print(e);
     }
+    //delete the chore from the assigned user's chore list
+    // try {
+    //   print(chore.choreIDUser);
+    //   await _firestore
+    //       .collection("users")
+    //       .document(chore.assignmentUID)
+    //       .collection("chores")
+    //       .document(chore.choreIDUser)
+    //       .delete();
+    //   retVal = "success";
+    //   //print(chore.choreIDUser);
+    // } catch (e) {
+    //   print(e);
+    // }
 
     return retVal;
   }
@@ -276,10 +294,8 @@ class DBFuture {
           .collection("chores")
           .document(choreID)
           .delete();
-      print("chore trying to delete id:" + choreID);
       retVal = "success";
     } catch (e) {
-      print("error deleting");
       print(e);
     }
 
@@ -317,7 +333,7 @@ class DBFuture {
         //choreList[i].
       }
     } catch (e) {
-      print("Here is what isn't working.");
+      //print("Here is what isn't working.");
       print(e);
     }
 
@@ -357,7 +373,7 @@ class DBFuture {
         choreList.add(Task.fromMapObject(choreMapList[i]));
       }
     } catch (e) {
-      print("Here is what isn't working.");
+      //print("Here is what isn't working.");
       print(e);
     }
 
@@ -367,9 +383,9 @@ class DBFuture {
   Future<List<Task>> determineChoreList(
       String value, String groupID, String uid) async {
     List<Task> retList = List();
-    print("dropdownValue:" + value);
+    //print("dropdownValue:" + value);
     if (value.compareTo("My Chores") == 0) {
-      retList = await getUserChoreList(uid);
+      retList = await getUserChoreList(uid, groupID);
     } else {
       retList = await getChoreList(groupID);
       print(retList);
@@ -377,29 +393,29 @@ class DBFuture {
     return retList;
   }
 
-  Future<List<Map<String, dynamic>>> getUserChoreMapList(String uid) async {
-    final QuerySnapshot result = await _firestore
-        .collection("users")
-        .document(uid)
-        .collection("chores")
-        .getDocuments();
-    final List<DocumentSnapshot> documents = result.documents;
-    var choreMapList = List<Map<String, dynamic>>();
-    for (int i = 0; i < documents.length; i++) {
-      choreMapList.add(documents.elementAt(i).data);
-    }
+  // Future<List<Map<String, dynamic>>> getUserChoreMapList(String uid) async {
+  //   final QuerySnapshot result = await _firestore
+  //       .collection("users")
+  //       .document(uid)
+  //       .collection("chores")
+  //       .getDocuments();
+  //   final List<DocumentSnapshot> documents = result.documents;
+  //   var choreMapList = List<Map<String, dynamic>>();
+  //   for (int i = 0; i < documents.length; i++) {
+  //     choreMapList.add(documents.elementAt(i).data);
+  //   }
 
-    return choreMapList;
-  }
+  //   return choreMapList;
+  // }
 
   //get the chore list to display
-  Future<List<Task>> getUserChoreList(String uid) async {
+  Future<List<Task>> getUserChoreList(String uid, String groupID) async {
     List<Task> choreList = List<Task>();
+    List<Task> userChoreList = List<Task>();
 
     try {
-      //THIS DOESN'T WORK FOR SOME REASON
       var choreMapList =
-          await getUserChoreMapList(uid); //Get Map List from database
+          await getChoreMapList(groupID); //Get Map List from database
       int count = choreMapList.length;
 
       //For loop to create Task List from a Map List
@@ -407,11 +423,44 @@ class DBFuture {
         choreList.add(Task.fromMapObject(choreMapList[i]));
         //choreList[i].
       }
+
+      for (int i = 0; i < count; i++) {
+        if (choreList.elementAt(i).assignmentUID.compareTo(uid) == 0) {
+          userChoreList.add(choreList.elementAt(i));
+        }
+      }
     } catch (e) {
       print(e);
     }
 
-    return choreList;
+    return userChoreList;
+  }
+
+  Future<List<Task>> getUserCompletedList(String uid, String groupID) async {
+    List<Task> choreList = List<Task>();
+    List<Task> userChoreList = List<Task>();
+
+    try {
+      var choreMapList =
+          await getCompletedChoreMapList(groupID); //Get Map List from database
+      int count = choreMapList.length;
+
+      //For loop to create Task List from a Map List
+      for (int i = 0; i < count; i++) {
+        choreList.add(Task.fromMapObject(choreMapList[i]));
+        //choreList[i].
+      }
+
+      for (int i = 0; i < count; i++) {
+        if (choreList.elementAt(i).assignmentUID.compareTo(uid) == 0) {
+          userChoreList.add(choreList.elementAt(i));
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return userChoreList;
   }
 
   Future<List<String>> getUserList(String groupID) async {

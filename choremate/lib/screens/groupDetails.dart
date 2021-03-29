@@ -3,6 +3,7 @@ import 'package:choremate/models/groupModel.dart';
 import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/createGroup/createGroup.dart';
 import 'package:choremate/screens/root/root.dart';
+import 'package:choremate/screens/userData.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:choremate/services/dbStream.dart';
@@ -312,16 +313,18 @@ class GroupDetailsState extends State<GroupDetails> {
                     itemBuilder: (BuildContext context, int position) {
                       return new GestureDetector(
                           onTap: () {
-                            // if (snapshot.data[position].status !=
-                            //     "Chore Completed")
-                            //   navigateToTask(snapshot.data[position],
-                            //       "Edit Chore", this);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      UserData(userModel: widget.userModel),
+                                ));
                           },
                           child: Card(
                               margin: EdgeInsets.all(1.0),
                               elevation: 2.0,
                               child: ListTile(
-                                  leading: Icon(Icons.person),
+                                  leading: Icon(Icons.person, color: blue),
                                   title: Text(snapshot.data[position]),
                                   trailing:
                                       Icon(Icons.arrow_forward_ios))) //Card
@@ -329,14 +332,6 @@ class GroupDetailsState extends State<GroupDetails> {
                     });
               }
             },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20),
-          child: RaisedButton(
-            child: Text("Leave Group"),
-            onPressed: () => _leaveGroup(context),
-            //color: green,
           ),
         ),
       ]),
