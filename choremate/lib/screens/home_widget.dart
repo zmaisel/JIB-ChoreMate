@@ -1,18 +1,18 @@
-import 'package:choremate/models/groupModel.dart';
-import 'package:choremate/models/userModel.dart';
-import 'package:choremate/screens/createGroup/createGroup.dart';
-import 'package:choremate/screens/noGroup/noGroup.dart';
+//import 'package:choremate/models/groupModel.dart';
+//import 'package:choremate/models/userModel.dart';
+//import 'package:choremate/screens/createGroup/createGroup.dart';
+//import 'package:choremate/screens/noGroup/noGroup.dart';
 //import 'package:choremate/screens/root.dart';
 import 'package:choremate/services/auth.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/screens/calendar.dart';
 
-import 'inGroup/inGroup.dart';
+//import 'inGroup/inGroup.dart';
 
 void main() => runApp(Home());
 

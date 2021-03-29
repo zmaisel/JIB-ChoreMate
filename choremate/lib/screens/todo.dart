@@ -1,20 +1,15 @@
 import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/dbFuture.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
-import 'dart:async';
 import 'package:choremate/models/task.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
-
-import 'home_widget.dart';
 
 class todo extends StatefulWidget {
   //final bool darkThemeEnabled;
@@ -34,6 +29,8 @@ class todo_state extends State<todo> {
   int count = 0;
   int index = 1;
   String _themeType;
+  String dropdownValue = "My Chores";
+
   final homeScaffold = GlobalKey<ScaffoldState>();
 
   @override
@@ -168,13 +165,32 @@ class todo_state extends State<todo> {
               padding: EdgeInsets.all(8.0),
               child: ListView(
                 children: <Widget>[
+                  DropdownButton(
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_drop_down_outlined),
+                    underline: Container(height: 2, color: Colors.grey),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        dropdownValue = newValue;
+                        updateListView();
+                      });
+                    },
+                    items: <String>['My Chores', 'Household Chores']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height,
                     child: FutureBuilder(
-                      future: DBFuture().getChoreList(widget.userModel.groupId),
+                      future: DBFuture().determineChoreList(dropdownValue,
+                          widget.userModel.groupId, widget.userModel.uid),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.data == null) {
-                          return Text("Loading");
+                          return Text("Please select a Chore List to view");
                         } else {
                           if (snapshot.data.length < 1) {
                             return Center(
@@ -208,12 +224,13 @@ class todo_state extends State<todo> {
                                                     "Chore Completed"
                                                 ? IconButton(
                                                     icon: Icon(Icons.delete),
+                                                    color: blue,
                                                     onPressed: null,
                                                   )
                                                 : Container(),
                                         trailing: Icon(
                                           Icons.edit,
-                                          color: Theme.of(context).primaryColor,
+                                          color: blue,
                                           size: 28,
                                         ),
                                       ),
@@ -307,7 +324,7 @@ class todo_state extends State<todo> {
               backgroundColor: green,
               onPressed: () {
                 navigateToTask(
-                    Task('', '', '', '', '', Repeating.start, '', ''),
+                    Task('', '', '', '', '', Repeating.start, '', '', '', ''),
                     "Add Chore",
                     this);
               }), //FloatingActionButton
@@ -341,7 +358,16 @@ class todo_state extends State<todo> {
     //final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     //Firestore _firestore = Firestore.instance;
     String groupId = await DBFuture().getCurrentGroup();
-    List<Task> choreList = await DBFuture().getChoreList(groupId);
+    List<Task> choreList = await DBFuture().determineChoreList(
+        dropdownValue, widget.userModel.groupId, widget.userModel.uid);
+    //print(choreList);
+    // if (dropdownValue.compareTo("My Chores") == 0) {
+    //   choreList = await DBFuture().getUserChoreList(widget.userModel.uid);
+    //   print("doing this");
+    // } else if (dropdownValue.compareTo("Household Chores") == 0) {
+    //   choreList = await DBFuture().getChoreList(groupId);
+    //   print("doing the household list");
+    // }
 
     setState(() {
       this.taskList = choreList;

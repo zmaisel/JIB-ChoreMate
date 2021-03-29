@@ -1,14 +1,14 @@
-import 'dart:math';
+//import 'dart:math';
 
 import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
-import 'package:choremate/screens/calendar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:choremate/screens/calendar.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/services/dbFuture.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 
 var globalDate = "Pick Date";
 
@@ -345,16 +345,24 @@ class task_state extends State<new_task> {
       if (marked) {
         task.status = "Task Completed";
         //print("when completing, task id:" + task.choreID);
-        DBFuture().completeChore(task, widget.currentUser.groupId);
+        //choreID user is null here which is why it doesn't delete it from user's chore list
+        //same problem we had before but idk how i fixed it ://
+        //ok it works when youre in the tab household chores
+        //but not in the tab my chores
+        //print(task.choreIDUser);
+        DBFuture().completeChore(
+            task, widget.currentUser.groupId, widget.currentUser.uid);
       } else {
         task.status = "";
         retString =
             await DBFuture().updateChore(widget.currentUser.groupId, task);
       }
     } else if (_checkNotNull() == true) {
-      task.choreID =
-          await DBFuture().addChore(task, widget.currentUser.groupId);
-      print("choreID here in newchore code: " + task.choreID);
+      task = await DBFuture().addChore(task, widget.currentUser.groupId,
+          widget.currentUser.fullName, widget.currentUser.uid);
+      //print("assignment UID" + task.assignmentUID);
+      //print("chore ID user: " + task.choreIDUser);
+      //print("choreID here in newchore code: " + task.choreID);
 
       //print(task.id);
     }
@@ -381,7 +389,7 @@ class task_state extends State<new_task> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
-                  print(task.choreID);
+                  //print(task.choreID);
                   await DBFuture()
                       .deleteChore(widget.currentUser.groupId, task.choreID);
                   todoState.updateListView();
