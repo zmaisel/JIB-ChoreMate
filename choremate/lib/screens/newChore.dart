@@ -280,7 +280,7 @@ class task_state extends State<new_task> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50.0)),
                     padding: EdgeInsets.all(_minPadding / 2),
-                    color: Theme.of(context).primaryColor,
+                    color: blue,
                     textColor: Colors.white,
                     elevation: 5.0,
                     child: Text(
@@ -338,7 +338,7 @@ class task_state extends State<new_task> {
 
   String currentGroup = "";
   String choreID = "";
-  _save() async {
+  void _save() async {
     int result;
     String retString;
 

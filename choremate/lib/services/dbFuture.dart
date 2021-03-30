@@ -507,13 +507,10 @@ class DBFuture {
       var reminderMapList =
           await getReminderMapList(groupID); //Get Map List from database
       int count = reminderMapList.length;
-      print("reminder Map List" + reminderMapList.toString());
       //For loop to create Message List from a Map List
       for (int i = 0; i < count; i++) {
         reminderList.add(Message.fromMapObject(reminderMapList[i]));
       }
-      print("reminder list" + reminderList.toString());
-      print("uid" + uid);
       for (int i = 0; i < count; i++) {
         if (reminderList.elementAt(i).sentToUID.compareTo(uid) == 0) {
           myReminders.add(reminderList.elementAt(i));

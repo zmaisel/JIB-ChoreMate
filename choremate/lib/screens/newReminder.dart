@@ -58,6 +58,7 @@ class message_state extends State<new_message> {
   Widget build(BuildContext context) {
     messageController.text = message.message;
     getGroupMembers();
+    Color blue = const Color(0xFF5ac9fc);
 
     return Scaffold(
         key: scaffoldkey,
@@ -70,6 +71,7 @@ class message_state extends State<new_message> {
             },
           ),
           title: Text(appBarTitle, style: TextStyle(fontSize: 25)),
+          backgroundColor: blue,
         ),
         body: ListView(children: <Widget>[
           Padding(
@@ -141,11 +143,11 @@ class message_state extends State<new_message> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50.0)),
               padding: EdgeInsets.all(_minPadding / 2),
-              color: Theme.of(context).primaryColor,
+              color: blue,
               textColor: Colors.white,
               elevation: 5.0,
               child: Text(
-                "Save",
+                "Send",
                 style: buttonStyle,
                 textAlign: TextAlign.center,
                 textScaleFactor: 1.2,
@@ -164,7 +166,7 @@ class message_state extends State<new_message> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50.0)),
                     padding: EdgeInsets.all(_minPadding / 2),
-                    color: Theme.of(context).primaryColor,
+                    color: blue,
                     textColor: Colors.white,
                     elevation: 5.0,
                     child: Text(
@@ -223,14 +225,14 @@ class message_state extends State<new_message> {
     FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseUser currentUser = await _auth.currentUser();
 
-    _firestore
-        .collection("users")
-        .document(currentUser.uid)
-        .get()
-        .then((value) {
-      this.currentGroup = value.data["groupId"].toString();
-      print("currentgroupid " + value.data["groupId"]);
-    });
+    // _firestore
+    //     .collection("users")
+    //     .document(currentUser.uid)
+    //     .get()
+    //     .then((value) {
+    //   this.currentGroup = value.data["groupId"].toString();
+    //   print("currentgroupid " + value.data["groupId"]);
+    // });
 
     if (_checkNotNull() == true) {
       message =
@@ -242,9 +244,9 @@ class message_state extends State<new_message> {
 
       if (result != 0) {
         utility.showAlertDialog(
-            context, 'Status', 'Reminder saved successfully.');
+            context, 'Status', 'Reminder sent successfully.');
       } else {
-        utility.showAlertDialog(context, 'Status', 'Problem saving message.');
+        utility.showAlertDialog(context, 'Status', 'Problem sending message.');
       }
     }
   } //_save()

@@ -148,6 +148,7 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: Text("ChoreMate"),
+        backgroundColor: blue,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index, // this will be set when a new tab is tapped
