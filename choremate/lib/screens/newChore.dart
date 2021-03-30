@@ -138,6 +138,7 @@ class task_state extends State<new_task> {
                         setState(() {
                           dropdownValue = newValue;
                           task.assignment = newValue;
+                          print("task assignment" + task.assignment);
                         });
                       },
                       items: userList

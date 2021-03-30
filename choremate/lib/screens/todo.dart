@@ -4,12 +4,19 @@ import 'package:choremate/services/dbFuture.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'package:choremate/models/task.dart';
+<<<<<<< HEAD
+=======
+import 'package:sqflite/sqflite.dart';
+>>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/models/message.dart';
+import 'package:choremate/screens/newReminder.dart';
+import 'package:choremate/screens/reminders.dart';
 
 class todo extends StatefulWidget {
   //final bool darkThemeEnabled;
@@ -24,6 +31,10 @@ class todo extends StatefulWidget {
 }
 
 class todo_state extends State<todo> {
+<<<<<<< HEAD
+=======
+  //DatabaseHelper databaseHelper = DatabaseHelper();
+>>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
@@ -115,21 +126,22 @@ class todo_state extends State<todo> {
                     (route) => false,
                   );
                   break;
-                case 1:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => todo(userModel: widget.userModel),
-                    ),
-                    (route) => false,
-                  );
-                  break;
                 case 2:
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
                           calendar(userModel: widget.userModel),
+                    ),
+                    (route) => false,
+                  );
+                  break;
+                case 3:
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          reminders(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
@@ -155,7 +167,7 @@ class todo_state extends State<todo> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications),
-                title: Text('Notifcations'),
+                title: Text('Reminders'),
                 backgroundColor: blue,
               )
             ],
@@ -386,9 +398,14 @@ class todo_state extends State<todo> {
   } //updateListView()
 
   //delete a chore from the database
+<<<<<<< HEAD
   void delete(String choreID) async {
     //await databaseHelper.deleteTask(id);
     await DBFuture().deleteChore(widget.userModel.groupId, choreID);
+=======
+  void delete(int id) async {
+    //await databaseHelper.deleteTask(id);
+>>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
     updateListView();
     //Navigator.pop(context);
     utility.showSnackBar(homeScaffold, 'Chore Deleted Successfully');
