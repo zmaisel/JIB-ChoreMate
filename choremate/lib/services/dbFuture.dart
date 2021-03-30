@@ -405,7 +405,7 @@ class DBFuture {
   //     choreMapList.add(documents.elementAt(i).data);
   //REMINDERS
 
-  Future<String> addReminder(String groupId, String name) async {
+  Future<Message> addReminder(String groupId, Message message) async {
     String retVal = "error";
 
     try {
@@ -413,33 +413,37 @@ class DBFuture {
           .collection("groups")
           .document(groupId)
           .collection("reminders")
-          .add({'messageID': "", 'message': name});
+          .add({
+        'messageID': "",
+        'message': message.message,
+        'sentTo': message.sentTo
+      });
       DocumentSnapshot docSnap = await _docRef2.get();
 
       print(docSnap.reference.documentID.toString());
-      String messageID = docSnap.reference.documentID.toString();
+      message.messageID = docSnap.reference.documentID.toString();
 
       retVal = "success";
-      //updateReminder(messageID, groupId, name);
-      return messageID;
+      message.sentToUID = await getSentTo(groupId, message);
+      updateReminder(message, groupId);
+      return message;
     } catch (e) {
       print(e);
     }
-    return retVal;
+    return message;
   }
 
-  Future<String> updateReminder(
-      String messageID, String groupId, String name) async {
+  Future<String> updateReminder(Message message, String groupId) async {
     String retVal = "error";
     try {
       await _firestore
           .collection("groups")
           .document(groupId)
           .collection("reminders")
-          .document(messageID)
+          .document(message.messageID)
           .updateData({
-        //'messageID': messageID,
-        'message': name,
+        'messageID': message.messageID,
+        'sentToUID': message.sentToUID,
       });
       retVal = "success";
     } catch (e) {
@@ -447,6 +451,18 @@ class DBFuture {
     }
 
     return retVal;
+  }
+
+  Future<String> getSentTo(String groupID, Message message) async {
+    List<String> userList = await getUserList(groupID);
+    String sentToUID;
+    for (int i = 0; i < userList.length; i++) {
+      if (userList.elementAt(i).contains(message.sentTo)) {
+        List<String> uidList = await getUIDList(groupID);
+        sentToUID = uidList.elementAt(i);
+      }
+    }
+    return sentToUID;
   }
 
   Future<String> deleteReminder(String groupID, String messageID) async {
@@ -482,25 +498,33 @@ class DBFuture {
   }
 
   //get the reminder list to display
-  Future<List<Message>> getReminderList(String groupID) async {
+  Future<List<Message>> getReminderList(String groupID, String uid) async {
     List<Message> reminderList = List<Message>();
+    List<Message> myReminders = List<Message>();
 
     try {
       //THIS DOESN'T WORK FOR SOME REASON
       var reminderMapList =
           await getReminderMapList(groupID); //Get Map List from database
       int count = reminderMapList.length;
-
+      print("reminder Map List" + reminderMapList.toString());
       //For loop to create Message List from a Map List
       for (int i = 0; i < count; i++) {
         reminderList.add(Message.fromMapObject(reminderMapList[i]));
+      }
+      print("reminder list" + reminderList.toString());
+      print("uid" + uid);
+      for (int i = 0; i < count; i++) {
+        if (reminderList.elementAt(i).sentToUID.compareTo(uid) == 0) {
+          myReminders.add(reminderList.elementAt(i));
+        }
       }
     } catch (e) {
       print("Here is what isn't working.");
       print(e);
     }
 
-    return reminderList;
+    return myReminders;
   }
 
   // Future<String> addCurrentBook(String groupId, BookModel book) async {

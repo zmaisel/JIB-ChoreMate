@@ -17,7 +17,8 @@ class new_message extends StatefulWidget {
   final UserModel currentUser;
 
   reminders_state remindersState;
-  new_message(this.message, this.appBarTitle, this.remindersState, this.currentUser);
+  new_message(
+      this.message, this.appBarTitle, this.remindersState, this.currentUser);
   bool _isEditable = false;
 
   @override
@@ -31,6 +32,10 @@ class message_state extends State<new_message> {
   String appBarTitle;
   Message message;
   List<Widget> icons;
+  String dropdownValue;
+
+  List<String> userList;
+
   message_state(this.message, this.appBarTitle, this.remindersState);
 
   bool marked = false;
@@ -52,6 +57,7 @@ class message_state extends State<new_message> {
   @override
   Widget build(BuildContext context) {
     messageController.text = message.message;
+    getGroupMembers();
 
     return Scaffold(
         key: scaffoldkey,
@@ -66,6 +72,42 @@ class message_state extends State<new_message> {
           title: Text(appBarTitle, style: TextStyle(fontSize: 25)),
         ),
         body: ListView(children: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 50.0),
+              child: Container(
+                height: 2,
+              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Text("Remind:", style: titleStyle),
+          ),
+          Padding(
+              padding: EdgeInsets.all(_minPadding),
+              child: FutureBuilder(
+                  future: DBFuture().getUserList(widget.currentUser.groupId),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.data == null) {
+                      return Text("Loading");
+                    }
+                    return DropdownButton<String>(
+                      value: dropdownValue,
+                      icon: const Icon(Icons.arrow_drop_down_outlined),
+                      underline: Container(height: 2, color: Colors.grey),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                          message.sentTo = dropdownValue;
+                        });
+                      },
+                      items: userList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    );
+                  })),
           Padding(
               padding: EdgeInsets.only(right: 50.0),
               child: Container(
@@ -146,7 +188,6 @@ class message_state extends State<new_message> {
 
   void markedDone() {}
 
-
   bool _isEditable() {
     if (this.appBarTitle == "Add Reminder")
       return false;
@@ -192,15 +233,16 @@ class message_state extends State<new_message> {
     });
 
     if (_checkNotNull() == true) {
-      message.messageID = await DBFuture().addReminder(widget.currentUser.groupId, message.message);    
-        var rng = new Random();
+      message =
+          await DBFuture().addReminder(widget.currentUser.groupId, message);
 
       remindersState.updateListView();
 
       Navigator.pop(context);
 
       if (result != 0) {
-        utility.showAlertDialog(context, 'Status', 'Reminder saved successfully.');
+        utility.showAlertDialog(
+            context, 'Status', 'Reminder saved successfully.');
       } else {
         utility.showAlertDialog(context, 'Status', 'Problem saving message.');
       }
@@ -218,7 +260,8 @@ class message_state extends State<new_message> {
             actions: <Widget>[
               RawMaterialButton(
                 onPressed: () async {
-                  await DBFuture().deleteReminder(widget.currentUser.groupId, message.messageID);
+                  await DBFuture().deleteReminder(
+                      widget.currentUser.groupId, message.messageID);
                   remindersState.updateListView();
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -236,5 +279,9 @@ class message_state extends State<new_message> {
             ],
           );
         });
+  }
+
+  void getGroupMembers() async {
+    userList = await DBFuture().getUserList(widget.currentUser.groupId);
   }
 }

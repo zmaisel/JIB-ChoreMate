@@ -64,167 +64,157 @@ class reminders_state extends State<reminders> {
       updateListView();
     }
 
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          key: homeScaffold,
-          appBar: AppBar(
-            title: Text('ChoreMate'
-                //AppLocalizations.of(context).title(),
-                //style: TextStyle(fontSize: 25),
-                ),
-            backgroundColor: blue,
-            actions: <Widget>[
-              PopupMenuButton<bool>(
-                onSelected: (res) {
-                  bloc.changeTheme(res);
-                  _setPref(res);
-                  setState(() {
-                    if (_themeType == 'Dark Theme') {
-                      _themeType = 'Light Theme';
-                    } else {
-                      _themeType = 'Dark Theme';
-                    }
-                  });
-                },
-                itemBuilder: (context) {
-                  return <PopupMenuEntry<bool>>[
-                    PopupMenuItem<bool>(
-                      //value: !widget.darkThemeEnabled,
-                      child: Text(_themeType),
-                    )
-                  ];
-                },
-              )
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: index, // this will be set when a new tab is tapped
-            onTap: (int index) {
+    return Scaffold(
+      key: homeScaffold,
+      appBar: AppBar(
+        title: Text('ChoreMate'
+            //AppLocalizations.of(context).title(),
+            //style: TextStyle(fontSize: 25),
+            ),
+        backgroundColor: blue,
+        actions: <Widget>[
+          PopupMenuButton<bool>(
+            onSelected: (res) {
+              bloc.changeTheme(res);
+              _setPref(res);
               setState(() {
-                this.index = index;
+                if (_themeType == 'Dark Theme') {
+                  _themeType = 'Light Theme';
+                } else {
+                  _themeType = 'Dark Theme';
+                }
               });
-              switch (index) {
-                case 0:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OurRoot(),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-                case 1:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => todo(userModel: widget.userModel),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-                case 2:
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          calendar(userModel: widget.userModel),
-                    ),
-                    (route) => false,
-                  );
-                  break;
-              }
             },
-            fixedColor: green,
-            items: [
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
-                title: new Text('Home'),
-                backgroundColor: blue,
-              ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.cleaning_services),
-                title: new Text('Chores'),
-                backgroundColor: blue,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today),
-                title: Text('Calendar'),
-                backgroundColor: blue,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.notifications),
-                title: Text('Reminders'),
-                backgroundColor: blue,
-              )
-            ],
-          ), //AppBar
-          body: ListView(children: <Widget>[
-            new Container(
-              padding: EdgeInsets.all(8.0),
-              child: ListView(
-                children: <Widget>[
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: FutureBuilder(
-                      future: DBFuture().getReminderList(widget.userModel.groupId),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.data == null) {
-                          return Text("Loading");
-                        } else {
-                          if (snapshot.data.length < 1) {
-                            return Center(
-                              child: Text(
-                                'No Reminders Added',
-                                style: TextStyle(fontSize: 20),
+            itemBuilder: (context) {
+              return <PopupMenuEntry<bool>>[
+                PopupMenuItem<bool>(
+                  //value: !widget.darkThemeEnabled,
+                  child: Text(_themeType),
+                )
+              ];
+            },
+          )
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index, // this will be set when a new tab is tapped
+        onTap: (int index) {
+          setState(() {
+            this.index = index;
+          });
+          switch (index) {
+            case 0:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OurRoot(),
+                ),
+                (route) => false,
+              );
+              break;
+            case 1:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => todo(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
+            case 2:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => calendar(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
+          }
+        },
+        fixedColor: green,
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.cleaning_services),
+            label: 'Chores',
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Calendar',
+            backgroundColor: blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Reminders',
+            backgroundColor: blue,
+          )
+        ],
+      ),
+      body: ListView(
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: FutureBuilder(
+              future: DBFuture().getReminderList(
+                  widget.userModel.groupId, widget.userModel.uid),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.data == null) {
+                  return Text("Loading");
+                } else {
+                  if (snapshot.data.length < 1) {
+                    return Center(
+                      child: Text(
+                        'No Reminders Added',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int position) {
+                        return new GestureDetector(
+                            onTap: () {
+                              navigateToMessage(snapshot.data[position],
+                                  "Edit Reminder", this);
+                            },
+                            child: Card(
+                              margin: EdgeInsets.all(1.0),
+                              elevation: 2.0,
+                              child: ListTile(
+                                title: Text(snapshot.data[position].message),
+                                trailing: Icon(
+                                  Icons.edit,
+                                  color: Theme.of(context).primaryColor,
+                                  size: 28,
+                                ),
                               ),
-                            );
-                          }
-                          return ListView.builder(
-                              itemCount: snapshot.data.length,
-                              itemBuilder:
-                                  (BuildContext context, int position) {
-                                return new GestureDetector(
-                                    onTap: () {
-                                    navigateToMessage(snapshot.data[position],
-                                        "Edit Reminder", this);
-                                    },
-                                    child: Card(
-                                      margin: EdgeInsets.all(1.0),
-                                      elevation: 2.0,
-                                      child: CustomWidget(
-                                        title: snapshot.data[position].message,
-                                        trailing: Icon(
-                                          Icons.edit,
-                                          color: Theme.of(context).primaryColor,
-                                          size: 28,
-                                        ),
-                                      ),
-                                    ) //Card
-                                );
-                              });
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),              
-          ]),
-          floatingActionButton: FloatingActionButton(
-              tooltip: "Add Reminder",
-              child: Icon(Icons.add),
-              backgroundColor: green,
-              onPressed: () {
-                navigateToMessage(
-                    Message('', ''),
-                    "Add Reminder",
-                    this);
-              }), //FloatingActionButton
-        ));
+                            ));
+                      });
+                }
+              },
+            ),
+          )
+        ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+          tooltip: "Add Reminder",
+          child: Icon(Icons.add),
+          backgroundColor: green,
+          onPressed: () {
+            navigateToMessage(Message('', '', '', ''), "Add Reminder", this);
+          }), //FloatingActionButton
+    );
   } //build()
 
-  void navigateToMessage(Message message, String title, reminders_state obj) async {
+  void navigateToMessage(
+      Message message, String title, reminders_state obj) async {
     //null ones are what we need to fix in order to make this work
 
     print(message.messageID);
@@ -232,7 +222,8 @@ class reminders_state extends State<reminders> {
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => new_message(message, title, obj, widget.userModel)),
+          builder: (context) =>
+              new_message(message, title, obj, widget.userModel)),
     );
     if (result == true) {
       updateListView();
@@ -242,21 +233,13 @@ class reminders_state extends State<reminders> {
   //update the screen with the lastest reminder list
   void updateListView() async {
     //Firestore _firestore = Firestore.instance;
-    String groupId = await DBFuture().getCurrentGroup();
-    List<Message> reminderList = await DBFuture().getReminderList(groupId);
+    //String groupId = await DBFuture().getCurrentGroup();
+    List<Message> reminderList = await DBFuture()
+        .getReminderList(widget.userModel.groupId, widget.userModel.uid);
 
     setState(() {
       this.messageList = reminderList;
       this.count = reminderList.length;
     });
-
   } //updateListView()
-
-  //delete a reminder from the database
-  void delete(int id) async {
-    //await databaseHelper.deleteMessage(id);
-    updateListView();
-    //Navigator.pop(context);
-    utility.showSnackBar(homeScaffold, 'Reminder Deleted Successfully');
-  }
 }

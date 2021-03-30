@@ -4,10 +4,6 @@ import 'package:choremate/services/dbFuture.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/screens/newChore.dart';
 import 'package:choremate/models/task.dart';
-<<<<<<< HEAD
-=======
-import 'package:sqflite/sqflite.dart';
->>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,10 +27,6 @@ class todo extends StatefulWidget {
 }
 
 class todo_state extends State<todo> {
-<<<<<<< HEAD
-=======
-  //DatabaseHelper databaseHelper = DatabaseHelper();
->>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
@@ -398,14 +390,9 @@ class todo_state extends State<todo> {
   } //updateListView()
 
   //delete a chore from the database
-<<<<<<< HEAD
   void delete(String choreID) async {
     //await databaseHelper.deleteTask(id);
     await DBFuture().deleteChore(widget.userModel.groupId, choreID);
-=======
-  void delete(int id) async {
-    //await databaseHelper.deleteTask(id);
->>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
     updateListView();
     //Navigator.pop(context);
     utility.showSnackBar(homeScaffold, 'Chore Deleted Successfully');

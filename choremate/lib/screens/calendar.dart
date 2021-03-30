@@ -5,19 +5,11 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:choremate/screens/root/root.dart';
 //import 'package:choremate/screens/newChore.dart';
 import 'dart:async';
-<<<<<<< HEAD
 //import 'package:choremate/models/task.dart';
 //import 'package:sqflite/sqflite.dart';
 //import 'package:choremate/custom widgets/CustomWidget.dart';
 //import 'package:choremate/utilities/theme_bloc.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
-=======
-import 'package:choremate/models/task.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:choremate/custom widgets/CustomWidget.dart';
-import 'package:choremate/utilities/theme_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
->>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
 //import 'package:choremate/localizations.dart';
 //import 'package:choremate/utilities/utils.dart';
 import 'package:choremate/screens/todo.dart';
@@ -186,8 +178,7 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      reminders(userModel: widget.userModel),
+                  builder: (context) => reminders(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

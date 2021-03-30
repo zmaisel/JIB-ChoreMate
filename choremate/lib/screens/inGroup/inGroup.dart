@@ -5,14 +5,9 @@ import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/groupDetails.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/auth.dart';
-<<<<<<< HEAD
 //import 'package:choremate/services/dbFuture.dart';
 //import 'package:choremate/services/dbStream.dart';
 //import 'package:choremate/states/currentUser.dart';
-=======
-import 'package:choremate/services/dbFuture.dart';
-import 'package:choremate/services/dbStream.dart';
->>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -271,8 +266,7 @@ class InGroupState extends State<InGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      reminders(userModel: widget.userModel),
+                  builder: (context) => reminders(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

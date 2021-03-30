@@ -8,12 +8,7 @@ import 'package:choremate/screens/login/login.dart';
 import 'package:choremate/screens/noGroup/noGroup.dart';
 import 'package:choremate/screens/splashScreen/splashScreen.dart';
 import 'package:choremate/services/dbStream.dart';
-<<<<<<< HEAD
 //import 'package:firebase_messaging/firebase_messaging.dart';
-=======
-
-import 'package:firebase_messaging/firebase_messaging.dart';
->>>>>>> 9386a325bdbe689513c47ea5b2554835848281c8
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:choremate/screens/home_widget.dart';

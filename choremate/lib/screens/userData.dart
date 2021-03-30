@@ -64,7 +64,7 @@ class UserDataState extends State<UserData> {
         title: Text('ChoreMate'),
         backgroundColor: blue,
       ),
-      body: (ListView(
+      body: ListView(
         children: [
           FutureBuilder(
               future: numIncompleteChores(),
@@ -73,7 +73,7 @@ class UserDataState extends State<UserData> {
                     title: Text("Incomplete Chores: " + snapshot.data));
               })
         ],
-      )),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index, // this will be set when a new tab is tapped
         onTap: (int index) {
