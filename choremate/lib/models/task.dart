@@ -5,10 +5,21 @@ class Task {
   String _choreID, _choreIDUser;
   String _task, _date, _time, _status, _rpt, _assignment, _assignmentUID;
   Repeating _value;
+  DateTime _dateTime;
   //User _user;
 
-  Task(this._task, this._date, this._time, this._status, this._rpt, this._value,
-      this._assignment, this._choreID, this._assignmentUID, this._choreIDUser);
+  Task(
+      this._task,
+      this._date,
+      this._time,
+      this._status,
+      this._rpt,
+      this._value,
+      this._assignment,
+      this._choreID,
+      this._assignmentUID,
+      this._choreIDUser,
+      this._dateTime);
   Task.withId(
       this._id,
       this._task,
@@ -20,7 +31,8 @@ class Task {
       this._assignment,
       this._choreID,
       this._assignmentUID,
-      this._choreIDUser);
+      this._choreIDUser,
+      this._dateTime);
 
   int get id => _id;
   String get task => _task;
@@ -33,6 +45,7 @@ class Task {
   String get assignment => _assignment;
   String get assignmentUID => _assignmentUID;
   String get choreIDUser => _choreIDUser;
+  DateTime get dateTime => _dateTime;
   //User get user => _user;
 
   set task(String newTask) {
@@ -63,6 +76,8 @@ class Task {
 
   set choreIDUser(String newChoreIDUser) => this._choreIDUser = newChoreIDUser;
 
+  set dateTime(DateTime newDateTime) => this._dateTime = newDateTime;
+
   //Convert Task object into MAP object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -78,6 +93,7 @@ class Task {
     map['choreID'] = _choreID;
     map['value'] = _value;
     map['choreIDUser'] = _choreIDUser;
+    map['dateTime'] = _dateTime;
     return map;
   }
 
@@ -95,5 +111,6 @@ class Task {
     this._choreID = map['choreID'];
     this._value = map['value'];
     this._choreIDUser = map['choreIDUser'];
+    this._dateTime = map['dateTime'];
   }
 }

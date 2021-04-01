@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import '../home_widget.dart';
+import '../calendar2.dart';
 import '../todo.dart';
 import 'package:choremate/screens/calendar.dart';
 import 'package:choremate/screens/reminders.dart';
@@ -257,7 +258,7 @@ class InGroupState extends State<InGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => calendar(userModel: widget.userModel),
+                  builder: (context) => Calendar(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

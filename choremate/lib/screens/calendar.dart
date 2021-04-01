@@ -190,22 +190,22 @@ class calendar_state extends State<calendar> with TickerProviderStateMixin {
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
-            title: new Text('Home'),
+            label: 'Home',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.cleaning_services),
-            title: new Text('Chores'),
+            label: 'Chores',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            title: Text('Calendar'),
+            label: 'Calendar',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Reminders'),
+            label: 'Reminders',
             backgroundColor: blue,
           )
         ],

@@ -165,9 +165,22 @@ class DBFuture {
     } catch (e) {
       print(e);
     }
+
     chore.assignmentUID = await getAssignment(groupID, chore);
     //chore.choreIDUser = await assignChore(chore);
     updateChore(groupID, chore);
+    await _firestore
+        .collection("groups")
+        .document(groupID)
+        .collection("events")
+        .add({
+      'groupID': groupID,
+      'name': chore.task,
+      'summary': ("Chore assigned to: " + chore.assignment),
+      'time': chore.dateTime,
+      'uid': chore.assignmentUID,
+      'user': chore.assignment
+    });
     return chore;
     //return retVal;
   }

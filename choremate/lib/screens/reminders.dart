@@ -17,6 +17,7 @@ import 'package:choremate/models/message.dart';
 import 'package:choremate/screens/newReminder.dart';
 import 'package:choremate/screens/todo.dart';
 
+import 'calendar2.dart';
 import 'home_widget.dart';
 
 class reminders extends StatefulWidget {
@@ -125,7 +126,7 @@ class reminders_state extends State<reminders> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => calendar(userModel: widget.userModel),
+                  builder: (context) => Calendar(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

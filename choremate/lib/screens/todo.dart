@@ -14,6 +14,8 @@ import 'package:choremate/models/message.dart';
 import 'package:choremate/screens/newReminder.dart';
 import 'package:choremate/screens/reminders.dart';
 
+import 'calendar2.dart';
+
 class todo extends StatefulWidget {
   //final bool darkThemeEnabled;
   //todo(this.darkThemeEnabled);
@@ -123,7 +125,7 @@ class todo_state extends State<todo> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          calendar(userModel: widget.userModel),
+                          Calendar(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
@@ -197,11 +199,9 @@ class todo_state extends State<todo> {
                           return Text("Please select a Chore List to view");
                         } else {
                           if (snapshot.data.length < 1) {
-                            return Center(
-                              child: Text(
-                                'No Chores Added',
-                                style: TextStyle(fontSize: 20),
-                              ),
+                            return Text(
+                              'No Chores Added',
+                              style: TextStyle(fontSize: 15),
                             );
                           }
                           return ListView.builder(
@@ -328,7 +328,8 @@ class todo_state extends State<todo> {
               backgroundColor: green,
               onPressed: () {
                 navigateToTask(
-                    Task('', '', '', '', '', Repeating.start, '', '', '', ''),
+                    Task('', '', '', '', '', Repeating.start, '', '', '', '',
+                        null),
                     "Add Chore",
                     this);
               }), //FloatingActionButton
