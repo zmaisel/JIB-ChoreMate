@@ -59,13 +59,12 @@ class CalendarState extends State<Calendar> {
           .collection('groups')
           .document(widget.userModel.groupId)
           .collection("events")
-          .where('time',
-              isGreaterThanOrEqualTo:
-                  new DateTime(_dateTime.year, _dateTime.month))
+          // .where('time',
+          //     isGreaterThanOrEqualTo:
+          //         new DateTime(_dateTime.year, _dateTime.month))
           .getDocuments();
 
       _userEventSnapshot = userEvents;
-      //print(userEvents);
       return _userEventSnapshot;
     } else {
       return null;
@@ -361,6 +360,7 @@ class CalendarState extends State<Calendar> {
     int eventCount = 0;
     DateTime eventDate;
     try {
+      //print(_userEventSnapshot.documents.);
       _userEventSnapshot.documents.forEach((doc) {
         eventDate = DateTime.fromMicrosecondsSinceEpoch(
             doc.data['time'].microsecondsSinceEpoch);
