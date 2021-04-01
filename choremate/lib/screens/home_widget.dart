@@ -9,9 +9,9 @@ import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
 //import 'package:provider/provider.dart';
 import 'package:choremate/screens/root/root.dart';
-import 'package:choremate/screens/todo.dart';
-import 'package:choremate/screens/calendar.dart';
-import 'package:choremate/screens/reminders.dart';
+import 'package:choremate/screens/chores/todo.dart';
+import 'package:choremate/screens/calendar/calendar2.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 
 //import 'inGroup/inGroup.dart';
 
@@ -126,7 +126,7 @@ class _HomeState extends State<Home> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => calendar(),
+                  builder: (context) => Calendar(),
                 ),
                 (route) => false,
               );
@@ -135,8 +135,7 @@ class _HomeState extends State<Home> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      reminders(),
+                  builder: (context) => reminders(),
                 ),
                 (route) => false,
               );

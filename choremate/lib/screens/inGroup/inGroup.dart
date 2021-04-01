@@ -15,10 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import '../home_widget.dart';
-import '../calendar2.dart';
-import '../todo.dart';
-import 'package:choremate/screens/calendar.dart';
-import 'package:choremate/screens/reminders.dart';
+import '../chores/todo.dart';
+import 'package:choremate/screens/calendar/calendar2.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 
 class InGroup extends StatefulWidget {
   final UserModel userModel;

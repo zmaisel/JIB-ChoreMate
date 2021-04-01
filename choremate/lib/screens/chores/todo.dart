@@ -2,19 +2,17 @@ import 'package:choremate/models/userModel.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/screens/newChore.dart';
+import 'package:choremate/screens/chores/newChore.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/custom widgets/CustomWidget.dart';
 import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
-import 'package:choremate/screens/calendar.dart';
 import 'package:choremate/models/message.dart';
-import 'package:choremate/screens/newReminder.dart';
-import 'package:choremate/screens/reminders.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 
-import 'calendar2.dart';
+import 'package:choremate/screens/calendar/calendar2.dart';
 
 class todo extends StatefulWidget {
   //final bool darkThemeEnabled;

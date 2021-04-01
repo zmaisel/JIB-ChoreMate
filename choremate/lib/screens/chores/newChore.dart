@@ -3,7 +3,7 @@
 import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/models/task.dart';
-import 'package:choremate/screens/todo.dart';
+import 'package:choremate/screens/chores/todo.dart';
 import 'package:choremate/utilities/utils.dart';
 //import 'package:choremate/screens/calendar.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';

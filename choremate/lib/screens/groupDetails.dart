@@ -3,8 +3,9 @@ import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/userData.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/screens/todo.dart';
-import 'package:choremate/screens/calendar.dart';
+import 'package:choremate/screens/chores/todo.dart';
+
+import 'calendar/calendar2.dart';
 
 class GroupDetails extends StatefulWidget {
   final UserModel userModel;
@@ -285,7 +286,7 @@ class GroupDetailsState extends State<GroupDetails> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => calendar(userModel: widget.userModel),
+                  builder: (context) => Calendar(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

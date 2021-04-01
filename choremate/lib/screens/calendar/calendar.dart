@@ -12,12 +12,12 @@ import 'dart:async';
 //import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 //import 'package:choremate/utilities/utils.dart';
-import 'package:choremate/screens/todo.dart';
+import 'package:choremate/screens/chores/todo.dart';
 import 'package:choremate/models/message.dart';
-import 'package:choremate/screens/newReminder.dart';
-import 'package:choremate/screens/reminders.dart';
+import 'package:choremate/screens/reminders/newReminder.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 
-import 'home_widget.dart';
+import 'package:choremate/screens/home_widget.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {

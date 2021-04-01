@@ -1,16 +1,13 @@
 import 'dart:async';
 
 import 'package:choremate/models/userModel.dart';
-import 'package:choremate/screens/eventCreator.dart';
-import 'package:choremate/screens/reminders.dart';
+import 'package:choremate/screens/calendar/eventCreator.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 import 'package:choremate/screens/root/root.dart';
-import 'package:choremate/screens/todo.dart';
-import 'package:choremate/screens/viewEvent.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:choremate/screens/chores/todo.dart';
+import 'package:choremate/screens/calendar/viewEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:choremate/models/event.dart';
 
 class Calendar extends StatefulWidget {

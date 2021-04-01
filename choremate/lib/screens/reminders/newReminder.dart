@@ -1,15 +1,12 @@
 import 'dart:math';
 import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
-import 'package:choremate/models/task.dart';
-import 'package:choremate/screens/todo.dart';
 import 'package:choremate/utilities/utils.dart';
-import 'package:choremate/screens/calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:choremate/models/message.dart';
-import 'package:choremate/screens/reminders.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 
 class new_message extends StatefulWidget {
   final String appBarTitle;
