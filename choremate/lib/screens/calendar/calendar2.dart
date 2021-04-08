@@ -113,6 +113,7 @@ class CalendarState extends State<Calendar> {
         context,
         MaterialPageRoute(
             builder: (context) => EventCreator(null, widget.userModel)));
+    build(context);
   }
 
   @override

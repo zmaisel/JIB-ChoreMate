@@ -1,4 +1,5 @@
 import 'package:choremate/models/userModel.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,12 @@ import 'package:choremate/screens/calendar/calendar2.dart';
 
 class UserData extends StatefulWidget {
   final UserModel userModel;
+  final int position;
   //final GroupModel groupModel;
 
   UserData({
     this.userModel,
+    this.position,
   });
 
   @override
@@ -21,14 +24,23 @@ class UserData extends StatefulWidget {
 
 class UserDataState extends State<UserData> {
   final key = new GlobalKey<ScaffoldState>();
+  String userID;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
   }
 
+  Future<String> uid() async {
+    var uidList = await DBFuture().getUIDList(widget.userModel.groupId);
+    userID = uidList.elementAt(widget.position);
+    return uidList.elementAt(widget.position);
+  }
+
   Future<String> numIncompleteChores() async {
-    List<Task> incompleteChores = await DBFuture()
-        .getUserChoreList(widget.userModel.uid, widget.userModel.groupId);
+    String userID = await uid();
+    List<Task> incompleteChores =
+        await DBFuture().getUserChoreList(userID, widget.userModel.groupId);
     if (incompleteChores == null) {
       return "0";
     }
@@ -36,8 +48,10 @@ class UserDataState extends State<UserData> {
   }
 
   Future<String> numCompleteChores() async {
-    List<Task> completeChores = await DBFuture()
-        .getUserCompletedList(widget.userModel.uid, widget.userModel.groupId);
+    String userID = await uid();
+
+    List<Task> completeChores =
+        await DBFuture().getUserCompletedList(userID, widget.userModel.groupId);
 
     if (completeChores == null) {
       return "0";
@@ -48,12 +62,59 @@ class UserDataState extends State<UserData> {
   Future<List<String>> userData() async {
     List<String> userData = List();
     String incompleteChores = await numIncompleteChores();
-    userData.add(incompleteChores);
+    userData.add("Incomplete Chores: " + incompleteChores);
     String completeChores = await numCompleteChores();
-    userData.add(completeChores);
+    userData.add("Completed Chores: " + completeChores);
+    String percentageChores = ((int.parse(completeChores) /
+                (int.parse(incompleteChores) + int.parse(completeChores))) *
+            100)
+        .toInt()
+        .toString();
+    userData.add("Percentage Completed: " + percentageChores + "%");
+    return userData;
   }
 
   int index = 0;
+
+  Widget setupIncompleteChores() {
+    return Container(
+        height: 300.0, // Change as per your requirement
+        width: 300.0, // Change as per your requirement
+        child: FutureBuilder(
+            future:
+                DBFuture().getUserChoreList(userID, widget.userModel.groupId),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(snapshot.data[index].task),
+                  );
+                },
+              );
+            }));
+  }
+
+  Widget setupCompleteChores() {
+    return Container(
+        height: 300.0, // Change as per your requirement
+        width: 300.0, // Change as per your requirement
+        child: FutureBuilder(
+            future: DBFuture()
+                .getUserCompletedList(userID, widget.userModel.groupId),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(snapshot.data[index].task),
+                  );
+                },
+              );
+            }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +126,119 @@ class UserDataState extends State<UserData> {
         backgroundColor: blue,
       ),
       body: ListView(
-        children: [
-          FutureBuilder(
-              future: numIncompleteChores(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return ListTile(title: Text("Incomplete Chores: "));
-              }),
-          ListTile(
-            title: Text("Complete Chores: "),
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: FutureBuilder(
+                future: userData(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Incomplete Chores"),
+                                content: setupIncompleteChores(),
+                              );
+                            },
+                          );
+                        },
+                        child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Container(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(15, 25, 15, 25),
+                                child: Row(
+                                  children: [
+                                    (Text(snapshot.data[0],
+                                        style: TextStyle(fontSize: 25))),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 29),
+                                      child: Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
+                                        size: 30,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: blue, width: 4),
+                                  borderRadius: BorderRadius.circular(12)),
+                            )),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Complete Chores"),
+                                content: setupCompleteChores(),
+                              );
+                            },
+                          );
+                        },
+                        child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Container(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(15, 25, 15, 25),
+                                child: Row(
+                                  children: [
+                                    (Text(snapshot.data[1],
+                                        style: TextStyle(fontSize: 25))),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 27),
+                                      child: Icon(
+                                        Icons.check_circle_outline,
+                                        color: green,
+                                        size: 30,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: blue, width: 4),
+                                  borderRadius: BorderRadius.circular(12)),
+                            )),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(15, 25, 15, 25),
+                              child: Row(
+                                children: [
+                                  (Text(snapshot.data[2],
+                                      style: TextStyle(fontSize: 20))),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Icon(
+                                      Icons.pie_chart_outline_outlined,
+                                      color: blue,
+                                      size: 30,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: blue, width: 4),
+                                borderRadius: BorderRadius.circular(12)),
+                          ))
+                    ],
+                  );
+                }),
           ),
-          ListTile(title: Text("Percentage of Chores Completed: "))
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -107,6 +271,15 @@ class UserDataState extends State<UserData> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Calendar(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => reminders(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

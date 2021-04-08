@@ -9,6 +9,7 @@ import 'package:choremate/models/message.dart';
 class DBFuture {
   Firestore _firestore = Firestore.instance;
 
+//function to get current group of user
   Future<String> getCurrentGroup() async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseUser currentUser = await _auth.currentUser();
@@ -26,6 +27,7 @@ class DBFuture {
     return currentGroupID;
   }
 
+//function to create a group
   Future<String> createGroup(String groupName, UserModel user) async {
     String retVal = "error";
     List<String> members = List();
@@ -62,9 +64,6 @@ class DBFuture {
         'groupName': groupName.trim(),
       });
 
-      //add a book
-      //addBook(_docRef.documentID, initialChore);
-
       retVal = "success";
     } catch (e) {
       print(e);
@@ -73,6 +72,8 @@ class DBFuture {
     return retVal;
   }
 
+//function to join an existing group
+//adds a user to an existing group in firebase
   Future<String> joinGroup(String groupId, UserModel userModel) async {
     String retVal = "error";
     List<String> members = List();
@@ -114,6 +115,8 @@ class DBFuture {
     return retVal;
   }
 
+//function to leave a group
+//removes the user's name and user id from the lists in the group
   Future<String> leaveGroup(String groupId, UserModel userModel) async {
     String retVal = "error";
     List<String> members = List();
@@ -139,6 +142,10 @@ class DBFuture {
     return retVal;
   }
 
+  //method to add chore
+  // creates a new collection in the group called chores if it doesn't already exist
+  // if chores already exist, adds to the existing collection a new document with the
+  // chore data stored in the chore variable
   Future<Task> addChore(
       Task chore, String groupID, String fullName, String uid) async {
     String retVal = "error";
@@ -165,26 +172,29 @@ class DBFuture {
     } catch (e) {
       print(e);
     }
-
+    // gets the user id of who the chore is assigned to
     chore.assignmentUID = await getAssignment(groupID, chore);
     //chore.choreIDUser = await assignChore(chore);
     updateChore(groupID, chore);
+    //add the chore to the events collection so that it adds to the calendar too
     await _firestore
         .collection("groups")
         .document(groupID)
         .collection("events")
-        .add({
+        .document(chore.choreID)
+        .setData({
       'groupID': groupID,
       'name': chore.task,
       'summary': ("Chore assigned to: " + chore.assignment),
       'time': chore.dateTime,
       'uid': chore.assignmentUID,
-      'user': chore.assignment
+      'user': chore.assignment,
     });
     return chore;
     //return retVal;
   }
 
+  //get the user id of the user the chore is assigned to
   Future<String> getAssignment(String groupID, Task chore) async {
     List<String> userList = await getUserList(groupID);
     String uidAssigned;
@@ -197,6 +207,9 @@ class DBFuture {
     return uidAssigned;
   }
 
+//not using this method anymore, storing the user id of assignment in the chore
+//rather than storing the chore in two places (by also storing it in collection
+//in the user)
   Future<String> assignChore(Task chore) async {
     DocumentReference doc = await _firestore
         .collection("users")
@@ -244,6 +257,9 @@ class DBFuture {
     return retVal;
   }
 
+//method to complete chore
+//adds the chore to the completed chore collection
+//deletes the chore from the chores collection
   Future<String> completeChore(Task chore, String groupId, String uid) async {
     String retVal = "error";
     //first add the chore to to completed collection
@@ -311,10 +327,21 @@ class DBFuture {
     } catch (e) {
       print(e);
     }
+    try {
+      await _firestore
+          .collection('groups')
+          .document(groupID)
+          .collection('events')
+          .document(choreID)
+          .delete();
+    } catch (e) {
+      print(e);
+    }
 
     return retVal;
   }
 
+//get the chores in a map list from the database
   Future<List<Map<String, dynamic>>> getChoreMapList(String groupID) async {
     final QuerySnapshot result = await _firestore
         .collection("groups")
@@ -353,6 +380,7 @@ class DBFuture {
     return choreList;
   }
 
+  //get the completed chores in a map list from the data base
   Future<List<Map<String, dynamic>>> getCompletedChoreMapList(
       String groupID) async {
     var choreMapList = List<Map<String, dynamic>>();
@@ -372,7 +400,7 @@ class DBFuture {
     return choreMapList;
   }
 
-  //get the chore list to display
+  //get the completed chore list to display
   Future<List<Task>> getCompletedChoreList(String groupID) async {
     List<Task> choreList = List<Task>();
 
@@ -393,6 +421,7 @@ class DBFuture {
     return choreList;
   }
 
+  //method to determine which chore list to display, user or household chorelist
   Future<List<Task>> determineChoreList(
       String value, String groupID, String uid) async {
     List<Task> retList = List();
@@ -418,6 +447,8 @@ class DBFuture {
   //     choreMapList.add(documents.elementAt(i).data);
   //REMINDERS
 
+// method to add a reminder
+// adds the message to the reminders collection of the group
   Future<Message> addReminder(String groupId, Message message) async {
     String retVal = "error";
 
@@ -433,7 +464,7 @@ class DBFuture {
       });
       DocumentSnapshot docSnap = await _docRef2.get();
 
-      print(docSnap.reference.documentID.toString());
+      //print(docSnap.reference.documentID.toString());
       message.messageID = docSnap.reference.documentID.toString();
 
       retVal = "success";
@@ -466,6 +497,7 @@ class DBFuture {
     return retVal;
   }
 
+// method to determine who the reminder was sent to
   Future<String> getSentTo(String groupID, Message message) async {
     List<String> userList = await getUserList(groupID);
     String sentToUID;
@@ -478,6 +510,7 @@ class DBFuture {
     return sentToUID;
   }
 
+// method to delete reminder
   Future<String> deleteReminder(String groupID, String messageID) async {
     String retVal = "error";
     try {
@@ -495,6 +528,7 @@ class DBFuture {
     return retVal;
   }
 
+//get the reminders for a given group in a map list from the database
   Future<List<Map<String, dynamic>>> getReminderMapList(String groupID) async {
     final QuerySnapshot result = await _firestore
         .collection("groups")
@@ -516,7 +550,6 @@ class DBFuture {
     List<Message> myReminders = List<Message>();
 
     try {
-      //THIS DOESN'T WORK FOR SOME REASON
       var reminderMapList =
           await getReminderMapList(groupID); //Get Map List from database
       int count = reminderMapList.length;
@@ -537,42 +570,7 @@ class DBFuture {
     return myReminders;
   }
 
-  // Future<String> addCurrentBook(String groupId, BookModel book) async {
-  //   String retVal = "error";
-
-  //   try {
-  //     DocumentReference _docRef = await _firestore
-  //         .collection("groups")
-  //         .document(groupId)
-  //         .collection("books")
-  //         .add({
-  //       'name': book.name.trim(),
-  //       'author': book.author.trim(),
-  //       'length': book.length,
-  //       'dateCompleted': book.dateCompleted,
-  //     });
-
-  //     //add current book to group schedule
-  //     await _firestore.collection("groups").document(groupId).updateData({
-  //       "currentBookId": _docRef.documentID,
-  //       "currentBookDue": book.dateCompleted,
-  //     });
-
-  //     //adding a notification document
-  //     DocumentSnapshot doc =
-  //         await _firestore.collection("groups").document(groupId).get();
-  //     createNotifications(
-  //         List<String>.from(doc.data["tokens"]) ?? [], book.name, book.author);
-
-  //     retVal = "success";
-  //   } catch (e) {
-  //     print(e);
-  //   }
-
-  //   return choreMapList;
-  // }
-
-  //get the chore list to display
+  //get the chore list to display for the user
   Future<List<Task>> getUserChoreList(String uid, String groupID) async {
     List<Task> choreList = List<Task>();
     List<Task> userChoreList = List<Task>();
@@ -627,6 +625,7 @@ class DBFuture {
     return userChoreList;
   }
 
+//returns a list of the names of the users in a group
   Future<List<String>> getUserList(String groupID) async {
     DocumentSnapshot document =
         await _firestore.collection("groups").document(groupID).get();
@@ -643,6 +642,8 @@ class DBFuture {
     return userList;
   }
 
+//create a new user
+//adds a new user to the user collection
   Future<String> createUser(UserModel user) async {
     String retVal = "error";
 
@@ -661,6 +662,7 @@ class DBFuture {
     return retVal;
   }
 
+//get the user from the database
   Future<UserModel> getUser(String uid) async {
     UserModel retVal;
 
@@ -674,65 +676,4 @@ class DBFuture {
 
     return retVal;
   }
-
-  Future<String> createNotifications(
-      List<String> tokens, String bookName, String author) async {
-    String retVal = "error";
-
-    try {
-      await _firestore.collection("notifications").add({
-        'bookName': bookName.trim(),
-        'author': author.trim(),
-        'tokens': tokens,
-      });
-      retVal = "success";
-    } catch (e) {
-      print(e);
-    }
-
-    return retVal;
-  }
-
-  // Future<List<BookModel>> getBookHistory(String groupId) async {
-  //   List<BookModel> retVal = List();
-
-  //   try {
-  //     QuerySnapshot query = await _firestore
-  //         .collection("groups")
-  //         .document(groupId)
-  //         .collection("books")
-  //         .orderBy("dateCompleted", descending: true)
-  //         .getDocuments();
-
-  //     query.documents.forEach((element) {
-  //       retVal.add(BookModel.fromDocumentSnapshot(doc: element));
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   return retVal;
-  // }
-
-//   Future<List<ReviewModel>> getReviewHistory(
-//       String groupId, String bookId) async {
-//     List<ReviewModel> retVal = List();
-
-//     try {
-//       QuerySnapshot query = await _firestore
-//           .collection("groups")
-//           .document(groupId)
-//           .collection("books")
-//           .document(bookId)
-//           .collection("reviews")
-//           .getDocuments();
-
-//       query.documents.forEach((element) {
-//         retVal.add(ReviewModel.fromDocumentSnapshot(doc: element));
-//       });
-//     } catch (e) {
-//       print(e);
-//     }
-//     return retVal;
-//   }
-// }
 }

@@ -1,4 +1,5 @@
 import 'package:choremate/models/userModel.dart';
+import 'package:choremate/screens/reminders/reminders.dart';
 import 'package:choremate/screens/root/root.dart';
 import 'package:choremate/screens/userData.dart';
 import 'package:choremate/services/dbFuture.dart';
@@ -230,8 +231,9 @@ class GroupDetailsState extends State<GroupDetails> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      UserData(userModel: widget.userModel),
+                                  builder: (context) => UserData(
+                                      userModel: widget.userModel,
+                                      position: position),
                                 ));
                           },
                           child: Card(
@@ -287,6 +289,15 @@ class GroupDetailsState extends State<GroupDetails> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Calendar(userModel: widget.userModel),
+                ),
+                (route) => false,
+              );
+              break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => reminders(userModel: widget.userModel),
                 ),
                 (route) => false,
               );

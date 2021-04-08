@@ -174,6 +174,16 @@ class EventsViewState extends State<EventsView> {
           .collection('events')
           .document(document.documentID)
           .delete();
+      try {
+        Firestore.instance
+            .collection("groups")
+            .document(widget.userModel.groupId)
+            .collection('chores')
+            .document(document.documentID)
+            .delete();
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
