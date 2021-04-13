@@ -77,7 +77,6 @@ class DBFuture {
   Future<String> joinGroup(String groupId, UserModel userModel) async {
     String retVal = "error";
     List<String> members = List();
-    List<String> tokens = List();
     List<String> memberNames = List();
     try {
       members.add(userModel.uid);
@@ -148,8 +147,6 @@ class DBFuture {
   // chore data stored in the chore variable
   Future<Task> addChore(
       Task chore, String groupID, String fullName, String uid) async {
-    String retVal = "error";
-
     try {
       DocumentReference _docRef = await _firestore
           .collection("groups")
@@ -160,7 +157,6 @@ class DBFuture {
         'date': chore.date,
         'time': chore.time,
         'status': chore.status,
-        'rpt': chore.rpt,
         'assignment': chore.assignment
       });
       DocumentSnapshot docSnap = await _docRef.get();
@@ -168,7 +164,7 @@ class DBFuture {
       //print(docSnap.reference.documentID.toString());
       chore.choreID = docSnap.reference.documentID.toString();
       //print("choreID here in DBFuture:" + choreID);
-      retVal = "success";
+
     } catch (e) {
       print(e);
     }
@@ -221,7 +217,7 @@ class DBFuture {
       'date': chore.date,
       'time': chore.time,
       'status': chore.status,
-      'rpt': chore.rpt,
+
       'assignment': chore.assignment,
       'assignmentUID': chore.assignmentUID
     });
@@ -244,7 +240,6 @@ class DBFuture {
         'date': chore.date,
         'time': chore.time,
         'status': chore.status,
-        'rpt': chore.rpt,
         'assignment': chore.assignment,
         'assignmentUID': chore.assignmentUID,
       });
@@ -274,7 +269,6 @@ class DBFuture {
         'date': chore.date,
         'time': chore.time,
         'status': chore.status,
-        'rpt': chore.rpt,
         'assignment': chore.assignment,
         'assignmentUID': chore.assignmentUID
       });

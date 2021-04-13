@@ -10,10 +10,6 @@ import 'package:choremate/services/auth.dart';
 //import 'package:choremate/states/currentUser.dart';
 import 'package:choremate/widgets/shadowContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 //import '../home_widget.dart';
 import '../chores/todo.dart';
 import 'package:choremate/screens/calendar/calendar2.dart';
@@ -49,90 +45,6 @@ class InGroupState extends State<InGroup> {
     }
   }
 
-  void _copyGroupId(BuildContext context) {
-    GroupModel group = Provider.of<GroupModel>(context, listen: false);
-    Clipboard.setData(ClipboardData(text: group.id));
-    key.currentState.showSnackBar(SnackBar(
-      content: Text("Copied!"),
-    ));
-  }
-
-  Future<List<String>> _listGroupMembers() async {
-    // var futureValue = DBFuture().listGroupMembers();
-    // DocumentSnapshot currentGroup;
-    // futureValue.then((DocumentSnapshot result){
-    //   setState(() {
-    //     currentGroup = result;
-    //    });
-    //   });
-    // var listMembers = currentGroup.data;
-    // var listf = listMembers.values.take(20);
-    // List members = listf.toList(growable: true);
-    // print(members.toString());
-    //   if(members.length > 4){
-    //     members.removeAt(0);
-    //     members.removeAt(0);
-    //     members.removeAt(0);
-    //     members.removeAt(0);
-    //     List membersList = members.elementAt(0);
-    //     for(int i = 0; i < membersList.length; i++){
-    //       String memberID = membersList.elementAt(i).toString();
-
-    //       print(currentGroup.reference.documentID + "  :::::  " + memberID  + "  :::::  ");
-    //     }
-    //   }
-    Firestore _firestore = Firestore.instance;
-    QuerySnapshot querySnapshot =
-        await _firestore.collection("groups").getDocuments();
-    var list = querySnapshot.documents;
-    List<String> memberIDs = new List<String>();
-
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser _firebaseUser = await _auth.currentUser();
-    print(_firebaseUser.uid);
-    bool cont = true;
-    for (int j = 0; j < list.length; j++) {
-      memberIDs.clear();
-      var listMembers = list[j].data;
-      var listf = listMembers.values.take(20);
-      List members = listf.toList(growable: true);
-      if (members.length > 4) {
-        members.removeAt(0);
-        members.removeAt(0);
-        members.removeAt(0);
-        members.removeAt(0);
-        List membersList = members.elementAt(0);
-        for (int i = 0; i < membersList.length; i++) {
-          String memberID = membersList.elementAt(i).toString();
-          memberIDs.add(memberID);
-          print(list[j].reference.documentID +
-              "  :::::  " +
-              memberID +
-              "  :::::  ");
-          if (_firebaseUser.uid == memberID) {
-            cont = false;
-          }
-        }
-        if (!cont) {
-          break;
-        }
-      }
-    }
-    print(memberIDs.toString());
-    return memberIDs;
-  }
-
-  // void _goToBookHistory() {
-  //   GroupModel group = Provider.of<GroupModel>(context, listen: false);
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => BookHistory(
-  //         groupId: group.id,
-  //       ),
-  //     ),
-  //   );
-  // }
   int index = 0;
 
   @override
@@ -248,7 +160,7 @@ class InGroupState extends State<InGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => todo(userModel: widget.userModel),
+                  builder: (context) => Todo(userModel: widget.userModel),
                 ),
                 (route) => false,
               );
@@ -266,33 +178,33 @@ class InGroupState extends State<InGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => reminders(userModel: widget.userModel),
+                  builder: (context) => Reminders(userModel: widget.userModel),
                 ),
                 (route) => false,
               );
               break;
           }
         },
-        fixedColor: green,
+        fixedColor: Colors.black,
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
-            title: new Text('Home'),
+            label: 'Home',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.cleaning_services),
-            title: new Text('Chores'),
+            label: 'Chores',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            title: Text('Calendar'),
+            label: 'Calendar',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Reminders'),
+            label: 'Reminders',
             backgroundColor: blue,
           )
         ],

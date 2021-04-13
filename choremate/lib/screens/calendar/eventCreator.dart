@@ -50,7 +50,7 @@ class EventCreatorState extends State<EventCreator> {
         //borderRadius: BorderRadius.circular(8.0),
       ),
       initialValue: widget._event != null ? widget._event.title : '',
-      style: Theme.of(context).textTheme.headline,
+      style: Theme.of(context).textTheme.headline5,
       validator: this._validateTitle,
       onSaved: (String value) => this._eventData.title = value,
     );
@@ -64,7 +64,7 @@ class EventCreatorState extends State<EventCreator> {
           contentPadding: EdgeInsets.all(16.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))),
       initialValue: widget._event != null ? widget._event.summary : '',
-      style: Theme.of(context).textTheme.headline,
+      style: Theme.of(context).textTheme.headline5,
       onSaved: (String value) => this._eventData.summary = value,
     );
 
@@ -113,17 +113,20 @@ class EventCreatorState extends State<EventCreator> {
                 SizedBox(height: 16.0),
                 notesWidget,
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(10),
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50.0)),
-                    padding: EdgeInsets.all(4.0),
+                    padding: EdgeInsets.all(5),
                     color: blue,
                     textColor: Colors.white,
                     elevation: 5.0,
                     child: Text(
                       "Save",
-                      //style: buttonStyle,
+                      style: new TextStyle(
+                          fontSize: 18,
+                          fontFamily: "Lato",
+                          color: Colors.white),
                       textAlign: TextAlign.center,
                       textScaleFactor: 1.2,
                     ),

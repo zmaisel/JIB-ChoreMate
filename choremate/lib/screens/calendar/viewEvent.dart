@@ -65,6 +65,7 @@ class EventsViewState extends State<EventsView> {
         backgroundColor: blue,
       ),
       floatingActionButton: new FloatingActionButton(
+        backgroundColor: green,
         onPressed: _onFabClicked,
         child: new Icon(Icons.add),
       ),
@@ -91,9 +92,8 @@ class EventsViewState extends State<EventsView> {
                       return new GestureDetector(
                           onTap: () => _onCardClicked(document),
                           child: new Card(
-                            color: green,
-                            elevation: 10.0,
-                            shape: Border.all(color: Colors.black),
+                            elevation: 2.0,
+                            //shape: Border.all(color: Colors.black),
                             child: new Row(
                               children: <Widget>[
                                 new Expanded(
@@ -103,37 +103,63 @@ class EventsViewState extends State<EventsView> {
                                     children: <Widget>[
                                       new Container(
                                         padding: EdgeInsets.all(10.0),
-                                        child: new Text(
-                                          'Event: ' + document.data['name'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            new Text(
+                                              'Event: ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                              textAlign: TextAlign.left,
+                                            ),
+                                            new Text(document.data['name'],
+                                                style: TextStyle(fontSize: 18))
+                                          ],
                                         ),
                                       ),
                                       new Container(
                                         padding: EdgeInsets.all(10.0),
-                                        child: new Text(
-                                            'Time: ' +
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            new Text(
+                                              'Time: ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                              textAlign: TextAlign.left,
+                                            ),
+                                            new Text(
                                                 eventDateFormatter
                                                     .format(_eventTime),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline),
+                                                style: TextStyle(fontSize: 18))
+                                          ],
+                                        ),
                                       ),
                                       new Container(
                                         padding: EdgeInsets.all(10.0),
-                                        child: new Text(
-                                            'Summary: ' +
-                                                document.data['summary'],
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            new Text('Summary: ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6),
+                                            new Text(document.data['summary'],
+                                                style: TextStyle(fontSize: 18)),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
                                 new Container(
                                     child: new IconButton(
+                                        color: blue,
                                         iconSize: 30.0,
                                         padding: EdgeInsets.all(5.0),
                                         icon: new Icon(Icons.delete),

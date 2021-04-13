@@ -8,7 +8,6 @@ import 'package:choremate/screens/chores/todo.dart';
 import 'package:choremate/screens/calendar/viewEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:choremate/models/event.dart';
 
 class Calendar extends StatefulWidget {
   //final bool darkThemeEnabled;
@@ -188,7 +187,7 @@ class CalendarState extends State<Calendar> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => todo(userModel: widget.userModel),
+                    builder: (context) => Todo(userModel: widget.userModel),
                   ),
                   (route) => false,
                 );
@@ -198,14 +197,14 @@ class CalendarState extends State<Calendar> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        reminders(userModel: widget.userModel),
+                        Reminders(userModel: widget.userModel),
                   ),
                   (route) => false,
                 );
                 break;
             }
           },
-          fixedColor: green,
+          fixedColor: Colors.black,
           items: [
             BottomNavigationBarItem(
               icon: new Icon(Icons.home),
@@ -244,31 +243,38 @@ class CalendarState extends State<Calendar> {
                           new Expanded(
                               child: new Text('S',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                           new Expanded(
                               child: new Text('M',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                           new Expanded(
                               child: new Text('T',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                           new Expanded(
                               child: new Text('W',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                           new Expanded(
                               child: new Text('T',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                           new Expanded(
                               child: new Text('F',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                           new Expanded(
                               child: new Text('S',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline)),
+                                  style:
+                                      Theme.of(context).textTheme.headline5)),
                         ],
                         mainAxisSize: MainAxisSize.min,
                       ),
@@ -330,7 +336,7 @@ class CalendarState extends State<Calendar> {
           child: new Text(
             (dayNumber - _beginMonthPadding).toString(),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.title,
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
       );
@@ -347,7 +353,7 @@ class CalendarState extends State<Calendar> {
                 ? ' '
                 : (dayNumber - _beginMonthPadding).toString(),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline,
+            style: Theme.of(context).textTheme.headline5,
           ),
         ),
       );

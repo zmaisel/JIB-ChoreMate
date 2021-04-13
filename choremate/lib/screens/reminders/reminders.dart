@@ -13,19 +13,19 @@ import 'package:choremate/screens/chores/todo.dart';
 
 import 'package:choremate/screens/calendar/calendar2.dart';
 
-class reminders extends StatefulWidget {
+class Reminders extends StatefulWidget {
   //final bool darkThemeEnabled;
   //reminders(this.darkThemeEnabled);
   final UserModel userModel;
-  reminders({this.userModel});
+  Reminders({this.userModel});
 
   @override
   State<StatefulWidget> createState() {
-    return reminders_state();
+    return RemindersState();
   }
 }
 
-class reminders_state extends State<reminders> {
+class RemindersState extends State<Reminders> {
   //DatabaseHelper databaseHelper = DatabaseHelper();
   Utils utility = new Utils();
   List<Message> messageList;
@@ -110,7 +110,7 @@ class reminders_state extends State<reminders> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => todo(userModel: widget.userModel),
+                  builder: (context) => Todo(userModel: widget.userModel),
                 ),
                 (route) => false,
               );
@@ -126,7 +126,7 @@ class reminders_state extends State<reminders> {
               break;
           }
         },
-        fixedColor: green,
+        fixedColor: Colors.black,
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
@@ -208,7 +208,7 @@ class reminders_state extends State<reminders> {
   } //build()
 
   void navigateToMessage(
-      Message message, String title, reminders_state obj) async {
+      Message message, String title, RemindersState obj) async {
     //null ones are what we need to fix in order to make this work
 
     print(message.messageID);

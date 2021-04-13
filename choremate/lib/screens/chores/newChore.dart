@@ -1,38 +1,33 @@
-//import 'dart:math';
-
 import 'package:choremate/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:choremate/models/task.dart';
 import 'package:choremate/screens/chores/todo.dart';
 import 'package:choremate/utilities/utils.dart';
-//import 'package:choremate/screens/calendar.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:choremate/services/dbFuture.dart';
 import 'package:intl/intl.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 var globalDate = "Pick Date";
 
-class new_task extends StatefulWidget {
+class NewTask extends StatefulWidget {
   final String appBarTitle;
   final Task task;
   final UserModel currentUser;
-  todo_state todoState;
-  new_task(this.task, this.appBarTitle, this.todoState, this.currentUser);
-  bool _isEditable = false;
+  TodoState todoState;
+  NewTask(this.task, this.appBarTitle, this.todoState, this.currentUser);
+  //bool _isEditable = false;
 
   @override
   State<StatefulWidget> createState() {
-    return task_state(this.task, this.appBarTitle, this.todoState);
+    return TaskState(this.task, this.appBarTitle, this.todoState);
   }
 }
 
-class task_state extends State<new_task> {
-  todo_state todoState;
+class TaskState extends State<NewTask> {
+  TodoState todoState;
   String appBarTitle;
   Task task;
   List<Widget> icons;
-  task_state(this.task, this.appBarTitle, this.todoState);
+  TaskState(this.task, this.appBarTitle, this.todoState);
 
   bool marked = false;
 
@@ -48,7 +43,6 @@ class task_state extends State<new_task> {
 
   Utils utility = new Utils();
   TextEditingController taskController = new TextEditingController();
-  TextEditingController assignmentController = new TextEditingController();
 
   var formattedDate = "Pick Date";
   var formattedTime = "Select Time";
@@ -61,11 +55,13 @@ class task_state extends State<new_task> {
 
   @override
   Widget build(BuildContext context) {
-    Color green = const Color(0xFFa8e1a6);
     Color blue = const Color(0xFF5ac9fc);
     getGroupMembers();
     taskController.text = task.task;
-    //dropdownValue = userList.first;
+    if (task.assignment != '') {
+      dropdownValue = task.assignment;
+      print("true?");
+    }
 
     return Scaffold(
         key: scaffoldkey,
@@ -97,6 +93,7 @@ class task_state extends State<new_task> {
                     )),
 
           Padding(
+            //text field to enter name of chore
             padding: EdgeInsets.all(_minPadding),
             child: TextField(
               controller: taskController,
@@ -124,6 +121,7 @@ class task_state extends State<new_task> {
             child: Text("Assign to:", style: titleStyle),
           ),
           Padding(
+              //drop down menu to assign chore to a user
               padding: EdgeInsets.all(_minPadding),
               child: FutureBuilder(
                   future: DBFuture().getUserList(widget.currentUser.groupId),
@@ -152,6 +150,7 @@ class task_state extends State<new_task> {
                     );
                   })),
           ListTile(
+            //date widget
             title: task.date.isEmpty
                 ? Text(
                     "Pick Date",
@@ -171,6 +170,7 @@ class task_state extends State<new_task> {
           ), //DateListTile
 
           ListTile(
+            //time widget
             title: task.time.isEmpty
                 ? Text(
                     "Select Time",
@@ -188,69 +188,6 @@ class task_state extends State<new_task> {
                 });
             },
           ),
-          // radio buttons for repeating feature of chore
-          Padding(
-              padding: EdgeInsets.only(right: 50.0),
-              child: _isEditable()
-                  ? Text(
-                      "Current Repetition: " + task.rpt,
-                      style: titleStyle,
-                    )
-                  : Container(
-                      height: 2,
-                    )),
-          ListTile(
-            title: const Text('Daily'),
-            leading: Radio(
-              value: Repeating.daily,
-              groupValue: task.value,
-              onChanged: (Repeating value) {
-                setState(() {
-                  task.rpt = "Daily";
-                  task.value = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: const Text('Weekly'),
-            leading: Radio(
-              value: Repeating.weekly,
-              groupValue: task.value,
-              onChanged: (Repeating value) {
-                setState(() {
-                  task.rpt = "Weekly";
-                  task.value = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: const Text('Monthly'),
-            leading: Radio(
-              value: Repeating.monthly,
-              groupValue: task.value,
-              onChanged: (Repeating value) {
-                setState(() {
-                  task.rpt = "Monthly";
-                  task.value = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: const Text('None'),
-            leading: Radio(
-              value: Repeating.none,
-              groupValue: task.value,
-              onChanged: (Repeating value) {
-                setState(() {
-                  task.rpt = "None";
-                  task.value = value;
-                });
-              },
-            ),
-          ), //TimeListTile
           Padding(
             padding: EdgeInsets.all(_minPadding),
             child: RaisedButton(
@@ -275,6 +212,7 @@ class task_state extends State<new_task> {
           ), //Padding
 
           Padding(
+            //ability to mark as done and delete
             padding: EdgeInsets.all(_minPadding),
             child: _isEditable()
                 ? RaisedButton(
@@ -329,8 +267,6 @@ class task_state extends State<new_task> {
     } else if (task.time.isEmpty) {
       utility.showSnackBar(scaffoldkey, 'Please select the Time');
       res = false;
-    } else if (task.rpt.isEmpty) {
-      utility.showSnackBar(scaffoldkey, 'Please select a repeating option');
     } else {
       res = true;
     }
@@ -345,13 +281,10 @@ class task_state extends State<new_task> {
 
     if (_isEditable()) {
       if (marked) {
+        //check if the box is marked to complete the chore, if it is,
+        // make the changes in the backend
         task.status = "Task Completed";
-        //print("when completing, task id:" + task.choreID);
-        //choreID user is null here which is why it doesn't delete it from user's chore list
-        //same problem we had before but idk how i fixed it ://
-        //ok it works when youre in the tab household chores
-        //but not in the tab my chores
-        //print(task.choreIDUser);
+
         DBFuture().completeChore(
             task, widget.currentUser.groupId, widget.currentUser.uid);
       } else {
@@ -360,13 +293,9 @@ class task_state extends State<new_task> {
             await DBFuture().updateChore(widget.currentUser.groupId, task);
       }
     } else if (_checkNotNull() == true) {
+      //otherwise, add the chore because it is new
       task = await DBFuture().addChore(task, widget.currentUser.groupId,
           widget.currentUser.fullName, widget.currentUser.uid);
-      //print("assignment UID" + task.assignmentUID);
-      //print("chore ID user: " + task.choreIDUser);
-      //print("choreID here in newchore code: " + task.choreID);
-
-      //print(task.id);
     }
 
     todoState.updateListView();
@@ -417,6 +346,7 @@ class task_state extends State<new_task> {
     userList = await DBFuture().getUserList(widget.currentUser.groupId);
   }
 
+  //function for selecting date
   Future<String> selectDate(BuildContext context, String date) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -433,6 +363,7 @@ class task_state extends State<new_task> {
     return "";
   }
 
+  //function for selecting time
   Future<String> selectTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -453,6 +384,7 @@ class task_state extends State<new_task> {
     return "";
   }
 
+  //formate the time
   String timeFormat(TimeOfDay picked) {
     var hour = 00;
     var Time = "PM";
@@ -489,6 +421,7 @@ class task_state extends State<new_task> {
     return h + ":" + m + " " + Time;
   }
 
+  //format the date
   String formatDate(DateTime selectedDate) =>
       new DateFormat("d MMM, y").format(selectedDate);
 }

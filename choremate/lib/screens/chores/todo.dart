@@ -9,24 +9,21 @@ import 'package:choremate/utilities/theme_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:choremate/localizations.dart';
 import 'package:choremate/utilities/utils.dart';
-import 'package:choremate/models/message.dart';
 import 'package:choremate/screens/reminders/reminders.dart';
 
 import 'package:choremate/screens/calendar/calendar2.dart';
 
-class todo extends StatefulWidget {
-  //final bool darkThemeEnabled;
-  //todo(this.darkThemeEnabled);
+class Todo extends StatefulWidget {
   final UserModel userModel;
-  todo({this.userModel});
+  Todo({this.userModel});
 
   @override
   State<StatefulWidget> createState() {
-    return todo_state();
+    return TodoState();
   }
 }
 
-class todo_state extends State<todo> {
+class TodoState extends State<Todo> {
   Utils utility = new Utils();
   List<Task> taskList;
   int count = 0;
@@ -38,11 +35,6 @@ class todo_state extends State<todo> {
 
   @override
   void initState() {
-    // if (!widget.darkThemeEnabled) {
-    //   _themeType = 'Light Theme';
-    // } else {
-    //   _themeType = 'Dark Theme';
-    // }
     super.initState();
   }
 
@@ -86,7 +78,6 @@ class todo_state extends State<todo> {
                 itemBuilder: (context) {
                   return <PopupMenuEntry<bool>>[
                     PopupMenuItem<bool>(
-                      //value: !widget.darkThemeEnabled,
                       child: Text(_themeType),
                     )
                   ];
@@ -133,33 +124,33 @@ class todo_state extends State<todo> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          reminders(userModel: widget.userModel),
+                          Reminders(userModel: widget.userModel),
                     ),
                     (route) => false,
                   );
                   break;
               }
             },
-            fixedColor: green,
+            fixedColor: Colors.black,
             items: [
               BottomNavigationBarItem(
                 icon: new Icon(Icons.home),
-                title: new Text('Home'),
+                label: 'Home',
                 backgroundColor: blue,
               ),
               BottomNavigationBarItem(
                 icon: new Icon(Icons.cleaning_services),
-                title: new Text('Chores'),
+                label: 'Chores',
                 backgroundColor: blue,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_today),
-                title: Text('Calendar'),
+                label: 'Calendar',
                 backgroundColor: blue,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications),
-                title: Text('Reminders'),
+                label: 'Reminders',
                 backgroundColor: blue,
               )
             ],
@@ -213,6 +204,7 @@ class todo_state extends State<todo> {
                                         navigateToTask(snapshot.data[position],
                                             "Edit Chore", this);
                                     },
+                                    //widget that shows the chores on the list
                                     child: Card(
                                       margin: EdgeInsets.all(1.0),
                                       elevation: 2.0,
@@ -303,11 +295,7 @@ class todo_state extends State<todo> {
                                                 )
                                               : Container(),
                                           trailing: Container()
-//                                    Icon(
-//                                          Icons.edit,
-//                                          color: Theme.of(context).primaryColor,
-//                                          size: 28,
-//                                        ),
+//
                                           ),
                                     ) //Card
                                     );
@@ -325,67 +313,33 @@ class todo_state extends State<todo> {
               child: Icon(Icons.add),
               backgroundColor: green,
               onPressed: () {
-                navigateToTask(
-                    Task('', '', '', '', '', Repeating.start, '', '', '', '',
-                        null),
-                    "Add Chore",
-                    this);
+                navigateToTask(Task('', '', '', '', '', '', '', '', null),
+                    "Add Chore", this);
               }), //FloatingActionButton
         ));
   } //build()
 
-  void navigateToTask(Task task, String title, todo_state obj) async {
-    //null ones are what we need to fix in order to make this work
-    // print(task.assignment);
-    //print(task.choreID); // this is null and causing problems
-    // print(task.date);
-    // print(task.id); //null
-    // print(task.rpt); //null
-    // print(task.status);
-    // print(task.task);
-    // print(task.time);
-    // print(task.value); //null
-
+  void navigateToTask(Task task, String title, TodoState obj) async {
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => new_task(task, title, obj, widget.userModel)),
+          builder: (context) => NewTask(task, title, obj, widget.userModel)),
     );
-    if (result == true) {
-      updateListView();
-    }
+    //code above changes to screen where you can create a new chore
+    updateListView();
   }
 
   //update the screen with the lastest chore list
   void updateListView() async {
-    //final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-    //Firestore _firestore = Firestore.instance;
-    String groupId = await DBFuture().getCurrentGroup();
+    //calls function in DBFuture to determine whether it is the user
+    //or the household list that the user wants to view
+    //and queries the correct data accordingly
     List<Task> choreList = await DBFuture().determineChoreList(
         dropdownValue, widget.userModel.groupId, widget.userModel.uid);
-    //print(choreList);
-    // if (dropdownValue.compareTo("My Chores") == 0) {
-    //   choreList = await DBFuture().getUserChoreList(widget.userModel.uid);
-    //   print("doing this");
-    // } else if (dropdownValue.compareTo("Household Chores") == 0) {
-    //   choreList = await DBFuture().getChoreList(groupId);
-    //   print("doing the household list");
-    // }
-
     setState(() {
       this.taskList = choreList;
       this.count = choreList.length;
     });
-
-    // dbFuture.then((database) {
-    //   Future<List<Task>> taskListFuture = databaseHelper.getTaskList();
-    //   taskListFuture.then((taskList) {
-    //     setState(() {
-    //       this.taskList = taskList;
-    //       this.count = taskList.length;
-    //     });
-    //   });
-    // });
   } //updateListView()
 
   //delete a chore from the database

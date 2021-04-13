@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 //import '../home_widget.dart';
 import '../chores/todo.dart';
 import 'package:choremate/screens/calendar/calendar2.dart';
-import 'package:choremate/screens/reminders/reminders.dart';
 
 class NoGroup extends StatefulWidget {
   @override
@@ -154,7 +153,7 @@ class NoGroupState extends State<NoGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => todo(),
+                  builder: (context) => Todo(),
                 ),
                 (route) => false,
               );
@@ -172,33 +171,33 @@ class NoGroupState extends State<NoGroup> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => reminders(),
+                  builder: (context) => Reminders(),
                 ),
                 (route) => false,
               );
               break;
           }
         },
-        fixedColor: green,
+        fixedColor: Colors.black,
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
-            title: new Text('Home'),
+            label: 'Home',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.cleaning_services),
-            title: new Text('Chores'),
+            label: 'Chores',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            title: Text('Calendar'),
+            label: 'Calendar',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Reminders'),
+            label: 'Reminders',
             backgroundColor: blue,
           )
         ],

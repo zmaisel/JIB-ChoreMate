@@ -279,7 +279,7 @@ class GroupDetailsState extends State<GroupDetails> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => todo(userModel: widget.userModel),
+                  builder: (context) => Todo(userModel: widget.userModel),
                 ),
                 (route) => false,
               );
@@ -297,33 +297,33 @@ class GroupDetailsState extends State<GroupDetails> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => reminders(userModel: widget.userModel),
+                  builder: (context) => Reminders(userModel: widget.userModel),
                 ),
                 (route) => false,
               );
               break;
           }
         },
-        fixedColor: green,
+        fixedColor: Colors.black,
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
-            title: new Text('Home'),
+            label: 'Home',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.cleaning_services),
-            title: new Text('Chores'),
+            label: 'Chores',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            title: Text('Calendar'),
+            label: 'Calendar',
             backgroundColor: blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifcations'),
+            label: 'Notifcations',
             backgroundColor: blue,
           )
         ],

@@ -13,7 +13,7 @@ class new_message extends StatefulWidget {
   final Message message;
   final UserModel currentUser;
 
-  reminders_state remindersState;
+  RemindersState remindersState;
   new_message(
       this.message, this.appBarTitle, this.remindersState, this.currentUser);
   bool _isEditable = false;
@@ -25,7 +25,7 @@ class new_message extends StatefulWidget {
 }
 
 class message_state extends State<new_message> {
-  reminders_state remindersState;
+  RemindersState remindersState;
   String appBarTitle;
   Message message;
   List<Widget> icons;

@@ -17,10 +17,10 @@ void main() {
 }
 
 final routes = {
-  '/todo': (context) => todo(),
+  '/todo': (context) => Todo(),
   '/home': (context) => Home(),
   '/calendar': (context) => Calendar(),
-  '/reminders': (context) => reminders()
+  '/reminders': (context) => Reminders()
 };
 //   '/login': (BuildContext context) => new LoginPage(),
 
