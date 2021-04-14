@@ -112,7 +112,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                 ),
               ),
             ),

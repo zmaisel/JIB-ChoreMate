@@ -61,40 +61,6 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
-  Widget _googleButton() {
-    Color green = const Color(0xFFa8e1a6);
-    Color blue = const Color(0xFF5ac9fc);
-    return OutlineButton(
-      splashColor: green,
-      onPressed: () {
-        _loginUser(type: LoginType.google, context: context);
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            //Image(image: AssetImage("assets/logo.png"), height: 25.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: green,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Color green = const Color(0xFFa8e1a6);
@@ -168,7 +134,6 @@ class _LoginFormState extends State<LoginForm> {
               );
             },
           ),
-          _googleButton(),
         ],
       ),
     );

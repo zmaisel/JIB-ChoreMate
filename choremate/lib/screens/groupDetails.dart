@@ -206,6 +206,11 @@ class GroupDetailsState extends State<GroupDetails> {
           child: Text(widget.userModel.groupName,
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
         ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Group ID: " + widget.userModel.groupId,
+              style: TextStyle(fontSize: 16)),
+        ),
 
         SizedBox(
           height: MediaQuery.of(context).size.height,

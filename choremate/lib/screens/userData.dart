@@ -225,7 +225,7 @@ class UserDataState extends State<UserData> {
                                     child: Icon(
                                       Icons.pie_chart_outline_outlined,
                                       color: blue,
-                                      size: 30,
+                                      size: 20,
                                     ),
                                   )
                                 ],
