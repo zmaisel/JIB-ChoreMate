@@ -84,6 +84,9 @@ class UserDataState extends State<UserData> {
             future:
                 DBFuture().getUserChoreList(userID, widget.userModel.groupId),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.data == null) {
+                return Text("Loading");
+              }
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -104,6 +107,9 @@ class UserDataState extends State<UserData> {
             future: DBFuture()
                 .getUserCompletedList(userID, widget.userModel.groupId),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.data == null) {
+                return Text("Loading");
+              }
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -120,6 +126,7 @@ class UserDataState extends State<UserData> {
   Widget build(BuildContext context) {
     Color green = const Color(0xFFa8e1a6);
     Color blue = const Color(0xFF5ac9fc);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('ChoreMate'),
@@ -132,6 +139,9 @@ class UserDataState extends State<UserData> {
             child: FutureBuilder(
                 future: userData(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.data == null) {
+                    return Text("Loading");
+                  }
                   return Column(
                     children: [
                       GestureDetector(
@@ -154,16 +164,16 @@ class UserDataState extends State<UserData> {
                                     const EdgeInsets.fromLTRB(15, 25, 15, 25),
                                 child: Row(
                                   children: [
-                                    (Text(snapshot.data[0],
-                                        style: TextStyle(fontSize: 25))),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 29),
+                                      padding: const EdgeInsets.only(right: 5),
                                       child: Icon(
                                         Icons.cancel_outlined,
                                         color: Colors.red,
-                                        size: 30,
+                                        size: 25,
                                       ),
-                                    )
+                                    ),
+                                    (Text(snapshot.data[0],
+                                        style: TextStyle(fontSize: 22))),
                                   ],
                                 ),
                               ),
@@ -192,16 +202,16 @@ class UserDataState extends State<UserData> {
                                     const EdgeInsets.fromLTRB(15, 25, 15, 25),
                                 child: Row(
                                   children: [
-                                    (Text(snapshot.data[1],
-                                        style: TextStyle(fontSize: 25))),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 27),
+                                      padding: const EdgeInsets.only(right: 5),
                                       child: Icon(
                                         Icons.check_circle_outline,
                                         color: green,
-                                        size: 30,
+                                        size: 25,
                                       ),
-                                    )
+                                    ),
+                                    (Text(snapshot.data[1],
+                                        style: TextStyle(fontSize: 22))),
                                   ],
                                 ),
                               ),
@@ -218,16 +228,15 @@ class UserDataState extends State<UserData> {
                                   const EdgeInsets.fromLTRB(15, 25, 15, 25),
                               child: Row(
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5.0),
+                                    child: Icon(
+                                        Icons.pie_chart_outline_outlined,
+                                        color: blue,
+                                        size: 25),
+                                  ),
                                   (Text(snapshot.data[2],
                                       style: TextStyle(fontSize: 20))),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Icon(
-                                      Icons.pie_chart_outline_outlined,
-                                      color: blue,
-                                      size: 20,
-                                    ),
-                                  )
                                 ],
                               ),
                             ),

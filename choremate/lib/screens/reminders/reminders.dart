@@ -174,8 +174,8 @@ class RemindersState extends State<Reminders> {
                       itemBuilder: (BuildContext context, int position) {
                         return new GestureDetector(
                             onTap: () {
-                              navigateToMessage(snapshot.data[position],
-                                  "Edit Reminder", this);
+                              navigateToMessage(
+                                  snapshot.data[position], "Reminder", this);
                             },
                             child: Card(
                               margin: EdgeInsets.all(1.0),

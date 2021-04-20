@@ -73,40 +73,47 @@ class message_state extends State<new_message> {
         body: ListView(children: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 50.0),
-              child: Container(
-                height: 2,
-              )),
+              child: !_isEditable()
+                  ? Container(
+                      height: 2,
+                    )
+                  : Container()),
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
-            child: Text("Remind:", style: titleStyle),
+            child: !_isEditable()
+                ? Text("Remind:", style: titleStyle)
+                : Container(),
           ),
           Padding(
               padding: EdgeInsets.all(_minPadding),
-              child: FutureBuilder(
-                  future: DBFuture().getUserList(widget.currentUser.groupId),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.data == null) {
-                      return Text("Loading");
-                    }
-                    return DropdownButton<String>(
-                      value: dropdownValue,
-                      icon: const Icon(Icons.arrow_drop_down_outlined),
-                      underline: Container(height: 2, color: Colors.grey),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          dropdownValue = newValue;
-                          message.sentTo = dropdownValue;
-                        });
-                      },
-                      items: userList
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+              child: !_isEditable()
+                  ? FutureBuilder(
+                      future:
+                          DBFuture().getUserList(widget.currentUser.groupId),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.data == null) {
+                          return Text("Loading");
+                        }
+                        return DropdownButton<String>(
+                          value: dropdownValue,
+                          icon: const Icon(Icons.arrow_drop_down_outlined),
+                          underline: Container(height: 2, color: Colors.grey),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              dropdownValue = newValue;
+                              message.sentTo = dropdownValue;
+                            });
+                          },
+                          items: userList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         );
-                      }).toList(),
-                    );
-                  })),
+                      })
+                  : Container()),
           Padding(
               padding: EdgeInsets.only(right: 50.0),
               child: Container(
@@ -136,25 +143,27 @@ class message_state extends State<new_message> {
           ),
           Padding(
             padding: EdgeInsets.all(_minPadding),
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50.0)),
-              padding: EdgeInsets.all(_minPadding / 2),
-              color: blue,
-              textColor: Colors.white,
-              elevation: 5.0,
-              child: Text(
-                "Send",
-                style: buttonStyle,
-                textAlign: TextAlign.center,
-                textScaleFactor: 1.2,
-              ),
-              onPressed: () {
-                setState(() {
-                  _save();
-                });
-              },
-            ), //RaisedButton
+            child: !_isEditable()
+                ? RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0)),
+                    padding: EdgeInsets.all(_minPadding / 2),
+                    color: blue,
+                    textColor: Colors.white,
+                    elevation: 5.0,
+                    child: Text(
+                      "Send",
+                      style: buttonStyle,
+                      textAlign: TextAlign.center,
+                      textScaleFactor: 1.2,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _save();
+                      });
+                    },
+                  )
+                : Container(), //RaisedButton
           ), //Padding
           Padding(
             padding: EdgeInsets.all(_minPadding),
