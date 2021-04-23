@@ -23,9 +23,15 @@ Our app has not been published to the Apple App Store nor the Google Play Store.
 
 # Pre-requisites
 
+software
 - Flutter version 1.22.5
 - Xcode version 12.3 for iOS
 - Android Studio version 4.1.2
+
+hardware
+- Apple iPhone running iOS and macOS 64 bit
+- Android running Android 4.1 or higher and macOS 64 bit or windows 7 (or newer)
+
 
 steps to download and set up the entire enviornment can be found below provided by Flutter
 
