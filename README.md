@@ -21,6 +21,13 @@ Features include:
 # Install Guide
 Our app has not been published to the Apple App Store nor the Google Play Store. As a result, to use our app, you must download Flutter and manually load the app on your phone. The steps are provided by Flutter in their documentation which can be found below. 
 
+# Pre-requisites
+
+- Flutter version 1.22.5
+- Xcode version 12.3 for iOS
+- Android Studio version 4.1.2
+steps to download and set up the entire enviornment can be found below provided by Flutter
+
 # iOS
 To run the iOS app, a mac running macOS(64-bit) is required along with 2.8 GB of free space. XCode is also required. Details for downloading XCode are provided in the documentation provided by flutter, but XCode can be downloaded straight from the App Store on the Mac device. 
 please see the following documentation provided by Flutter to install flutter
