@@ -24,6 +24,7 @@ Our app has not been published to the Apple App Store nor the Google Play Store.
 # iOS
 To run the iOS app, a mac running macOS(64-bit) is required along with 2.8 GB of free space. XCode is also required. Details for downloading XCode are provided in the documentation provided by flutter, but XCode can be downloaded straight from the App Store on the Mac device. 
 please see the following documentation provided by Flutter to install flutter
+
   https://flutter.dev/docs/get-started/install/macos
   
 - Follow all of the steps provided in the documentation linked above until reaching the step "Set up the iOS simulator" 
