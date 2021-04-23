@@ -50,6 +50,10 @@ https://flutter.dev/docs/get-started/install/windows
 - Follow all of the steps provided until reaching the Android emulator. 
 - After installing flutter but before setting up the Android device, be sure to clone this repo, and then resume with the steps.
 
+# Troubleshooting
+
+The initial build can sometimes take up to 10 minutes. Allow time for the app to build and minimize other programs running on your computer. 
+
 
 
 
