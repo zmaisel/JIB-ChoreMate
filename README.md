@@ -49,7 +49,11 @@ please see the following documentation provided by Flutter to install flutter
 - Skip "Set up the iOS simulator" and "Create and run a simple Flutter app"
 - At this point, clone this repo and then proceede with the steps in "Deploy to iOS device"
 - *note you will need to install cocoapods which is an optional step listed
-- After following these steps, you should be able to use the app on your iOS device. 
+- The last step listed, and listed again here, is to run the code. This can be done by using the "run" button in XCode or using the command 
+
+  $ flutter run
+  
+  in the project directory 
 
 # Android
 The android app can be set up from either a Mac(running macOS 64 bit) device or a Windows device(running windows 7 64-bit or newer). 
