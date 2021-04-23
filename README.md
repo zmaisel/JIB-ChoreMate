@@ -26,7 +26,14 @@ Our app has not been published to the Apple App Store nor the Google Play Store.
 - Flutter version 1.22.5
 - Xcode version 12.3 for iOS
 - Android Studio version 4.1.2
+
 steps to download and set up the entire enviornment can be found below provided by Flutter
+
+# Dependent Libraries
+
+- the pubspec.yaml file takes care of all dependencies
+- After installing flutter and cloning the repo, run the command $ flutter pub get in the project directory and this will install all dependent packages
+
 
 # iOS
 To run the iOS app, a mac running macOS(64-bit) is required along with 2.8 GB of free space. XCode is also required. Details for downloading XCode are provided in the documentation provided by flutter, but XCode can be downloaded straight from the App Store on the Mac device. 
