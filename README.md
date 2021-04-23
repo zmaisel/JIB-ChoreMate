@@ -32,7 +32,11 @@ steps to download and set up the entire enviornment can be found below provided 
 # Dependent Libraries
 
 - the pubspec.yaml file takes care of all dependencies
-- After installing flutter and cloning the repo, run the command $ flutter pub get in the project directory and this will install all dependent packages
+- After installing flutter and cloning the repo, run the command 
+
+  $ flutter pub get 
+  
+  in the project directory and this will install all dependent packages
 
 
 # iOS
