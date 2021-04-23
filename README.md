@@ -36,12 +36,16 @@ please see the following documentation provided by Flutter to install flutter
 The android app can be set up from either a Mac(running macOS 64 bit) device or a Windows device(running windows 7 64-bit or newer). 
 please see the following documentation provided by Flutter to install flutter
 
-- for macOS: https://flutter.dev/docs/get-started/install/macos
+for macOS: 
+
+https://flutter.dev/docs/get-started/install/macos
 - Follow all of the steps provided until reaching the iOS set up steps. At this point, skip down to Android setup. 
 - Clone this repo then
 - Follow the steps in Android set up, but stopping before the Android emulator. 
 
-- for windows: https://flutter.dev/docs/get-started/install/windows
+for windows: 
+
+https://flutter.dev/docs/get-started/install/windows
 - Follow all of the steps provided until reaching the Android emulator. 
 - After installing flutter but before setting up the Android device, be sure to clone this repo, and then resume with the steps.
 
